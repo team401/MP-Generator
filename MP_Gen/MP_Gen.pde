@@ -6,12 +6,8 @@ Field field;
 boolean blue;
 int w;
 
-//TODO
-//Make a generate new path button
-//make it so you have to export before you can generate a new path
+//TODO:
 //make a clear path button
-
-//Test to see if git set up correctly
 
 
 FalconPathPlanner path;
@@ -42,6 +38,8 @@ void setup(){
   newButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   newButton.setEnabled(false);
   
+  clearButton = new GButton(this, width/2-250, 440, 200, 100, "Clear path");
+  clearButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
 }
 void draw(){
@@ -111,9 +109,6 @@ void handleButtonEvents(GButton button, GEvent event){
       
       pathButton.setText("Please enter a path");
     }
-    //values are made up
-    
-    
   }
   if(button == newButton){
     newButton.setEnabled(false);
@@ -121,7 +116,10 @@ void handleButtonEvents(GButton button, GEvent event){
     fileButton.setEnabled(false);
     field.clearWaypoints();
     field.disableMP();
-    
+  }
+  if(button == clearButton){
+    field.clearWaypoints();
+    field.disableMP();
   }
 }
 void fileSelector(File selection){
