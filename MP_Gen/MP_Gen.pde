@@ -4,7 +4,7 @@ import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton;
 GTextField name, timeStep, time, wheelBase, wheelRadius;
 Field field;
-boolean blue;
+boolean blue, pathfinder;
 int w;
 
 //TODO:
@@ -20,6 +20,8 @@ void setup(){
   field = new Field();
   frameRate(120);
   w = width/2;
+  
+  pathfinder = false;
   
   blueButton = new GButton(this, 800, 850, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -144,16 +146,20 @@ void handleButtonEvents(GButton button, GEvent event){
         fileButton.setEnabled(true);
         
         field.printWaypoints();
-        path = new FalconPathPlanner(field.getWaypoints());
-        //bogus values
-        //(time, timestep, width)
-        path.calculate(Double.parseDouble(time.getText()), Double.parseDouble(findValue("timestep"))/1000, Double.parseDouble(findValue("width")));
         
-        field.setSmoothPath(path.smoothPath);
-        field.setLeftPath(path.leftPath);
-        field.setRightPath(path.rightPath);
-        field.enableMP();
-              
+        if(pathfinder){//pathFinder logic
+          
+        }else{//FalconPathPlanner logic
+          path = new FalconPathPlanner(field.getWaypoints());
+          //bogus values
+          //(time, timestep, width)
+          path.calculate(Double.parseDouble(time.getText()), Double.parseDouble(findValue("timestep"))/1000, Double.parseDouble(findValue("width")));
+          
+          field.setSmoothPath(path.smoothPath);
+          field.setLeftPath(path.leftPath);
+          field.setRightPath(path.rightPath);
+          field.enableMP();
+        }    
 
       }else{//if no settings
         System.out.println("Something went wrong");
@@ -201,7 +207,6 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
   name.setLocalColorScheme(GConstants.BLUE_SCHEME);
   fileButton.setText("Export");
   fileButton.setEnabled(true);
-  System.out.println(event);
 }
 
 void exportCSV(String prefix, String suffix){
@@ -237,10 +242,7 @@ void sets(){
   text("Width", 10, 312);
   text("Radius", 10, 352);
   text("Timestep", 10, 392);
-  
-  //timeStep.appendText(" millisec");
-  
-  
+    
 }
 //possible values 
 //width (width of the robot)
