@@ -466,7 +466,7 @@ class FalconPathPlanner {
 	}
 
 	//ratio defaults to the result of getRatio
-	private double[][] tankProfile(boolean left){
+	public double[][] tankProfile(boolean left){
 		return tankProfile(left, getRatio());
 	}
 
@@ -477,7 +477,7 @@ class FalconPathPlanner {
 	 * @param ratio Transforms feet/second into RPM
 	 * @return 2D array.  3 columns: Position(rotations), Velocity(RPM), Duration(ms)
 	 */
-	private double[][] tankProfile(boolean left, double ratio) {
+	public double[][] tankProfile(boolean left, double ratio) {
 		//Declare sources and result.  Switch depending on wheel.
 		double[][] velocity = left ? smoothLeftVelocity : smoothRightVelocity,
 				result = new double[velocity.length][3],
@@ -646,11 +646,23 @@ class FalconPathPlanner {
 	 * @param suffix Suffix to add to the end of the filename
 	 */
 	public void exportCSV(String prefix, String suffix){
-		
+		/*
 			//Each side can use the same profile in tank drive.
 			buildCSV(prefix+" L"+suffix, tankProfile(true));
 			buildCSV(prefix+" R"+suffix, tankProfile(false));
-		
+		*/
+
+/*
+    PrintWriter outputL = createWriter(prefix+" L"+suffix);
+    for(double[] u: tankprofile(true)){
+      for(double val: u){
+        outputL.print(val+",");
+      }
+      outputL.println();
+    }   
+    outputL.flush();
+    outputL.close();
+    */
 	}
 
 	/**

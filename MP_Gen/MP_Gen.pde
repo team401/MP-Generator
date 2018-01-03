@@ -7,7 +7,11 @@ boolean blue;
 int w;
 
 //TODO:
-//make a clear path button
+//add fields for the input values
+//add Pathfinder
+//extention of above - add angle input values (mouse wheel?)
+//add exporting functionality
+//add velocity graphs
 
 
 FalconPathPlanner path;
@@ -82,8 +86,10 @@ void handleButtonEvents(GButton button, GEvent event){
     blue = false;
   }
   if(button == fileButton){
-    selectOutput("Choose a where to export to", "fileSelector");
+    //selectOutput("Choose a where to export to", "fileSelector");
     newButton.setEnabled(true);
+    
+    exportCSV("profilecsv\\tank\\TESTL","");
   }
   if(button == pathButton){
     if(field.getWaypoints().length > 1){
@@ -128,4 +134,26 @@ void fileSelector(File selection){
   }else{
     System.out.println(selection.getAbsolutePath());
   }
+}
+
+void exportCSV(String prefix, String suffix){
+  PrintWriter outputL = createWriter(prefix+" L"+suffix+".csv");
+    for(double[] u: path.tankProfile(true)){
+      for(double val: u){
+        outputL.print(val+",");
+      }
+      outputL.println();
+    }   
+    outputL.flush();
+    outputL.close();
+    
+    PrintWriter outputR = createWriter(prefix+" R"+suffix+".csv");
+    for(double[] u: path.tankProfile(false)){
+      for(double val: u){
+        outputR.print(val+",");
+      }
+      outputR.println();
+    }   
+    outputR.flush();
+    outputR.close();
 }
