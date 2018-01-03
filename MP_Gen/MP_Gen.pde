@@ -47,6 +47,7 @@ void setup(){
   
   name = new GTextField(this, 0, 0, 200, 32);
   name.setFont(new Font("Dialog", Font.PLAIN, 24));
+  name.setPromptText("Profile Name");
   
 }
 void draw(){
@@ -93,7 +94,11 @@ void handleButtonEvents(GButton button, GEvent event){
     newButton.setEnabled(true);
     
     //rename "TEST" to input name
-    exportCSV("profilecsv\\tank\\TESTL","");
+    if(name.getText().length() > 0){//there is some text
+      exportCSV("profilecsv\\tank\\"+name.getText(),"");
+    }else{
+      fileButton.setText("Please enter a name");
+    }
   }
   if(button == pathButton){
     if(field.getWaypoints().length > 1){
@@ -113,7 +118,7 @@ void handleButtonEvents(GButton button, GEvent event){
       }
             
       pathButton.setEnabled(false);
-       fileButton.setEnabled(true);
+      fileButton.setEnabled(true);
     }else{
       field.printWaypoints();
       
@@ -126,10 +131,13 @@ void handleButtonEvents(GButton button, GEvent event){
     fileButton.setEnabled(false);
     field.clearWaypoints();
     field.disableMP();
+    name.setText("");
   }
   if(button == clearButton){
     field.clearWaypoints();
     field.disableMP();
+    //TEST functions
+    System.out.println(name.getText());
   }
 }
 void fileSelector(File selection){
@@ -138,6 +146,9 @@ void fileSelector(File selection){
   }else{
     System.out.println(selection.getAbsolutePath());
   }
+}
+public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
+  fileButton.setText("Export");
 }
 
 void exportCSV(String prefix, String suffix){
