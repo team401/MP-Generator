@@ -1,8 +1,8 @@
 import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
-GButton blueButton, redButton, fileButton, pathButton, clearButton, newButton;
-GTextField name;
+GButton blueButton, redButton, fileButton, pathButton, clearButton, newButton, saveButton;
+GTextField name, timeStep, time, wheelBase, wheelRadius;
 Field field;
 boolean blue;
 int w;
@@ -45,9 +45,31 @@ void setup(){
   clearButton = new GButton(this, width/2-250, 440, 200, 100, "Clear path");
   clearButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  name = new GTextField(this, 0, 0, 200, 32);
+  saveButton = new GButton(this, 150, 380, 100, 50, "Save");
+  saveButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  //text
+  name = new GTextField(this, 100, 80, 200, 32);
   name.setFont(new Font("Dialog", Font.PLAIN, 24));
   name.setPromptText("Profile Name");
+  
+  timeStep = new GTextField(this, 100, 120, 200, 32);
+  timeStep.setFont(new Font("Dialog", Font.PLAIN, 24));
+  timeStep.setPromptText("Timestep (millisec)");
+  
+  time = new GTextField(this, 100, 160, 200, 32);
+  time.setFont(new Font("Dialog", Font.PLAIN, 24));
+  time.setPromptText("Time (sec)");
+  
+  wheelBase = new GTextField(this, 100, 280, 200, 32);
+  wheelBase.setFont(new Font("Dialog", Font.PLAIN, 24));
+  wheelBase.setText(findValue("width"));
+  wheelBase.setPromptText("Robot Width (feet)");
+  
+  wheelRadius = new GTextField(this, 100, 320, 200, 32);
+  wheelRadius.setFont(new Font("Dialog", Font.PLAIN, 24));
+  wheelRadius.setText(findValue("radius"));
+  wheelRadius.setPromptText("Wheel Radius (in)");
   
 }
 void draw(){
@@ -62,6 +84,11 @@ void draw(){
     text("Red Alliance", width*0.75, 50);
   }
   
+  //text inputs
+  textAlign(LEFT, BOTTOM);
+  text("Input Variables", 100, 70);
+
+  sets();
   
 }
 void mouseClicked(){
@@ -97,29 +124,38 @@ void handleButtonEvents(GButton button, GEvent event){
     if(name.getText().length() > 0){//there is some text
       exportCSV("profilecsv\\tank\\"+name.getText(),"");
     }else{
+      fileButton.setEnabled(false);
       fileButton.setText("Please enter a name");
     }
   }
   if(button == pathButton){
     if(field.getWaypoints().length > 1){
-      field.printWaypoints();
-      path = new FalconPathPlanner(field.getWaypoints());
-      //bogus values
-      path.calculate(15, 0.02, 2);
-      
-      field.setSmoothPath(path.smoothPath);
-      field.setLeftPath(path.leftPath);
-      field.setRightPath(path.rightPath);
-      field.enableMP();
-      
-      System.out.println("Smoothpath:");
-      for(int i = 0;i<path.smoothPath.length;i++){
-        System.out.println("{"+path.smoothPath[i][0]+","+path.smoothPath[i][1]+"},");
+      if(!timeStep.getText().equals("") && !findValue("width").equals("") && !findValue("radius").equals("") && !time.getText().equals("")){
+        field.printWaypoints();
+        path = new FalconPathPlanner(field.getWaypoints());
+        //bogus values
+        //(time, timestep, width)
+        path.calculate(Double.parseDouble(time.getText()), Double.parseDouble(timeStep.getText())/1000, Double.parseDouble(findValue("width")));
+        
+        field.setSmoothPath(path.smoothPath);
+        field.setLeftPath(path.leftPath);
+        field.setRightPath(path.rightPath);
+        field.enableMP();
+        
+        System.out.println("Smoothpath:");
+        for(int i = 0;i<path.smoothPath.length;i++){
+          System.out.println("{"+path.smoothPath[i][0]+","+path.smoothPath[i][1]+"},");
+        }
+              
+        pathButton.setEnabled(false);
+        fileButton.setEnabled(true);
+      }else{//if no settings
+        System.out.println("Something went wrong");
+        if(timeStep.getText().equals("")){
+          timeStep.setLocalColorScheme(GConstants.RED_SCHEME);
+        }
       }
-            
-      pathButton.setEnabled(false);
-      fileButton.setEnabled(true);
-    }else{
+    }else{//if no waypoints
       field.printWaypoints();
       
       pathButton.setText("Please enter a path");
@@ -139,6 +175,11 @@ void handleButtonEvents(GButton button, GEvent event){
     //TEST functions
     System.out.println(name.getText());
   }
+  if(button == saveButton){
+    String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText()};
+    saveStrings("settings.txt", sets);
+
+  }
 }
 void fileSelector(File selection){
   if(selection == null){
@@ -148,7 +189,10 @@ void fileSelector(File selection){
   }
 }
 public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
+  timeStep.setLocalColorScheme(GConstants.BLUE_SCHEME);
   fileButton.setText("Export");
+  fileButton.setEnabled(true);
+  System.out.println(event);
 }
 
 void exportCSV(String prefix, String suffix){
@@ -171,4 +215,31 @@ void exportCSV(String prefix, String suffix){
     }   
     outputR.flush();
     outputR.close();
+}
+void sets(){
+  //settings are:
+  //1. Robot width
+  //2. Wheel Radius
+  //3. ??
+  
+  //display settings
+  textAlign(LEFT, BOTTOM);
+  text("Settings", 100, 270);
+  text("Width", 10, 312);
+  text("Radius", 10, 352);
+  
+  
+}
+//possible values 
+//width (width of the robot)
+//radius (Wheel radius)
+String findValue(String keyword){
+  String[] data = loadStrings("settings.txt");
+  int index = 0;
+  for(int i = 0;i<data.length;i++){
+    if(data[i].startsWith(keyword)){
+      index = i;
+    }
+  }
+  return data[index].substring(keyword.length() + 1);
 }
