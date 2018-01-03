@@ -2,6 +2,7 @@ import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, clearButton, newButton;
+GTextField name;
 Field field;
 boolean blue;
 int w;
@@ -10,7 +11,6 @@ int w;
 //add fields for the input values
 //add Pathfinder
 //extention of above - add angle input values (mouse wheel?)
-//add exporting functionality
 //add velocity graphs
 
 
@@ -44,6 +44,9 @@ void setup(){
   
   clearButton = new GButton(this, width/2-250, 440, 200, 100, "Clear path");
   clearButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  name = new GTextField(this, 0, 0, 200, 32);
+  name.setFont(new Font("Dialog", Font.PLAIN, 24));
   
 }
 void draw(){
@@ -89,6 +92,7 @@ void handleButtonEvents(GButton button, GEvent event){
     //selectOutput("Choose a where to export to", "fileSelector");
     newButton.setEnabled(true);
     
+    //rename "TEST" to input name
     exportCSV("profilecsv\\tank\\TESTL","");
   }
   if(button == pathButton){
