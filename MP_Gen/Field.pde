@@ -189,15 +189,15 @@ class Field{
       System.out.println("Waypoints is empty");
     }else{
       for(int[] u: waypoints){
-        System.out.println("("+u[0]+","+u[1]+")");
+        System.out.println("("+u[0]+","+u[1]+","+u[2]+")");
       }
     }
   }
   Waypoint[] toWaypointObj(){
     Waypoint[] points = new Waypoint[waypoints.size()];
-    for(int i = 0;i<points.length;i++){
+    for(int i = 0;i<waypoints.size();i++){
       //x, y, angle
-      points[i] = new Waypoint(waypoints.get(i)[0], waypoints.get(i)[1], waypoints.get(i)[2]);
+      points[i] = new Waypoint((double)waypoints.get(i)[0], (double)waypoints.get(i)[1], (double)Pathfinder.d2r(waypoints.get(i)[2]));
     }
     return points;
   }

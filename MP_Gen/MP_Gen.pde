@@ -20,7 +20,7 @@ void setup(){
   frameRate(120);
   w = width/2;
   
-  pathfinder = false;
+  pathfinder = true;
   
   blueButton = new GButton(this, 800, 850, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -173,14 +173,66 @@ void handleButtonEvents(GButton button, GEvent event){
         double vel = Double.parseDouble(findValue("maxVelocity"));
         double accel = Double.parseDouble(findValue("maxAccel"));
         double jerk = Double.parseDouble(findValue("maxJerk"));
+        double robotWidth = Double.parseDouble(findValue("width"));//in meters
         
-        Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, 
-        timestep, vel, accel, jerk);
+        Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
+        
+        Waypoint[] points = field.toWaypointObj(); // somthing is probably wrong here
+        //Waypoint[] points = new Waypoint[] {
+        //  new Waypoint(4, 1, Pathfinder.d2r(-45)),      // Waypoint @ x=-4, y=-1, exit angle=-45 degrees
+        //  new Waypoint(2, 2, 0),                        // Waypoint @ x=-2, y=-2, exit angle=0 radians
+        //  new Waypoint(0, 0, 0)                           // Waypoint @ x=0, y=0,   exit angle=0 radians
+        //};
+        
+        System.out.println("Waypoints 1 x : "+points[0].x);
+        System.out.println("Waypoints 1 x : "+points[0].y);
+        System.out.println("Waypoints 1 x : "+points[0].angle);
         
         //calculates the profile
-        Trajectory traj = Pathfinder.generate(field.toWaypointObj(), config);
+        Trajectory traj = Pathfinder.generate(points, config);//error on this line
+        System.out.println("generate ran");
         
+        //Tank drive
+        TankModifier modifier = new TankModifier(traj);
+        modifier.modify(robotWidth);
+        System.out.println("modifier ran");
+        
+        Trajectory left = modifier.getLeftTrajectory();
+        Trajectory right = modifier.getRightTrajectory();
+        System.out.println("left/right ran");
+        
+        //add to smoothpath, rightpath, and leftpath to display?
+        double[][] centerPath = new double[traj.length()][3];
+        double[][] rightPath = new double[left.length()][3];
+        double[][] leftPath = new double[right.length()][3];
+        System.out.println("paths created");
+        
+        for(int i = 0;i<traj.length();i++){
+          Trajectory.Segment seg = traj.get(i);
           
+          centerPath[i][0] = seg.x;
+          centerPath[i][1] = seg.y;
+          System.out.println("("+seg.x+","+seg.y+")");
+        }
+        for(int i = 0;i<left.length();i++){
+          Trajectory.Segment seg = left.get(i);
+          
+          leftPath[i][0] = seg.x;
+          leftPath[i][1] = seg.y;
+        }
+        for(int i = 0;i<right.length();i++){
+          Trajectory.Segment seg = right.get(i);
+          
+          rightPath[i][0] = seg.x;
+          rightPath[i][1] = seg.y;
+        }
+        
+        field.setSmoothPath(centerPath);
+        field.setLeftPath(leftPath);
+        field.setRightPath(rightPath);
+        field.enableMP();
+        
+        
         }else{//FalconPathPlanner logic
           path = new FalconPathPlanner(field.getWaypoints());
           //bogus values
