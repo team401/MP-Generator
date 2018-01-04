@@ -1,7 +1,7 @@
 import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
-GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton;
+GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton, velocityButton;
 GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
 Field field;
 boolean blue, pathfinder;
@@ -9,7 +9,6 @@ int w;
 final int X_TEXT = 130;
 //TODO:
 //add fields for the input values
-//add Pathfinder
 //extention of above - add angle input values (mouse wheel?)
 //add velocity graphs
 
@@ -28,6 +27,9 @@ void setup(){
   
   redButton = new GButton(this, 1000, 850, 100, 100, "Red");
   redButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  velocityButton = new GButton(this, 1200, 850, 100, 100, "Velocity");
+  velocityButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   blueButton.setEnabled(false);
   blue = true;
@@ -49,6 +51,8 @@ void setup(){
   
   saveButton = new GButton(this, X_TEXT + 50, 520, 100, 50, "Save");
   saveButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  
   
   //text
   name = new GTextField(this, X_TEXT, 80, 200, 32);
@@ -165,7 +169,6 @@ void handleButtonEvents(GButton button, GEvent event){
         
         if(pathfinder){//pathFinder logic
         //confing(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
-        //TODO make these real data inputs
         double timestep = Double.parseDouble(findValue("timestep"))/1000;
         double vel = Double.parseDouble(findValue("maxVelocity"));
         double accel = Double.parseDouble(findValue("maxAccel"));
@@ -175,7 +178,7 @@ void handleButtonEvents(GButton button, GEvent event){
         timestep, vel, accel, jerk);
         
         //calculates the profile
-        //Trajectory traj = Pathfinder.generate(field.toWaypointObj(), config);
+        Trajectory traj = Pathfinder.generate(field.toWaypointObj(), config);
         
           
         }else{//FalconPathPlanner logic
