@@ -154,6 +154,7 @@ class Field{
     }
   }
   void addWaypoint(int msX, int msY){
+    int angle = 0;//make this real later
     int w = width/2;
     float mapX = map(msX, w, w+(WIDTH*SPACING), 0, 27);
     float mapY = map(msY, 80, 80+(HEIGHT*SPACING), 27, 0);
@@ -161,7 +162,7 @@ class Field{
     int posX = round(mapX);
     int posY = round(mapY);
               
-    waypoints.add(new int[]{posX,posY});
+    waypoints.add(new int[]{posX,posY,angle});
   }
   void removeWaypoint(){
     if(waypoints.size()>=1){
@@ -191,6 +192,14 @@ class Field{
         System.out.println("("+u[0]+","+u[1]+")");
       }
     }
+  }
+  Waypoint[] toWaypointObj(){
+    Waypoint[] points = new Waypoint[waypoints.size()];
+    for(int i = 0;i<points.length;i++){
+      //x, y, angle
+      points[i] = new Waypoint(waypoints.get(i)[0], waypoints.get(i)[1], waypoints.get(i)[2]);
+    }
+    return points;
   }
   void enableMP(){
     mp = true;

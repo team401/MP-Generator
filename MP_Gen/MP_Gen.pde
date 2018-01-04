@@ -2,11 +2,11 @@ import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton;
-GTextField name, timeStep, time, wheelBase, wheelRadius;
+GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
 Field field;
 boolean blue, pathfinder;
 int w;
-
+final int X_TEXT = 130;
 //TODO:
 //add fields for the input values
 //add Pathfinder
@@ -47,32 +47,48 @@ void setup(){
   testButton = new GButton(this, width/2-250, 440, 200, 100, "TEST");
   testButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  saveButton = new GButton(this, 170, 420, 100, 50, "Save");
+  saveButton = new GButton(this, X_TEXT + 50, 520, 100, 50, "Save");
   saveButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   //text
-  name = new GTextField(this, 120, 80, 200, 32);
+  name = new GTextField(this, X_TEXT, 80, 200, 32);
   name.setFont(new Font("Dialog", Font.PLAIN, 24));
   name.setPromptText("Profile Name");
   
-  time = new GTextField(this, 120, 120, 200, 32);
+  time = new GTextField(this, X_TEXT, 120, 200, 32);
   time.setFont(new Font("Dialog", Font.PLAIN, 24));
   time.setPromptText("Time (sec)");
   
-  wheelBase = new GTextField(this, 120, 280, 200, 32);
+  wheelBase = new GTextField(this, X_TEXT, 280, 200, 32);
   wheelBase.setFont(new Font("Dialog", Font.PLAIN, 24));
   wheelBase.setText(findValue("width"));
   wheelBase.setPromptText("Robot Width (feet)");
   
-  wheelRadius = new GTextField(this, 120, 320, 200, 32);
+  wheelRadius = new GTextField(this, X_TEXT, 320, 200, 32);
   wheelRadius.setFont(new Font("Dialog", Font.PLAIN, 24));
   wheelRadius.setText(findValue("radius"));
   wheelRadius.setPromptText("Wheel Radius (in)");
   
-  timeStep = new GTextField(this, 120, 360, 200, 32);
+  timeStep = new GTextField(this, X_TEXT, 360, 200, 32);
   timeStep.setFont(new Font("Dialog", Font.PLAIN, 24));
   timeStep.setText(findValue("timestep"));
   timeStep.setPromptText("Timestep (millisec)");
+  
+  maxVel = new GTextField(this, X_TEXT, 400, 200, 32);
+  maxVel.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxVel.setText(findValue("maxVelocity"));
+  maxVel.setPromptText("Max Velocity");
+  
+  maxAccel = new GTextField(this, X_TEXT, 440, 200, 32);
+  maxAccel.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxAccel.setText(findValue("maxAccel"));
+  maxAccel.setPromptText("Max Acceleration");
+  
+  maxJerk = new GTextField(this, X_TEXT, 480, 200, 32);
+  maxJerk.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxJerk.setText(findValue("maxJerk"));
+  maxJerk.setPromptText("Max Jerk");
+  
   
 }
 void draw(){
@@ -89,7 +105,7 @@ void draw(){
   
   //text inputs
   textAlign(LEFT, BOTTOM);
-  text("Input Variables", 120, 70);
+  text("Input Variables", X_TEXT, 70);
 
   sets();
   
@@ -148,6 +164,19 @@ void handleButtonEvents(GButton button, GEvent event){
         field.printWaypoints();
         
         if(pathfinder){//pathFinder logic
+        //confing(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
+        //TODO make these real data inputs
+        double timestep = Double.parseDouble(findValue("timestep"))/1000;
+        double vel = Double.parseDouble(findValue("maxVelocity"));
+        double accel = Double.parseDouble(findValue("maxAccel"));
+        double jerk = Double.parseDouble(findValue("maxJerk"));
+        
+        Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, 
+        timestep, vel, accel, jerk);
+        
+        //calculates the profile
+        //Trajectory traj = Pathfinder.generate(field.toWaypointObj(), config);
+        
           
         }else{//FalconPathPlanner logic
           path = new FalconPathPlanner(field.getWaypoints());
@@ -190,7 +219,8 @@ void handleButtonEvents(GButton button, GEvent event){
     System.out.println(name.getText());
   }
   if(button == saveButton){
-    String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText()};
+    String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
+  "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText()};
     saveStrings("settings.txt", sets);
 
   }
@@ -235,6 +265,9 @@ void sets(){
   //1. Robot width
   //2. Wheel Radius
   //3. Timestep
+  //4. Max Velocity
+  //5. Max Acceleration
+  //6. Max Jerk
   
   //display settings
   textAlign(LEFT, BOTTOM);
@@ -242,6 +275,9 @@ void sets(){
   text("Width", 10, 312);
   text("Radius", 10, 352);
   text("Timestep", 10, 392);
+  text("Max Vel", 10, 432);
+  text("Max Accel", 10, 472);
+  text("Max Jerk", 10, 512);
     
 }
 //possible values 
