@@ -10,8 +10,7 @@ int w;
 final int X_TEXT = 130;
 int angle;
 //TODO:
-//add fields for the input values
-//extention of above - add angle input values (mouse wheel?)
+//add exporting csv for Pathfinder and check that these fit the new format
 //add velocity graphs
 
 
