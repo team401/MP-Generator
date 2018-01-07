@@ -1,7 +1,7 @@
 class Field{
   //units in feet
   private static final int WIDTH = 27;
-  private static final int HEIGHT = 27;
+  private static final int HEIGHT = 32;
   private static final int SPACING = 25;//(height-100)/HEIGHT;
   private boolean mp = false;
   private double[][] smoothPath;
@@ -10,6 +10,8 @@ class Field{
   
   private ArrayList<int[]> waypoints;
   
+  //private int angle;
+  
   Field(){
     waypoints = new ArrayList<int[]>();
   }
@@ -17,14 +19,15 @@ class Field{
     //vertical lines
     int w = width/2;
     //int h = height/2;
-    int originX = (int)(w+(13.5*SPACING)-85);
-    int originY = 80 + (HEIGHT*SPACING) -238;//check
+    //int originX = (int)(w+(13.5*SPACING)-85);
+    //int originY = 80 + (HEIGHT*SPACING) -238;//check
     
     textAlign(CENTER);
     textSize(12);
     strokeWeight(0);
     stroke(0);
     
+    //grid
     for(int i = 0;i<=WIDTH;i++){
       line(w+(i*SPACING), 80, w+(i*SPACING),80+(HEIGHT*SPACING));
       text(i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
@@ -34,54 +37,101 @@ class Field{
       text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
     }
     
-    //neutral zone
-    noStroke();
-    fill(0,255,0, 30);
-    rect(w, 80, (WIDTH*SPACING), originY - 228);
+    //zones
+    strokeWeight(3);
     fill(255);
     
-    //airship
-    stroke(0);
-    strokeWeight(4);
-    beginShape();
-    vertex(originX+42.5, originY);
-    vertex(originX, originY-72.5);
-    vertex(originX+42.5, originY-145);
-    vertex(originX+127.5, originY-145);
-    vertex(originX+170, originY-72.5);
-    vertex(originX+127.5, originY);
-    vertex(originX+42.5, originY);
-    endShape();
+    //Power Cube Zone
+    rect(toCoordX(11.625), toCoordY(12), 3.75*SPACING, 3.5*SPACING);
     
-    //neutral zone
-    //386
-
-    line(w, originY - 148, w+(WIDTH*SPACING), originY-148);
+    //Null territory
+    rect(toCoordX(0), toCoordY(30), 8*SPACING, 6*SPACING);
+    rect(toCoordX(27), toCoordY(30), -8*SPACING, 6*SPACING);
     
-    //baseline
-    //194
-    line(w, originY + 44, w+(WIDTH*SPACING), originY+44);
-    
-    //labels
-    textSize(48);
+    textSize(26);
     fill(0);
-    text("Neutral Zone", w+(width/4), 255);
+    text("NULL", toCoordX(3), toCoordY(27.55));
+    text("TERRITORY", toCoordX(3), toCoordY(25.65));
+    
+    text("NULL", toCoordX(24), toCoordY(27.55));
+    text("TERRITORY", toCoordX(24), toCoordY(25.65));
     fill(255);
+    
+    //Exchange Zone
+    rect(toCoordX(8.2), toCoordY(3), 4*SPACING, 3*SPACING);
+    
+    //auto line
+    line(toCoordX(0), toCoordY(10), toCoordX(WIDTH), toCoordY(10));
+    
+    //halfway
+    line(toCoordX(0), toCoordY(27), toCoordX(WIDTH), toCoordY(27));
+    
+    //switch
+    noFill();
+    stroke(0);
+    strokeWeight(5);
+    rect(toCoordX(7.5), toCoordY(16), 12*SPACING, 4*SPACING);
+    
+    fill(220,220,220);
+    //plates
+    rect(toCoordX(7.5), toCoordY(16), 3*SPACING, 4*SPACING);
+    rect(toCoordX(16.5), toCoordY(16), 3*SPACING, 4*SPACING);
+    //boom
+    rect(toCoordX(10.5), toCoordY(14.6), 6*SPACING, 1.2*SPACING);
+    
+    noFill();
+    //platform
+    noStroke();
+    if(blue){
+      fill(255,0,0);
+      rect(toCoordX(8.1), toCoordY(31.8), 10.8*SPACING, 5*SPACING);
+      fill(0,0,255);
+      rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
+    }else{
+      fill(0,0,255);
+      rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 5*SPACING);
+      fill(255,0,0);
+      rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
+    }
+    noFill();
+    stroke(0);
+    strokeWeight(5);
+    
+    //outer boundary
+    rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 10*SPACING);
+    
+    //raised boundary
+    rect(toCoordX(9.1), toCoordY(30.8)-5, 8.7*SPACING, 7.9*SPACING);
+    
+    //scale
+    fill(220, 220,220);
+    //boom
+    rect(toCoordX(9.07), toCoordY(27.3)-5, 9*SPACING, 1.16*SPACING);
+    //plates
+    rect(toCoordX(6.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
+    rect(toCoordX(18.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
+    
+    noFill();
+    
     
     //display the coordinates
     if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
       fill(0);
       textSize(24);
-      float mapX = map(mouseX, w, w+(WIDTH*SPACING), 0, 27);
-      float mapY = map(mouseY, 80, 80+(HEIGHT*SPACING), 27, 0);
+      int mapX = toMapX(mouseX);
+      int mapY = toMapY(mouseY);
       
-      int posX = round(mapX);
-      int posY = round(mapY);
-          
-      int x = (int)map(posX, 0, 27, w, w+(WIDTH*SPACING));
-      int y = (int)map(posY, 0, 27, 80+(HEIGHT*SPACING), 80);
+      int x = toCoordX(mapX);
+      int y = toCoordY(mapY);
       
-      text("(" + posX + "," + posY +")", x+30, y-15);
+      if(angle > 359){
+        angle = 0;
+      }
+      if(angle < 0){
+        angle = 359;
+      }
+            
+      text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
       
       strokeWeight(12);
       line(x, y, x, y);
@@ -89,7 +139,7 @@ class Field{
       
       //draws the arrow
       //using screen coordinates
-      arrow(posX, posY, -45);
+      arrow(mapX, mapY, angle);
     }
     //can still add to wayPoints
     //TODO fix that
@@ -143,8 +193,8 @@ class Field{
     for(int i = 0;i<waypoints.size();i++){
       int posX = waypoints.get(i)[0];
       int posY = waypoints.get(i)[1];
-      int x = (int)map(posX, 0, 27, w, w+(WIDTH*SPACING));
-      int y = (int)map(posY, 0, 27, 80+(HEIGHT*SPACING), 80);
+      int x = toCoordX(posX);
+      int y = toCoordY(posY);
       
       strokeWeight(12);
       stroke(255,0,0);
@@ -160,13 +210,10 @@ class Field{
   void addWaypoint(int msX, int msY){
     int angle = 0;//make this real later
     int w = width/2;
-    float mapX = map(msX, w, w+(WIDTH*SPACING), 0, 27);
-    float mapY = map(msY, 80, 80+(HEIGHT*SPACING), 27, 0);
-      
-    int posX = round(mapX);
-    int posY = round(mapY);
-              
-    waypoints.add(new int[]{posX,posY,angle});
+    int mapX = toMapX(msX);
+    int mapY = toMapY(msY);
+                    
+    waypoints.add(new int[]{mapX,mapY,angle});
   }
   void removeWaypoint(){
     if(waypoints.size()>=1){
@@ -231,28 +278,37 @@ class Field{
     float posY = (float)(y1+Math.sin(radians));
     
     x1 = toCoordX(x1);
-    y1 = toCoordY(y1);
+    y1 = toCoordY(y1);    
+    
     int x2 = toCoordX(posX);
     int y2 = toCoordY(posY);
     
-    System.out.println(x1 + "," + y1 + "," + x2 + "," + y2 + ",");
+    //System.out.println(x1 + "," + y1 + "," + x2 + "," + y2 + ",");
     
     strokeWeight(2);
     line(x1, y1, x2, y2);
     
+    //top    
+    int angX = (int)(toMapX(x2) - Math.cos(Math.PI/2 - radians));
+    int angY = (int)(toMapY(y2) - Math.sin(Math.PI/2 - radians));
+    
+    //println(angX +","+angY);
+    
+    //line(x2, y2, toCoordX(angX), toCoordY(angY));
+    
   }
   //
   int toMapX(float x){
-    return (int)round(map(x, w, w+(WIDTH*SPACING), 0, 27));
+    return (int)round(map(x, w, w+(WIDTH*SPACING), 0, WIDTH));
   }
   int toMapY(float y){
-    return (int)round(map(y, 80, 80+(HEIGHT*SPACING), 27, 0));
+    return (int)round(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0));
   }
   //
   int toCoordX(float x){
-    return (int)map(x, 0, 27, w, w+(WIDTH*SPACING));
+    return (int)map(x, 0, WIDTH, w, w+(WIDTH*SPACING));
   }
   int toCoordY(float y){
-    return (int)map(y, 0, 27, 80+(HEIGHT*SPACING), 80);
+    return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING), 80);
   }
 }

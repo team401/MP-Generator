@@ -7,6 +7,7 @@ Field field;
 boolean blue, pathfinder;
 int w;
 final int X_TEXT = 130;
+int angle;
 //TODO:
 //add fields for the input values
 //extention of above - add angle input values (mouse wheel?)
@@ -19,20 +20,22 @@ void setup(){
   field = new Field();
   frameRate(120);
   w = width/2;
+  angle = 0;
   
   pathfinder = true;
   
-  blueButton = new GButton(this, 800, 850, 100, 100, "Blue");
+  blueButton = new GButton(this, width/2-250 + 50, 550, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  redButton = new GButton(this, 1000, 850, 100, 100, "Red");
+  redButton = new GButton(this, width/2-250 + 50, 660, 100, 100, "Red");
   redButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  velocityButton = new GButton(this, 1200, 850, 100, 100, "Velocity");
+  velocityButton = new GButton(this, width/2-250 + 50, 770, 100, 100, "Velocity");
   velocityButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  blueButton.setEnabled(false);
-  blue = true;
+  blueButton.setEnabled(true);
+  redButton.setEnabled(false);
+  blue = false;
   
   fileButton = new GButton(this, width/2-250, 320, 200, 100, "Export");
   fileButton.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -127,11 +130,17 @@ void mouseClicked(){
   }
 }
 void mouseWheel(MouseEvent event){
-  
+  float e = event.getAmount();
+
+  if(e>0){
+    angle++;
+  }
+  if(e<0){
+    angle--;
+  }
 }
 void handleButtonEvents(GButton button, GEvent event){
   if(button == blueButton){
-    System.out.println("blue");
     blueButton.setEnabled(false);
     redButton.setEnabled(true);
     blue = true;
