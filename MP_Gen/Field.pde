@@ -150,8 +150,8 @@ class Field{
       for(int i = 0;i<smoothPath.length;i++){
         float posX = (float)smoothPath[i][0];
         float posY = (float)smoothPath[i][1];
-        float x = map(posX, 0, 27, w, w+(Field.WIDTH*Field.SPACING));
-        float y = map(posY, 0, 27, 80+(Field.HEIGHT*Field.SPACING), 80);
+        float x = toCoordX(posX);
+        float y = toCoordY(posY);
           
         strokeWeight(2);
         stroke(255, 0, 255);
@@ -164,8 +164,8 @@ class Field{
       for(int i = 0;i<leftPath.length;i++){
         float posX = (float)leftPath[i][0];
         float posY = (float)leftPath[i][1];
-        float x = map(posX, 0, 27, w, w+(Field.WIDTH*Field.SPACING));
-        float y = map(posY, 0, 27, 80+(Field.HEIGHT*Field.SPACING), 80);
+        float x = toCoordX(posX);
+        float y = toCoordY(posY);
           
         strokeWeight(2);
         stroke(255, 0, 255);
@@ -178,8 +178,8 @@ class Field{
       for(int i = 0;i<rightPath.length;i++){
         float posX = (float)rightPath[i][0];
         float posY = (float)rightPath[i][1];
-        float x = map(posX, 0, 27, w, w+(Field.WIDTH*Field.SPACING));
-        float y = map(posY, 0, 27, 80+(Field.HEIGHT*Field.SPACING), 80);
+        float x = toCoordX(posX);
+        float y = toCoordY(posY);
           
         strokeWeight(2);
         stroke(255, 0, 255);
@@ -208,7 +208,7 @@ class Field{
     }
   }
   void addWaypoint(int msX, int msY){
-    int angle = 0;//make this real later
+    //int angle = 0;//make this real later
     int w = width/2;
     int mapX = toMapX(msX);
     int mapY = toMapY(msY);
@@ -269,6 +269,14 @@ class Field{
   }
   void setRightPath(double[][] path){
     rightPath = path;
+  }
+  double[][] getSmoothPath(){
+    return smoothPath;
+  }
+  void printPath(double[][] path){
+    for(int i = 0;i<path.length;i++){
+      println("("+path[i][0]+","+path[i][1]+")");
+    }
   }
   //angle in degrees
   private void arrow(float x1, float y1, int angle){

@@ -22,7 +22,7 @@ void setup(){
   w = width/2;
   angle = 0;
   
-  pathfinder = true;
+  pathfinder = false;
   
   blueButton = new GButton(this, width/2-250 + 50, 550, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -133,10 +133,10 @@ void mouseWheel(MouseEvent event){
   float e = event.getAmount();
 
   if(e>0){
-    angle++;
+    angle+=2;
   }
   if(e<0){
-    angle--;
+    angle-=2;
   }
 }
 void handleButtonEvents(GButton button, GEvent event){
@@ -246,7 +246,6 @@ void handleButtonEvents(GButton button, GEvent event){
         
         }else{//FalconPathPlanner logic
           path = new FalconPathPlanner(field.getWaypoints());
-          //bogus values
           //(time, timestep, width)
           path.calculate(Double.parseDouble(time.getText()), Double.parseDouble(findValue("timestep"))/1000, Double.parseDouble(findValue("width")));
           
@@ -270,6 +269,8 @@ void handleButtonEvents(GButton button, GEvent event){
       
       pathButton.setText("Please enter a path");
     }
+    
+    field.printPath(field.getSmoothPath());
   }
   if(button == newButton){
     newButton.setEnabled(false);
