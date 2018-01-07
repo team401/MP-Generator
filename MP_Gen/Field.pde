@@ -86,6 +86,10 @@ class Field{
       strokeWeight(12);
       line(x, y, x, y);
       //fill(255);
+      
+      //draws the arrow
+      //using screen coordinates
+      arrow(posX, posY, -45);
     }
     //can still add to wayPoints
     //TODO fix that
@@ -218,5 +222,37 @@ class Field{
   }
   void setRightPath(double[][] path){
     rightPath = path;
+  }
+  //angle in degrees
+  private void arrow(float x1, float y1, int angle){
+    double radians = Math.toRadians(angle);
+        
+    float posX = (float)(x1+Math.cos(radians));
+    float posY = (float)(y1+Math.sin(radians));
+    
+    x1 = toCoordX(x1);
+    y1 = toCoordY(y1);
+    int x2 = toCoordX(posX);
+    int y2 = toCoordY(posY);
+    
+    System.out.println(x1 + "," + y1 + "," + x2 + "," + y2 + ",");
+    
+    strokeWeight(2);
+    line(x1, y1, x2, y2);
+    
+  }
+  //
+  int toMapX(float x){
+    return (int)round(map(x, w, w+(WIDTH*SPACING), 0, 27));
+  }
+  int toMapY(float y){
+    return (int)round(map(y, 80, 80+(HEIGHT*SPACING), 27, 0));
+  }
+  //
+  int toCoordX(float x){
+    return (int)map(x, 0, 27, w, w+(WIDTH*SPACING));
+  }
+  int toCoordY(float y){
+    return (int)map(y, 0, 27, 80+(HEIGHT*SPACING), 80);
   }
 }

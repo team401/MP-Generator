@@ -93,7 +93,6 @@ void setup(){
   maxJerk.setText(findValue("maxJerk"));
   maxJerk.setPromptText("Max Jerk");
   
-  
 }
 void draw(){
   background(200);
@@ -126,6 +125,9 @@ void mouseClicked(){
       field.removeWaypoint();
     }
   }
+}
+void mouseWheel(MouseEvent event){
+  
 }
 void handleButtonEvents(GButton button, GEvent event){
   if(button == blueButton){
