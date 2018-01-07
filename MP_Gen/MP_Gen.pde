@@ -3,6 +3,7 @@ import java.awt.Font;
 import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton, velocityButton;
 GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
+GSlider pathSelector;
 Field field;
 boolean blue, pathfinder;
 int w;
@@ -23,6 +24,12 @@ void setup(){
   angle = 0;
   
   pathfinder = false;
+  
+  pathSelector = new GSlider(this, 200, 700, 50, 50, 25);
+  pathSelector.setNbrTicks(2);
+  pathSelector.setStickToTicks(true);
+  pathSelector.setShowTicks(false);
+  pathSelector.setEnabled(true);
   
   blueButton = new GButton(this, width/2-250 + 50, 550, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -114,6 +121,10 @@ void draw(){
   text("Input Variables", X_TEXT, 70);
 
   sets();
+  
+  //pathSelector
+  text("FalconPathPlanner", 260, 738);
+  text("Pathfinder", 75, 738);
   
 }
 void mouseClicked(){
@@ -304,6 +315,16 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
   name.setLocalColorScheme(GConstants.BLUE_SCHEME);
   fileButton.setText("Export");
   fileButton.setEnabled(true);
+}
+public void handleSliderEvents(GValueControl slider, GEvent event) { 
+  println(slider.getValueI());
+  if(slider == pathSelector && slider.getValueI() == 1){
+    pathfinder = false;
+  }
+  if(slider == pathSelector && slider.getValueI() == 0){
+    pathfinder = true;
+  }
+  
 }
 
 void exportCSV(String prefix, String suffix){
