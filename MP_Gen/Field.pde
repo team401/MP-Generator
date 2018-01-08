@@ -37,36 +37,106 @@ class Field{
         line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
         text(i, w+(i*widthSpacing), 880 + 30);
       }
-      //find max velocity
-      float maxVelocity = 0;
-      for(int i = 0;i<smoothPathVelocity.length;i++){
-        if(smoothPathVelocity[i][1] > maxVelocity){
-          maxVelocity = (float)smoothPathVelocity[i][1];
-        }
-      }
-      //the velocity
-      int heightSpacing = 880/11;
-      for(int i = 0;i<=10;i++){//11?
-        line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
-        text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
-      }
       
-      noFill();
-        beginShape();
-        for(int i = 0;i<smoothPathVelocity.length;i++){
-          //float posX = (float)smoothPathVelocity[i][0];
-          float posX = i;
-          float posY = (float)smoothPathVelocity[i][1];
-          float x = (int)map(posX, 0, smoothPathVelocity.length, w, w+(t*widthSpacing));
-          //float x = width/2 + (widthSpacing*i);
-          float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
+      float maxVelocity = 0;
+      int heightSpacing = 880/11;
+      switch(graph){
+        case 0:
+          //find max velocity
+          for(int i = 0;i<smoothPathVelocity.length;i++){
+            if(smoothPathVelocity[i][1] > maxVelocity){
+              maxVelocity = (float)smoothPathVelocity[i][1];
+            }
+          }
+          //the velocity
+          for(int i = 0;i<=10;i++){//11?
+            line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
+            text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
+          }
+          
+          noFill();
+            beginShape();
+            for(int i = 0;i<smoothPathVelocity.length;i++){
+              //float posX = (float)smoothPathVelocity[i][0];
+              float posX = i;
+              float posY = (float)smoothPathVelocity[i][1];
+              float x = (int)map(posX, 0, smoothPathVelocity.length, w, w+(t*widthSpacing));
+              //float x = width/2 + (widthSpacing*i);
+              float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
+                
+              strokeWeight(2);
+              stroke(255, 0, 255);
+              vertex(x, y);
+            }
+            endShape();
             
-          strokeWeight(2);
-          stroke(255, 0, 255);
-          vertex(x, y);
-        }
-        endShape();
-        
+          break;
+          
+          case 1:
+            //find max velocity
+            for(int i = 0;i<leftPathVelocity.length;i++){
+              if(leftPathVelocity[i][1] > maxVelocity){
+                maxVelocity = (float)leftPathVelocity[i][1];
+              }
+            }
+            //the velocity
+            for(int i = 0;i<=10;i++){//11?
+              line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
+              text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
+            }
+            
+            noFill();
+              beginShape();
+              for(int i = 0;i<leftPathVelocity.length;i++){
+                //float posX = (float)smoothPathVelocity[i][0];
+                float posX = i;
+                float posY = (float)leftPathVelocity[i][1];
+                float x = (int)map(posX, 0, leftPathVelocity.length, w, w+(t*widthSpacing));
+                //float x = width/2 + (widthSpacing*i);
+                float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
+                  
+                strokeWeight(2);
+                stroke(255, 0, 255);
+                vertex(x, y);
+              }
+              endShape();
+          break;
+          
+          case 2:
+            //find max velocity
+            for(int i = 0;i<rightPathVelocity.length;i++){
+              if(rightPathVelocity[i][1] > maxVelocity){
+                maxVelocity = (float)rightPathVelocity[i][1];
+              }
+            }
+            //the velocity
+            for(int i = 0;i<=10;i++){//11?
+              line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
+              text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
+            }
+            
+            noFill();
+              beginShape();
+              for(int i = 0;i<rightPathVelocity.length;i++){
+                //float posX = (float)smoothPathVelocity[i][0];
+                float posX = i;
+                float posY = (float)rightPathVelocity[i][1];
+                float x = (int)map(posX, 0, rightPathVelocity.length, w, w+(t*widthSpacing));
+                //float x = width/2 + (widthSpacing*i);
+                float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
+                  
+                strokeWeight(2);
+                stroke(255, 0, 255);
+                vertex(x, y);
+              }
+              endShape();
+          break;
+          
+          default:
+            graph = 0;
+          break;
+          
+      }
       
     }else{
       //vertical lines

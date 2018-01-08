@@ -6,7 +6,7 @@ GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJe
 GSlider pathSelector;
 Field field;
 boolean blue, pathfinder, velocity;
-int w;
+int w, graph;
 final int X_TEXT = 130;
 int angle;
 //TODO:
@@ -21,6 +21,7 @@ void setup(){
   frameRate(120);
   w = width/2;
   angle = 0;
+  graph = 0;
   
   pathfinder = false;
   velocity = false;
@@ -367,6 +368,15 @@ void handleButtonEvents(GButton button, GEvent event){
       fileButton.setEnabled(false);
       testButton.setEnabled(false);
     }
+  }
+  if(button == centerButton){
+    graph = 0;
+  }
+  if(button == leftButton){
+    graph = 1;
+  }
+  if(button == rightButton){
+    graph = 2;
   }
 }
 void fileSelector(File selection){
