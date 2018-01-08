@@ -11,7 +11,6 @@ final int X_TEXT = 130;
 int angle;
 //TODO:
 //add exporting csv for Pathfinder and check that these fit the new format
-//add velocity graphs
 
 
 FalconPathPlanner path;
