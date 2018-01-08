@@ -130,10 +130,27 @@ void draw(){
   
   fill(0);
   textSize(24);
-  if(blue){
-    text("Blue Alliance", width*0.75, 50);
+  
+  if(velocity){
+    switch(graph){
+      case 0:
+        text("Center Path Velocity", width*0.75, 50);
+      break;
+      
+      case 1:
+        text("Left Path Velocity", width*0.75, 50);
+      break;
+      
+      case 2:
+        text("Right Path Velocity", width*0.75, 50);
+      break;
+    }
   }else{
-    text("Red Alliance", width*0.75, 50);
+    if(blue){
+      text("Blue Alliance", width*0.75, 50);
+    }else{
+      text("Red Alliance", width*0.75, 50);
+    }
   }
   
   //text inputs
