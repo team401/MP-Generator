@@ -31,6 +31,7 @@ void setup(){
   pathSelector.setStickToTicks(true);
   pathSelector.setShowTicks(false);
   pathSelector.setEnabled(true);
+  pathSelector.setValue(0.0);
   
   //misc
   blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
