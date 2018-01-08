@@ -31,6 +31,7 @@ void setup(){
   pathSelector.setShowTicks(false);
   pathSelector.setEnabled(true);
   
+  //misc
   blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
@@ -191,6 +192,7 @@ void handleButtonEvents(GButton button, GEvent event){
       newButton.setEnabled(false);
       pathButton.setEnabled(true);
       fileButton.setEnabled(false);
+      velocityButton.setEnabled(false);
     }else{
       fileButton.setEnabled(false);
       fileButton.setText("Please enter a name");
@@ -307,6 +309,7 @@ void handleButtonEvents(GButton button, GEvent event){
     newButton.setEnabled(false);
     pathButton.setEnabled(true);
     fileButton.setEnabled(false);
+    velocityButton.setEnabled(false);
     field.clearWaypoints();
     field.disableMP();
     name.setText("");
@@ -325,6 +328,7 @@ void handleButtonEvents(GButton button, GEvent event){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
   "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText()};
     saveStrings("settings.txt", sets);
+    
   }
   if(button == velocityButton){
     if(velocity){//currently displaying velocity graphs
