@@ -8,6 +8,10 @@ class Field{
   private double[][] leftPath;
   private double[][] rightPath;
   
+  private double[][] smoothPathVelocity;
+  private double[][] leftPathVelocity;
+  private double[][] rightPathVelocity;
+  
   private ArrayList<int[]> waypoints;
   
   //private int angle;
@@ -16,196 +20,246 @@ class Field{
     waypoints = new ArrayList<int[]>();
   }
   void display(){
-    //vertical lines
-    int w = width/2;
-    //int h = height/2;
-    //int originX = (int)(w+(13.5*SPACING)-85);
-    //int originY = 80 + (HEIGHT*SPACING) -238;//check
     
-    textAlign(CENTER);
-    textSize(12);
-    strokeWeight(0);
-    stroke(0);
-    
-    //grid
-    for(int i = 0;i<=WIDTH;i++){
-      line(w+(i*SPACING), 80, w+(i*SPACING),80+(HEIGHT*SPACING));
-      text(i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
-    }
-    for(int i = 0;i<=HEIGHT;i++){
-      line(w, 80+(i*SPACING), w+(WIDTH*SPACING), 80+(i*SPACING));
-      text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
-    }
-    
-    //zones
-    strokeWeight(3);
-    fill(255);
-    
-    //Power Cube Zone
-    rect(toCoordX(11.625), toCoordY(12), 3.75*SPACING, 3.5*SPACING);
-    
-    //Null territory
-    rect(toCoordX(0), toCoordY(30), 8*SPACING, 6*SPACING);
-    rect(toCoordX(27), toCoordY(30), -8*SPACING, 6*SPACING);
-    
-    textSize(26);
-    fill(0);
-    text("NULL", toCoordX(3), toCoordY(27.55));
-    text("TERRITORY", toCoordX(3), toCoordY(25.65));
-    
-    text("NULL", toCoordX(24), toCoordY(27.55));
-    text("TERRITORY", toCoordX(24), toCoordY(25.65));
-    fill(255);
-    
-    //Exchange Zone
-    rect(toCoordX(8.2), toCoordY(3), 4*SPACING, 3*SPACING);
-    
-    //auto line
-    line(toCoordX(0), toCoordY(10), toCoordX(WIDTH), toCoordY(10));
-    
-    //halfway
-    line(toCoordX(0), toCoordY(27), toCoordX(WIDTH), toCoordY(27));
-    
-    //switch
-    noFill();
-    stroke(0);
-    strokeWeight(5);
-    rect(toCoordX(7.5), toCoordY(16), 12*SPACING, 4*SPACING);
-    
-    fill(220,220,220);
-    //plates
-    rect(toCoordX(7.5), toCoordY(16), 3*SPACING, 4*SPACING);
-    rect(toCoordX(16.5), toCoordY(16), 3*SPACING, 4*SPACING);
-    //boom
-    rect(toCoordX(10.5), toCoordY(14.6), 6*SPACING, 1.2*SPACING);
-    
-    noFill();
-    //platform
-    noStroke();
-    if(blue){
-      fill(255,0,0);
-      rect(toCoordX(8.1), toCoordY(31.8), 10.8*SPACING, 5*SPACING);
-      fill(0,0,255);
-      rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
-    }else{
-      fill(0,0,255);
-      rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 5*SPACING);
-      fill(255,0,0);
-      rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
-    }
-    noFill();
-    stroke(0);
-    strokeWeight(5);
-    
-    //outer boundary
-    rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 10*SPACING);
-    
-    //raised boundary
-    rect(toCoordX(9.1), toCoordY(30.8)-5, 8.7*SPACING, 7.9*SPACING);
-    
-    //scale
-    fill(220, 220,220);
-    //boom
-    rect(toCoordX(9.07), toCoordY(27.3)-5, 9*SPACING, 1.16*SPACING);
-    //plates
-    rect(toCoordX(6.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
-    rect(toCoordX(18.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
-    
-    noFill();
-    
-    
-    //display the coordinates
-    if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
-      fill(0);
-      textSize(24);
-      int mapX = toMapX(mouseX);
-      int mapY = toMapY(mouseY);
+    if(velocity){
+      // width : 675 pxls
+      // height : 800 pxls
       
-      int x = toCoordX(mapX);
-      int y = toCoordY(mapY);
+      stroke(0);
+      strokeWeight(0);
+      textAlign(CENTER);
+      textSize(12);
+      // not correct
+      // the time 
+      int t = Integer.parseInt(time.getText());
+      int widthSpacing = 675/t;
+      for(int i = 0;i<=t;i++){
+        line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
+        text(i, w+(i*widthSpacing), 880 + 30);
+      }
+      //find max velocity
+      float maxVelocity = 0;
+      for(int i = 0;i<smoothPathVelocity.length;i++){
+        if(smoothPathVelocity[i][1] > maxVelocity){
+          maxVelocity = (float)smoothPathVelocity[i][1];
+        }
+      }
+      //the velocity
+      int heightSpacing = 880/11;
+      for(int i = 0;i<=10;i++){//11?
+        line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
+        text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
+      }
       
-      if(angle > 359){
-        angle = 0;
-      }
-      if(angle < 0){
-        angle = 359;
-      }
+      noFill();
+        beginShape();
+        for(int i = 0;i<smoothPathVelocity.length;i++){
+          //float posX = (float)smoothPathVelocity[i][0];
+          float posX = i;
+          float posY = (float)smoothPathVelocity[i][1];
+          float x = (int)map(posX, 0, smoothPathVelocity.length, w, w+(t*widthSpacing));
+          //float x = width/2 + (widthSpacing*i);
+          float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
             
-      text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+          strokeWeight(2);
+          stroke(255, 0, 255);
+          vertex(x, y);
+        }
+        endShape();
+        
       
-      strokeWeight(12);
-      line(x, y, x, y);
-      //fill(255);
-      
-      //draws the arrow
-      //using screen coordinates
-      arrow(mapX, mapY, angle);
-    }
-    //can still add to wayPoints
-    //TODO fix that
-    if(mp){     
-      //draws the smooth path
-      noFill();
-      beginShape();
-      for(int i = 0;i<smoothPath.length;i++){
-        float posX = (float)smoothPath[i][0];
-        float posY = (float)smoothPath[i][1];
-        float x = toCoordX(posX);
-        float y = toCoordY(posY);
-          
-        strokeWeight(2);
-        stroke(255, 0, 255);
-        vertex(x, y);
-      }
-      endShape();
-      //leftPath
-      noFill();
-      beginShape();
-      for(int i = 0;i<leftPath.length;i++){
-        float posX = (float)leftPath[i][0];
-        float posY = (float)leftPath[i][1];
-        float x = toCoordX(posX);
-        float y = toCoordY(posY);
-          
-        strokeWeight(2);
-        stroke(255, 0, 255);
-        vertex(x, y);
-      }
-      endShape();
-      //rightPath
-      noFill();
-      beginShape();
-      for(int i = 0;i<rightPath.length;i++){
-        float posX = (float)rightPath[i][0];
-        float posY = (float)rightPath[i][1];
-        float x = toCoordX(posX);
-        float y = toCoordY(posY);
-          
-        strokeWeight(2);
-        stroke(255, 0, 255);
-        vertex(x, y);
-      }
-      endShape();
-  
     }else{
-    noFill();
-    beginShape();
-    for(int i = 0;i<waypoints.size();i++){
-      int posX = waypoints.get(i)[0];
-      int posY = waypoints.get(i)[1];
-      int x = toCoordX(posX);
-      int y = toCoordY(posY);
+      //vertical lines
+      int w = width/2;
+      //int h = height/2;
+      //int originX = (int)(w+(13.5*SPACING)-85);
+      //int originY = 80 + (HEIGHT*SPACING) -238;//check
       
-      strokeWeight(12);
-      stroke(255,0,0);
-      line(x, y, x, y);
-
-      strokeWeight(2);
-      vertex(x, y);
-    }
-    endShape();
-    fill(255);
-    }
+      textAlign(CENTER);
+      textSize(12);
+      strokeWeight(0);
+      stroke(0);
+      
+      //grid
+      for(int i = 0;i<=WIDTH;i++){
+        line(w+(i*SPACING), 80, w+(i*SPACING),80+(HEIGHT*SPACING));
+        text(i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
+      }
+      for(int i = 0;i<=HEIGHT;i++){
+        line(w, 80+(i*SPACING), w+(WIDTH*SPACING), 80+(i*SPACING));
+        text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
+      }
+      
+      //zones
+      strokeWeight(3);
+      fill(255);
+      
+      //Power Cube Zone
+      rect(toCoordX(11.625), toCoordY(12), 3.75*SPACING, 3.5*SPACING);
+      
+      //Null territory
+      rect(toCoordX(0), toCoordY(30), 8*SPACING, 6*SPACING);
+      rect(toCoordX(27), toCoordY(30), -8*SPACING, 6*SPACING);
+      
+      textSize(26);
+      fill(0);
+      text("NULL", toCoordX(3), toCoordY(27.55));
+      text("TERRITORY", toCoordX(3), toCoordY(25.65));
+      
+      text("NULL", toCoordX(24), toCoordY(27.55));
+      text("TERRITORY", toCoordX(24), toCoordY(25.65));
+      fill(255);
+      
+      //Exchange Zone
+      rect(toCoordX(8.2), toCoordY(3), 4*SPACING, 3*SPACING);
+      
+      //auto line
+      line(toCoordX(0), toCoordY(10), toCoordX(WIDTH), toCoordY(10));
+      
+      //halfway
+      line(toCoordX(0), toCoordY(27), toCoordX(WIDTH), toCoordY(27));
+      
+      //switch
+      noFill();
+      stroke(0);
+      strokeWeight(5);
+      rect(toCoordX(7.5), toCoordY(16), 12*SPACING, 4*SPACING);
+      
+      fill(220,220,220);
+      //plates
+      rect(toCoordX(7.5), toCoordY(16), 3*SPACING, 4*SPACING);
+      rect(toCoordX(16.5), toCoordY(16), 3*SPACING, 4*SPACING);
+      //boom
+      rect(toCoordX(10.5), toCoordY(14.6), 6*SPACING, 1.2*SPACING);
+      
+      noFill();
+      //platform
+      noStroke();
+      if(blue){
+        fill(255,0,0);
+        rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 5*SPACING);
+        fill(0,0,255);
+        rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
+      }else{
+        fill(0,0,255);
+        rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 5*SPACING);
+        fill(255,0,0);
+        rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
+      }
+      noFill();
+      stroke(0);
+      strokeWeight(5);
+      
+      //outer boundary
+      rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 10*SPACING);
+      
+      //raised boundary
+      rect(toCoordX(9.1), toCoordY(30.8)-5, 8.7*SPACING, 7.9*SPACING);
+      
+      //scale
+      fill(220, 220,220);
+      //boom
+      rect(toCoordX(9.07), toCoordY(27.3)-5, 9*SPACING, 1.16*SPACING);
+      //plates
+      rect(toCoordX(6.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
+      rect(toCoordX(18.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
+      
+      noFill();
+      
+      
+      //display the coordinates
+      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
+        fill(0);
+        textSize(24);
+        int mapX = toMapX(mouseX);
+        int mapY = toMapY(mouseY);
+        
+        int x = toCoordX(mapX);
+        int y = toCoordY(mapY);
+        
+        if(angle > 359){
+          angle = 0;
+        }
+        if(angle < 0){
+          angle = 359;
+        }
+              
+        text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+        
+        strokeWeight(12);
+        line(x, y, x, y);
+        //fill(255);
+        
+        //draws the arrow
+        //using screen coordinates
+        arrow(mapX, mapY, angle);
+      }
+      //can still add to wayPoints
+      //TODO fix that
+      if(mp){     
+        //draws the smooth path
+        noFill();
+        beginShape();
+        for(int i = 0;i<smoothPath.length;i++){
+          float posX = (float)smoothPath[i][0];
+          float posY = (float)smoothPath[i][1];
+          float x = toCoordX(posX);
+          float y = toCoordY(posY);
+            
+          strokeWeight(2);
+          stroke(255, 0, 255);
+          vertex(x, y);
+        }
+        endShape();
+        //leftPath
+        noFill();
+        beginShape();
+        for(int i = 0;i<leftPath.length;i++){
+          float posX = (float)leftPath[i][0];
+          float posY = (float)leftPath[i][1];
+          float x = toCoordX(posX);
+          float y = toCoordY(posY);
+            
+          strokeWeight(2);
+          stroke(255, 0, 255);
+          vertex(x, y);
+        }
+        endShape();
+        //rightPath
+        noFill();
+        beginShape();
+        for(int i = 0;i<rightPath.length;i++){
+          float posX = (float)rightPath[i][0];
+          float posY = (float)rightPath[i][1];
+          float x = toCoordX(posX);
+          float y = toCoordY(posY);
+            
+          strokeWeight(2);
+          stroke(255, 0, 255);
+          vertex(x, y);
+        }
+        endShape();
+    
+      }else{
+      noFill();
+      beginShape();
+      for(int i = 0;i<waypoints.size();i++){
+        int posX = waypoints.get(i)[0];
+        int posY = waypoints.get(i)[1];
+        int x = toCoordX(posX);
+        int y = toCoordY(posY);
+        
+        strokeWeight(12);
+        stroke(255,0,0);
+        line(x, y, x, y);
+  
+        strokeWeight(2);
+        vertex(x, y);
+      }
+      endShape();
+      fill(255);
+      }
+    }//end velocity
   }
   void addWaypoint(int msX, int msY){
     //int angle = 0;//make this real later
@@ -272,6 +326,21 @@ class Field{
   }
   double[][] getSmoothPath(){
     return smoothPath;
+  }
+  double[][] getLeftPath(){
+    return leftPath;
+  }
+  double[][] getRightPath(){
+    return rightPath;
+  }
+  void setSmoothPathVelocity(double[][] path){
+    smoothPathVelocity = path;
+  }
+  void setLeftPathVelocity(double[][] path){
+    leftPathVelocity = path;
+  }
+  void setRightPathVelocity(double[][] path){
+    rightPathVelocity = path;
   }
   void printPath(double[][] path){
     for(int i = 0;i<path.length;i++){

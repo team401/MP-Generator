@@ -5,7 +5,7 @@ GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, sa
 GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
 GSlider pathSelector;
 Field field;
-boolean blue, pathfinder;
+boolean blue, pathfinder, velocity;
 int w;
 final int X_TEXT = 130;
 int angle;
@@ -23,6 +23,7 @@ void setup(){
   angle = 0;
   
   pathfinder = false;
+  velocity = false;
   
   pathSelector = new GSlider(this, 200, 700, 50, 50, 25);
   pathSelector.setNbrTicks(2);
@@ -41,6 +42,7 @@ void setup(){
   
   blueButton.setEnabled(true);
   redButton.setEnabled(false);
+  velocityButton.setEnabled(false);
   blue = false;
   
   fileButton = new GButton(this, width/2-250, 320, 200, 100, "Export");
@@ -185,8 +187,9 @@ void handleButtonEvents(GButton button, GEvent event){
         newButton.setEnabled(true);
         pathButton.setEnabled(false);
         fileButton.setEnabled(true);
+        velocityButton.setEnabled(true);
         
-        field.printWaypoints();
+        //field.printWaypoints();
         
         if(pathfinder){//pathFinder logic
         //confing(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
@@ -262,6 +265,13 @@ void handleButtonEvents(GButton button, GEvent event){
           field.setSmoothPath(path.smoothPath);
           field.setLeftPath(path.leftPath);
           field.setRightPath(path.rightPath);
+          
+          field.setSmoothPathVelocity(path.smoothCenterVelocity);
+          field.setLeftPathVelocity(path.smoothLeftVelocity);
+          field.setRightPathVelocity(path.smoothRightVelocity);
+          
+          field.printPath(path.smoothCenterVelocity);
+          
           field.enableMP();
         }    
 
@@ -280,7 +290,7 @@ void handleButtonEvents(GButton button, GEvent event){
       pathButton.setText("Please enter a path");
     }
     
-    field.printPath(field.getSmoothPath());
+    //field.printPath(field.getSmoothPath());
   }
   if(button == newButton){
     newButton.setEnabled(false);
@@ -294,12 +304,30 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == testButton){
     //TEST functions
     System.out.println(name.getText());
+    for(int i = 0;i<path.smoothCenterVelocity.length;i++){
+      System.out.println("("+path.smoothCenterVelocity[i][0]+","+path.smoothCenterVelocity[i][1]+")");
+    }
   }
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
   "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText()};
     saveStrings("settings.txt", sets);
-
+  }
+  if(button == velocityButton){
+    if(velocity){//currently displaying velocity graphs
+      velocity = false;
+      velocityButton.setText("Velocity");
+    }else{
+      velocity = true;
+      velocityButton.setText("Paths");
+      
+      blueButton.setEnabled(false);
+      redButton.setEnabled(false);
+      pathButton.setEnabled(false);
+      newButton.setEnabled(false);
+      fileButton.setEnabled(false);
+      testButton.setEnabled(false);
+    }
   }
 }
 void fileSelector(File selection){
