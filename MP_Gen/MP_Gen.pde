@@ -11,6 +11,7 @@ final int X_TEXT = 130;
 int angle;
 //TODO:
 //add exporting csv for Pathfinder and check that these fit the new format
+//make velocities work with Pathfinder
 
 
 FalconPathPlanner path;
@@ -242,6 +243,9 @@ void handleButtonEvents(GButton button, GEvent event){
         double[][] centerPath = new double[traj.length()][3];
         double[][] rightPath = new double[left.length()][3];
         double[][] leftPath = new double[right.length()][3];
+        double[][] centerPathVelocity = new double[traj.length()][2];
+        double[][] rightPathVelocity = new double[left.length()][2];
+        double[][] leftPathVelocity = new double[right.length()][2];
         System.out.println("paths created");
         
         for(int i = 0;i<traj.length();i++){
@@ -249,24 +253,37 @@ void handleButtonEvents(GButton button, GEvent event){
           
           centerPath[i][0] = seg.x;
           centerPath[i][1] = seg.y;
-          System.out.println("("+seg.x+","+seg.y+")");
+          
+          centerPathVelocity[i][0] = seg.position;
+          centerPathVelocity[i][1] = seg.velocity;
         }
         for(int i = 0;i<left.length();i++){
           Trajectory.Segment seg = left.get(i);
           
           leftPath[i][0] = seg.x;
           leftPath[i][1] = seg.y;
+          
+          leftPathVelocity[i][0] = seg.position;
+          leftPathVelocity[i][1] = seg.velocity;
         }
         for(int i = 0;i<right.length();i++){
           Trajectory.Segment seg = right.get(i);
           
           rightPath[i][0] = seg.x;
           rightPath[i][1] = seg.y;
+          
+          rightPathVelocity[i][0] = seg.position;
+          rightPathVelocity[i][1] = seg.velocity;
         }
         
         field.setSmoothPath(centerPath);
         field.setLeftPath(leftPath);
         field.setRightPath(rightPath);
+        
+        field.setSmoothPathVelocity(centerPathVelocity);
+        field.setLeftPathVelocity(leftPathVelocity);
+        field.setRightPathVelocity(rightPathVelocity);
+        
         field.enableMP();
         
         
