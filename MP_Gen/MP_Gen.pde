@@ -1,7 +1,7 @@
 import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
-GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton, velocityButton;
+GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton, velocityButton, centerButton, leftButton, rightButton;
 GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
 GSlider pathSelector;
 Field field;
@@ -25,20 +25,36 @@ void setup(){
   pathfinder = false;
   velocity = false;
   
-  pathSelector = new GSlider(this, 200, 700, 50, 50, 25);
+  pathSelector = new GSlider(this, 175, 700, 50, 50, 25);
   pathSelector.setNbrTicks(2);
   pathSelector.setStickToTicks(true);
   pathSelector.setShowTicks(false);
   pathSelector.setEnabled(true);
   
-  blueButton = new GButton(this, width/2-250 + 50, 550, 100, 100, "Blue");
+  blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  redButton = new GButton(this, width/2-250 + 50, 660, 100, 100, "Red");
+  redButton = new GButton(this, width/2-250, 660, 100, 100, "Red");
   redButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  velocityButton = new GButton(this, width/2-250 + 50, 770, 100, 100, "Velocity");
+  velocityButton = new GButton(this, width/2-250, 770, 100, 100, "Velocity");
   velocityButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  centerButton = new GButton(this, width/2-250 + 110, 550, 100, 100, "Center");
+  centerButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  leftButton = new GButton(this, width/2-250 + 110, 660, 100, 100, "Left");
+  leftButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  rightButton = new GButton(this, width/2-250 + 110, 770, 100, 100, "Right");
+  rightButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  centerButton.setEnabled(false);
+  centerButton.setVisible(false);
+  leftButton.setEnabled(false);
+  leftButton.setVisible(false);
+  rightButton.setEnabled(false);
+  rightButton.setVisible(false);
   
   blueButton.setEnabled(true);
   redButton.setEnabled(false);
@@ -124,8 +140,8 @@ void draw(){
   sets();
   
   //pathSelector
-  text("FalconPathPlanner", 260, 738);
-  text("Pathfinder", 75, 738);
+  text("FalconPathPlanner", 235, 738);
+  text("Pathfinder", 50, 738);
   
 }
 void mouseClicked(){
@@ -202,11 +218,6 @@ void handleButtonEvents(GButton button, GEvent event){
         Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
         
         Waypoint[] points = field.toWaypointObj(); // somthing is probably wrong here
-        //Waypoint[] points = new Waypoint[] {
-        //  new Waypoint(4, 1, Pathfinder.d2r(-45)),      // Waypoint @ x=-4, y=-1, exit angle=-45 degrees
-        //  new Waypoint(2, 2, 0),                        // Waypoint @ x=-2, y=-2, exit angle=0 radians
-        //  new Waypoint(0, 0, 0)                           // Waypoint @ x=0, y=0,   exit angle=0 radians
-        //};
         
         System.out.println("Waypoints 1 x : "+points[0].x);
         System.out.println("Waypoints 1 x : "+points[0].y);
@@ -270,7 +281,7 @@ void handleButtonEvents(GButton button, GEvent event){
           field.setLeftPathVelocity(path.smoothLeftVelocity);
           field.setRightPathVelocity(path.smoothRightVelocity);
           
-          field.printPath(path.smoothCenterVelocity);
+          //field.printPath(path.smoothCenterVelocity);
           
           field.enableMP();
         }    
@@ -303,10 +314,12 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == testButton){
     //TEST functions
-    System.out.println(name.getText());
-    for(int i = 0;i<path.smoothCenterVelocity.length;i++){
-      System.out.println("("+path.smoothCenterVelocity[i][0]+","+path.smoothCenterVelocity[i][1]+")");
-    }
+    centerButton.setEnabled(true);
+    centerButton.setVisible(true);
+    leftButton.setEnabled(true);
+    leftButton.setVisible(true);
+    rightButton.setEnabled(true);
+    rightButton.setVisible(true);
   }
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
@@ -317,9 +330,35 @@ void handleButtonEvents(GButton button, GEvent event){
     if(velocity){//currently displaying velocity graphs
       velocity = false;
       velocityButton.setText("Velocity");
+      
+      centerButton.setEnabled(false);
+      centerButton.setVisible(false);
+      leftButton.setEnabled(false);
+      leftButton.setVisible(false);
+      rightButton.setEnabled(false);
+      rightButton.setVisible(false);
+      
+      if(blue){
+        blueButton.setEnabled(false);
+        redButton.setEnabled(true);
+      }else{
+        blueButton.setEnabled(true);
+        redButton.setEnabled(false);
+      }
+      pathButton.setEnabled(true);
+      newButton.setEnabled(true);
+      fileButton.setEnabled(true);
+      testButton.setEnabled(true);
     }else{
       velocity = true;
       velocityButton.setText("Paths");
+      
+      centerButton.setEnabled(true);
+      centerButton.setVisible(true);
+      leftButton.setEnabled(true);
+      leftButton.setVisible(true);
+      rightButton.setEnabled(true);
+      rightButton.setVisible(true);
       
       blueButton.setEnabled(false);
       redButton.setEnabled(false);
