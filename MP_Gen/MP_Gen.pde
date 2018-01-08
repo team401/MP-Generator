@@ -1,10 +1,13 @@
 import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
-GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton, velocityButton, centerButton, leftButton, rightButton;
+GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton,
+velocityButton, centerButton, leftButton, rightButton, loadButton;
 GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
 GSlider pathSelector;
 Field field;
+FalconPathPlanner path;
+Trajectory traj;
 boolean blue, pathfinder, velocity;
 int w, graph;
 final int X_TEXT = 130;
@@ -14,7 +17,7 @@ int angle;
 //make velocities work with Pathfinder
 
 
-FalconPathPlanner path;
+
 void setup(){
   size(1440, 960);
   field = new Field();
@@ -82,7 +85,12 @@ void setup(){
   saveButton = new GButton(this, X_TEXT + 50, 520, 100, 50, "Save");
   saveButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
+  loadButton = new GButton(this, width/2-250, 440, 200, 100, "Load from CSV");
+  loadButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
+  //Use for debugging
+  testButton.setEnabled(false);
+  testButton.setVisible(false);
   
   //text
   name = new GTextField(this, X_TEXT, 80, 200, 32);
@@ -203,7 +211,15 @@ void handleButtonEvents(GButton button, GEvent event){
     
     //rename "TEST" to input name
     if(name.getText().length() > 0){//there is some text
-      exportCSV("profilecsv\\tank\\"+name.getText(),"");
+      if(pathfinder){
+        println("Pathfinder gen ran");
+        //Caused a complete program crash, not idea why
+        //File newFile = new File("profilecsv\\tank\\"+name.getText()+".csv");
+        //Pathfinder.writeToCSV(newFile, traj);
+      }else{
+        println("Falcon gen ran");
+        exportCSV("profilecsv\\tank\\"+name.getText(),"");
+      }
       field.clearWaypoints();
       field.disableMP();
       name.setText("");
@@ -212,6 +228,7 @@ void handleButtonEvents(GButton button, GEvent event){
       pathButton.setEnabled(true);
       fileButton.setEnabled(false);
       velocityButton.setEnabled(false);
+      loadButton.setEnabled(true);
     }else{
       fileButton.setEnabled(false);
       fileButton.setText("Please enter a name");
@@ -224,6 +241,7 @@ void handleButtonEvents(GButton button, GEvent event){
         newButton.setEnabled(true);
         pathButton.setEnabled(false);
         fileButton.setEnabled(true);
+        loadButton.setEnabled(false);
         velocityButton.setEnabled(true);
         
         //field.printWaypoints();
@@ -245,7 +263,7 @@ void handleButtonEvents(GButton button, GEvent event){
         System.out.println("Waypoints 1 x : "+points[0].angle);
         
         //calculates the profile
-        Trajectory traj = Pathfinder.generate(points, config);//error on this line
+        traj = Pathfinder.generate(points, config);//error on this line
         System.out.println("generate ran");
         
         //Tank drive
@@ -345,6 +363,7 @@ void handleButtonEvents(GButton button, GEvent event){
     pathButton.setEnabled(true);
     fileButton.setEnabled(false);
     velocityButton.setEnabled(false);
+    loadButton.setEnabled(true);
     field.clearWaypoints();
     field.disableMP();
     name.setText("");
@@ -388,6 +407,7 @@ void handleButtonEvents(GButton button, GEvent event){
       newButton.setEnabled(true);
       fileButton.setEnabled(true);
       testButton.setEnabled(true);
+      loadButton.setEnabled(true);
     }else{
       velocity = true;
       velocityButton.setText("Paths");
@@ -405,6 +425,7 @@ void handleButtonEvents(GButton button, GEvent event){
       newButton.setEnabled(false);
       fileButton.setEnabled(false);
       testButton.setEnabled(false);
+      loadButton.setEnabled(false);
     }
   }
   if(button == centerButton){
@@ -415,6 +436,9 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == rightButton){
     graph = 2;
+  }
+  if(button == loadButton){
+    
   }
 }
 void fileSelector(File selection){
