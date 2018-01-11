@@ -14,9 +14,7 @@ final int X_TEXT = 130;
 int angle;
 //TODO:
 //add exporting csv for Pathfinder and check that these fit the new format
-//make velocities work with Pathfinder
-
-
+//add custom file for loading paths
 
 void setup(){
   size(1440, 960);
@@ -165,7 +163,24 @@ void draw(){
   textAlign(LEFT, BOTTOM);
   text("Input Variables", X_TEXT, 70);
 
-  sets();
+  //settings are:
+  //1. Robot width
+  //2. Wheel Radius
+  //3. Timestep
+  //4. Max Velocity
+  //5. Max Acceleration
+  //6. Max Jerk
+  
+  //display settings
+  textAlign(LEFT, BOTTOM);
+  text("Settings", 120, 270);
+  text("Width", 10, 312);
+  text("Radius", 10, 352);
+  text("Timestep", 10, 392);
+  text("Max Vel", 10, 432);
+  text("Max Accel", 10, 472);
+  text("Max Jerk", 10, 512);
+    
   
   //pathSelector
   text("FalconPathPlanner", 235, 738);
@@ -486,29 +501,6 @@ void exportCSV(String prefix, String suffix){
     outputR.flush();
     outputR.close();
 }
-void sets(){
-  //settings are:
-  //1. Robot width
-  //2. Wheel Radius
-  //3. Timestep
-  //4. Max Velocity
-  //5. Max Acceleration
-  //6. Max Jerk
-  
-  //display settings
-  textAlign(LEFT, BOTTOM);
-  text("Settings", 120, 270);
-  text("Width", 10, 312);
-  text("Radius", 10, 352);
-  text("Timestep", 10, 392);
-  text("Max Vel", 10, 432);
-  text("Max Accel", 10, 472);
-  text("Max Jerk", 10, 512);
-    
-}
-//possible values 
-//width (width of the robot)
-//radius (Wheel radius)
 String findValue(String keyword){
   String[] data = loadStrings("settings.txt");
   int index = 0;
