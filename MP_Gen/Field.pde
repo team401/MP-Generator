@@ -458,4 +458,12 @@ class Field{
   int toCoordY(float y){
     return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING), 80);
   }
+  void exportWaypoints(){
+    PrintWriter output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+".csv");
+    for(int[] u: waypoints){
+      output.println(u[0]+","+u[1]);
+    }
+      output.flush();
+      output.close();
+    }
 }

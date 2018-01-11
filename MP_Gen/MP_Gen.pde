@@ -234,6 +234,7 @@ void handleButtonEvents(GButton button, GEvent event){
       }else{
         println("Falcon gen ran");
         exportCSV("profilecsv\\tank\\"+name.getText(),"");
+        field.exportWaypoints();
       }
       field.clearWaypoints();
       field.disableMP();
