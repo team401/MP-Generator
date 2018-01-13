@@ -9,7 +9,7 @@ GSlider pathSelector;
 Field field;
 FalconPathPlanner path;
 Trajectory traj;
-boolean blue, pathfinder, velocity;
+boolean blue, pathfinder, velocity, exportSuccessL, exportSuccessR;
 int w, graph;
 final int X_TEXT = 130;
 int angle;
@@ -27,6 +27,8 @@ void setup(){
   
   pathfinder = false;
   velocity = false;
+  exportSuccessL = false;
+  exportSuccessR = false;
   
   pathSelector = new GSlider(this, 175, 700, 50, 50, 25);
   pathSelector.setNbrTicks(2);
@@ -218,6 +220,9 @@ void mouseWheel(MouseEvent event){
   }
 }
 void handleButtonEvents(GButton button, GEvent event){
+  
+  error.setText("");
+  
   if(button == blueButton){
     blueButton.setEnabled(false);
     redButton.setEnabled(true);
@@ -230,7 +235,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == fileButton){
     //selectOutput("Choose a where to export to", "fileSelector");
-    
+
     //rename "TEST" to input name
     if(name.getText().length() > 0){//there is some text
       if(pathfinder){
@@ -245,15 +250,17 @@ void handleButtonEvents(GButton button, GEvent event){
         exportCSV("profilecsv\\tank\\"+name.getText(),"");
         field.exportWaypoints();
       }
-      field.clearWaypoints();
-      field.disableMP();
-      name.setText("");
-      time.setText("");
-      newButton.setEnabled(false);
-      pathButton.setEnabled(true);
-      fileButton.setEnabled(false);
-      velocityButton.setEnabled(false);
-      loadButton.setEnabled(true);
+      if(exportSuccessL && exportSuccessR){
+        field.clearWaypoints();
+        field.disableMP();
+        pathButton.setEnabled(true);
+        newButton.setEnabled(false);
+        fileButton.setEnabled(false);
+        loadButton.setEnabled(true);
+        name.setText("");
+        time.setText("");
+      }
+      
     }else{
       fileButton.setEnabled(false);
       fileButton.setText("Please enter a name");
@@ -262,17 +269,10 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == pathButton){
     if(field.getWaypoints().length > 1){
       if(!findValue("timestep").equals("") && !findValue("width").equals("") && !findValue("radius").equals("") && !time.getText().equals("")){
-        
-        newButton.setEnabled(true);
-        pathButton.setEnabled(false);
-        fileButton.setEnabled(true);
-        loadButton.setEnabled(false);
-        velocityButton.setEnabled(true);
-        
-        //field.printWaypoints();
-        
+       
+               
         if(pathfinder){//pathFinder logic
-        //confing(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
+        //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
         double timestep = Double.parseDouble(findValue("timestep"))/1000;
         double vel = Double.parseDouble(findValue("maxVelocity"));
         double accel = Double.parseDouble(findValue("maxAccel"));
@@ -284,6 +284,7 @@ void handleButtonEvents(GButton button, GEvent event){
         Waypoint[] points = field.toWaypointObj(); // somthing is probably wrong here
         
         //calculates the profile
+        //NEED TO RELOCATE?
         try{
           traj = Pathfinder.generate(points, config);//error on this line
           
@@ -348,9 +349,12 @@ void handleButtonEvents(GButton button, GEvent event){
           //File newFile = new File("\\profilecsv\\tank\\"+name.getText()+".csv");
           //Pathfinder.writeToCSV(newFile, traj);
           
+          pathsGenerated();
+          
         }catch(Exception e){
           //println(e.getClass().getName());
           error.setText("The selected path could not be generated. Please revise your path and try again.");
+          placePaths();
         }
         
         }else{//FalconPathPlanner logic
@@ -369,6 +373,8 @@ void handleButtonEvents(GButton button, GEvent event){
           //field.printPath(path.smoothCenterVelocity);
           
           field.enableMP();
+          
+          pathsGenerated();
         }    
 
       }else{//if no settings
@@ -496,7 +502,7 @@ public void handleSliderEvents(GValueControl slider, GEvent event) {
 }
 
 void exportCSV(String prefix, String suffix){
-  PrintWriter outputL = createWriter(prefix+" L"+suffix+".csv");
+  PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
     for(double[] u: path.tankProfile(true)){
       for(double val: u){
         outputL.print(val+",");
@@ -506,7 +512,7 @@ void exportCSV(String prefix, String suffix){
     outputL.flush();
     outputL.close();
     
-    PrintWriter outputR = createWriter(prefix+" R"+suffix+".csv");
+    PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
     for(double[] u: path.tankProfile(false)){
       for(double val: u){
         outputR.print(val+",");
@@ -525,8 +531,14 @@ void exportPathfinderToCSV(String prefix, String suffix){
     }   
     outputL.flush();
     outputL.close();
+    
+    exportSuccessL = true;
+    println("first");
   }catch(RuntimeException e){
+    println("second");
     error.setText("File " + prefix+"_L"+suffix+".csv is open! Close the file and try again.");
+    pathsGenerated();
+    exportSuccessL = false;
   }
   try{
     PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
@@ -535,8 +547,13 @@ void exportPathfinderToCSV(String prefix, String suffix){
     }   
     outputR.flush();
     outputR.close();
+    
+    exportSuccessR = true;
+   
   }catch(RuntimeException e){
     error.setText("File " + prefix+"_R"+suffix+".csv is open! Close the file and try again.");
+    pathsGenerated();
+    exportSuccessR = false;
   }
 }
 
@@ -549,4 +566,18 @@ String findValue(String keyword){
     }
   }
   return data[index].substring(keyword.length() + 1);
+}
+//quick and dirty
+void placePaths(){
+  pathButton.setEnabled(true);
+  newButton.setEnabled(false);
+  fileButton.setEnabled(false);
+  loadButton.setEnabled(true);
+}
+void pathsGenerated(){
+  newButton.setEnabled(true);
+  pathButton.setEnabled(false);
+  fileButton.setEnabled(true);
+  loadButton.setEnabled(false);
+  velocityButton.setEnabled(true);
 }
