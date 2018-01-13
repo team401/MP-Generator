@@ -7,7 +7,7 @@ GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJe
 GSlider pathSelector;
 Field field;
 FalconPathPlanner path;
-Trajectory traj;
+//Trajectory traj;
 boolean blue, pathfinder, velocity;
 int w, graph;
 final int X_TEXT = 130;
@@ -228,9 +228,11 @@ void handleButtonEvents(GButton button, GEvent event){
     if(name.getText().length() > 0){//there is some text
       if(pathfinder){
         println("Pathfinder gen ran");
-        //Caused a complete program crash, not idea why
-        //File newFile = new File("profilecsv\\tank\\"+name.getText()+".csv");
+        //Caused a complete program crash, no idea why
+        //File newFile = new File("\\profilecsv\\tank\\"+name.getText()+".csv");
         //Pathfinder.writeToCSV(newFile, traj);
+        exportPathfinderToCSV("profilecsv\\tank\\"+name.getText(),"");
+        field.exportWaypoints();
       }else{
         println("Falcon gen ran");
         exportCSV("profilecsv\\tank\\"+name.getText(),"");
@@ -279,7 +281,7 @@ void handleButtonEvents(GButton button, GEvent event){
         System.out.println("Waypoints 1 x : "+points[0].angle);
         
         //calculates the profile
-        traj = Pathfinder.generate(points, config);//error on this line
+        Trajectory traj = Pathfinder.generate(points, config);//error on this line
         System.out.println("generate ran");
         
         //Tank drive
@@ -337,7 +339,9 @@ void handleButtonEvents(GButton button, GEvent event){
         field.setRightPathVelocity(rightPathVelocity);
         
         field.enableMP();
-        
+                
+        //File newFile = new File("\\profilecsv\\tank\\"+name.getText()+".csv");
+        //Pathfinder.writeToCSV(newFile, traj);
         
         }else{//FalconPathPlanner logic
           path = new FalconPathPlanner(field.getWaypoints());
@@ -502,6 +506,23 @@ void exportCSV(String prefix, String suffix){
     outputR.flush();
     outputR.close();
 }
+// Doesn't work if the file is open
+void exportPathfinderToCSV(String prefix, String suffix){
+  PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
+    for(double[] u: field.leftPathVelocity){
+      outputL.println(u[0] + "," + u[1] + "," + findValue("timestep"));
+    }   
+    outputL.flush();
+    outputL.close();
+    
+    PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
+    for(double[] u: field.rightPathVelocity){
+      outputR.println(u[0] + "," + u[1] + "," + findValue("timestep"));
+    }   
+    outputR.flush();
+    outputR.close();
+}
+
 String findValue(String keyword){
   String[] data = loadStrings("settings.txt");
   int index = 0;
