@@ -29,7 +29,7 @@ class Field{
       strokeWeight(0);
       textAlign(CENTER);
       textSize(12);
-      // not correct
+      
       // the time 
       int t = Integer.parseInt(time.getText());
       int widthSpacing = 675/t;
@@ -141,9 +141,6 @@ class Field{
     }else{
       //vertical lines
       int w = width/2;
-      //int h = height/2;
-      //int originX = (int)(w+(13.5*SPACING)-85);
-      //int originY = 80 + (HEIGHT*SPACING) -238;//check
       
       textAlign(CENTER);
       textSize(12);
@@ -351,7 +348,6 @@ class Field{
     }
   }
   double[][] getWaypoints(){
-    //may not work
     double[][] p = new double[waypoints.size()][2];
     for(int i = 0;i<waypoints.size();i++){
       p[i][0] = waypoints.get(i)[0];
@@ -376,7 +372,6 @@ class Field{
     }
     return points;
   }
-  //TODO finish
   void loadWaypoints(String filePath){
     clearWaypoints();
     String[] points = loadStrings(filePath);
@@ -439,20 +434,14 @@ class Field{
     
     int x2 = toCoordX(posX);
     int y2 = toCoordY(posY);
-    
-    //System.out.println(x1 + "," + y1 + "," + x2 + "," + y2 + ",");
-    
+        
     strokeWeight(2);
     line(x1, y1, x2, y2);
     
     //top    
     int angX = (int)(toMapX(x2) - Math.cos(Math.PI/2 - radians));
     int angY = (int)(toMapY(y2) - Math.sin(Math.PI/2 - radians));
-    
-    //println(angX +","+angY);
-    
-    //line(x2, y2, toCoordX(angX), toCoordY(angY));
-    
+        
   }
   //
   int toMapX(float x){

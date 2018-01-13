@@ -15,7 +15,6 @@ final int X_TEXT = 130;
 int angle;
 //TODO:
 //add exporting csv for Pathfinder and check that these fit the new format
-//add custom file for loading paths
 
 void setup(){
   size(1440, 960);
@@ -30,6 +29,8 @@ void setup(){
   exportSuccessL = false;
   exportSuccessR = false;
   
+  //Path generation selector
+  //default is Pathfinder
   pathSelector = new GSlider(this, 175, 700, 50, 50, 25);
   pathSelector.setNbrTicks(2);
   pathSelector.setStickToTicks(true);
@@ -234,15 +235,10 @@ void handleButtonEvents(GButton button, GEvent event){
     blue = false;
   }
   if(button == fileButton){
-    //selectOutput("Choose a where to export to", "fileSelector");
 
-    //rename "TEST" to input name
     if(name.getText().length() > 0){//there is some text
       if(pathfinder){
         println("Pathfinder gen ran");
-        //Caused a complete program crash, no idea why
-        //File newFile = new File("\\profilecsv\\tank\\"+name.getText()+".csv");
-        //Pathfinder.writeToCSV(newFile, traj);
         exportPathfinderToCSV("profilecsv\\tank\\"+name.getText(),"");
         field.exportWaypoints();
       }else{
@@ -270,7 +266,6 @@ void handleButtonEvents(GButton button, GEvent event){
     if(field.getWaypoints().length > 1){
       if(!findValue("timestep").equals("") && !findValue("width").equals("") && !findValue("radius").equals("") && !time.getText().equals("")){
        
-               
         if(pathfinder){//pathFinder logic
         //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
         double timestep = Double.parseDouble(findValue("timestep"))/1000;
@@ -288,16 +283,13 @@ void handleButtonEvents(GButton button, GEvent event){
         try{
           traj = Pathfinder.generate(points, config);//error on this line
           
-          System.out.println("generate ran");
           
           //Tank drive
           TankModifier modifier = new TankModifier(traj);
           modifier.modify(robotWidth);
-          System.out.println("modifier ran");
           
           Trajectory left = modifier.getLeftTrajectory();
           Trajectory right = modifier.getRightTrajectory();
-          System.out.println("left/right ran");
           
           //add to smoothpath, rightpath, and leftpath to display?
           double[][] centerPath = new double[traj.length()][3];
@@ -306,7 +298,6 @@ void handleButtonEvents(GButton button, GEvent event){
           double[][] centerPathVelocity = new double[traj.length()][2];
           double[][] rightPathVelocity = new double[left.length()][2];
           double[][] leftPathVelocity = new double[right.length()][2];
-          System.out.println("paths created");
           
           for(int i = 0;i<traj.length();i++){
             Trajectory.Segment seg = traj.get(i);
@@ -345,14 +336,10 @@ void handleButtonEvents(GButton button, GEvent event){
           field.setRightPathVelocity(rightPathVelocity);
           
           field.enableMP();
-                  
-          //File newFile = new File("\\profilecsv\\tank\\"+name.getText()+".csv");
-          //Pathfinder.writeToCSV(newFile, traj);
-          
+                            
           pathsGenerated();
           
         }catch(Exception e){
-          //println(e.getClass().getName());
           error.setText("The selected path could not be generated. Please revise your path and try again.");
           placePaths();
         }
@@ -369,9 +356,7 @@ void handleButtonEvents(GButton button, GEvent event){
           field.setSmoothPathVelocity(path.smoothCenterVelocity);
           field.setLeftPathVelocity(path.smoothLeftVelocity);
           field.setRightPathVelocity(path.smoothRightVelocity);
-          
-          //field.printPath(path.smoothCenterVelocity);
-          
+                    
           field.enableMP();
           
           pathsGenerated();
@@ -391,8 +376,6 @@ void handleButtonEvents(GButton button, GEvent event){
       
       pathButton.setText("Please enter a path");
     }
-    
-    //field.printPath(field.getSmoothPath());
   }
   if(button == newButton){
     newButton.setEnabled(false);
@@ -503,9 +486,7 @@ public void handleSliderEvents(GValueControl slider, GEvent event) {
   if(slider == pathSelector && slider.getValueI() == 0){
     pathfinder = true;
   }
-  
 }
-
 void exportCSV(String prefix, String suffix){
   PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
     for(double[] u: path.tankProfile(true)){
@@ -561,7 +542,7 @@ void exportPathfinderToCSV(String prefix, String suffix){
     exportSuccessR = false;
   }
 }
-
+//needs better
 String findValue(String keyword){
   String[] data = loadStrings("settings.txt");
   int index = 0;
