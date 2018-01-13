@@ -4,6 +4,7 @@ import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton,
 velocityButton, centerButton, leftButton, rightButton, loadButton;
 GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
+GLabel error;
 GSlider pathSelector;
 Field field;
 FalconPathPlanner path;
@@ -128,6 +129,12 @@ void setup(){
   maxJerk.setFont(new Font("Dialog", Font.PLAIN, 24));
   maxJerk.setText(findValue("maxJerk"));
   maxJerk.setPromptText("Max Jerk");
+  
+  error = new GLabel(this, 75, 750, 400, 100, "ERROR");
+  error.setFont(new Font("Dialog", Font.PLAIN, 24));
+  error.setLocalColorScheme(GConstants.RED_SCHEME);
+  error.resizeToFit(false, false);
+  //error.setVisible(false);
   
 }
 void draw(){
@@ -508,19 +515,26 @@ void exportCSV(String prefix, String suffix){
 }
 // Doesn't work if the file is open
 void exportPathfinderToCSV(String prefix, String suffix){
-  PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
+  try{
+    PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
     for(double[] u: field.leftPathVelocity){
       outputL.println(u[0] + "," + u[1] + "," + findValue("timestep"));
     }   
     outputL.flush();
     outputL.close();
-    
+  }catch(RuntimeException e){
+    error.setText("File " + prefix+"_L"+suffix+".csv is open! Close the file and try again.");
+  }
+  try{
     PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
     for(double[] u: field.rightPathVelocity){
       outputR.println(u[0] + "," + u[1] + "," + findValue("timestep"));
     }   
     outputR.flush();
     outputR.close();
+  }catch(RuntimeException e){
+    error.setText("File " + prefix+"_R"+suffix+".csv is open! Close the file and try again.");
+  }
 }
 
 String findValue(String keyword){
