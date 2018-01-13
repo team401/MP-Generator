@@ -8,7 +8,7 @@ GLabel error;
 GSlider pathSelector;
 Field field;
 FalconPathPlanner path;
-//Trajectory traj;
+Trajectory traj;
 boolean blue, pathfinder, velocity;
 int w, graph;
 final int X_TEXT = 130;
@@ -130,7 +130,7 @@ void setup(){
   maxJerk.setText(findValue("maxJerk"));
   maxJerk.setPromptText("Max Jerk");
   
-  error = new GLabel(this, 75, 750, 400, 100, "ERROR");
+  error = new GLabel(this, 75, 750, 400, 100);
   error.setFont(new Font("Dialog", Font.PLAIN, 24));
   error.setLocalColorScheme(GConstants.RED_SCHEME);
   error.resizeToFit(false, false);
@@ -283,72 +283,75 @@ void handleButtonEvents(GButton button, GEvent event){
         
         Waypoint[] points = field.toWaypointObj(); // somthing is probably wrong here
         
-        System.out.println("Waypoints 1 x : "+points[0].x);
-        System.out.println("Waypoints 1 x : "+points[0].y);
-        System.out.println("Waypoints 1 x : "+points[0].angle);
-        
         //calculates the profile
-        Trajectory traj = Pathfinder.generate(points, config);//error on this line
-        System.out.println("generate ran");
-        
-        //Tank drive
-        TankModifier modifier = new TankModifier(traj);
-        modifier.modify(robotWidth);
-        System.out.println("modifier ran");
-        
-        Trajectory left = modifier.getLeftTrajectory();
-        Trajectory right = modifier.getRightTrajectory();
-        System.out.println("left/right ran");
-        
-        //add to smoothpath, rightpath, and leftpath to display?
-        double[][] centerPath = new double[traj.length()][3];
-        double[][] rightPath = new double[left.length()][3];
-        double[][] leftPath = new double[right.length()][3];
-        double[][] centerPathVelocity = new double[traj.length()][2];
-        double[][] rightPathVelocity = new double[left.length()][2];
-        double[][] leftPathVelocity = new double[right.length()][2];
-        System.out.println("paths created");
-        
-        for(int i = 0;i<traj.length();i++){
-          Trajectory.Segment seg = traj.get(i);
+        try{
+          traj = Pathfinder.generate(points, config);//error on this line
           
-          centerPath[i][0] = seg.x;
-          centerPath[i][1] = seg.y;
+          System.out.println("generate ran");
           
-          centerPathVelocity[i][0] = seg.position;
-          centerPathVelocity[i][1] = seg.velocity;
+          //Tank drive
+          TankModifier modifier = new TankModifier(traj);
+          modifier.modify(robotWidth);
+          System.out.println("modifier ran");
+          
+          Trajectory left = modifier.getLeftTrajectory();
+          Trajectory right = modifier.getRightTrajectory();
+          System.out.println("left/right ran");
+          
+          //add to smoothpath, rightpath, and leftpath to display?
+          double[][] centerPath = new double[traj.length()][3];
+          double[][] rightPath = new double[left.length()][3];
+          double[][] leftPath = new double[right.length()][3];
+          double[][] centerPathVelocity = new double[traj.length()][2];
+          double[][] rightPathVelocity = new double[left.length()][2];
+          double[][] leftPathVelocity = new double[right.length()][2];
+          System.out.println("paths created");
+          
+          for(int i = 0;i<traj.length();i++){
+            Trajectory.Segment seg = traj.get(i);
+            
+            centerPath[i][0] = seg.x;
+            centerPath[i][1] = seg.y;
+            
+            centerPathVelocity[i][0] = seg.position;
+            centerPathVelocity[i][1] = seg.velocity;
+          }
+          for(int i = 0;i<left.length();i++){
+            Trajectory.Segment seg = left.get(i);
+            
+            leftPath[i][0] = seg.x;
+            leftPath[i][1] = seg.y;
+            
+            leftPathVelocity[i][0] = seg.position;
+            leftPathVelocity[i][1] = seg.velocity;
+          }
+          for(int i = 0;i<right.length();i++){
+            Trajectory.Segment seg = right.get(i);
+            
+            rightPath[i][0] = seg.x;
+            rightPath[i][1] = seg.y;
+            
+            rightPathVelocity[i][0] = seg.position;
+            rightPathVelocity[i][1] = seg.velocity;
+          }
+          
+          field.setSmoothPath(centerPath);
+          field.setLeftPath(leftPath);
+          field.setRightPath(rightPath);
+          
+          field.setSmoothPathVelocity(centerPathVelocity);
+          field.setLeftPathVelocity(leftPathVelocity);
+          field.setRightPathVelocity(rightPathVelocity);
+          
+          field.enableMP();
+                  
+          //File newFile = new File("\\profilecsv\\tank\\"+name.getText()+".csv");
+          //Pathfinder.writeToCSV(newFile, traj);
+          
+        }catch(Exception e){
+          //println(e.getClass().getName());
+          error.setText("The selected path could not be generated. Please revise your path and try again.");
         }
-        for(int i = 0;i<left.length();i++){
-          Trajectory.Segment seg = left.get(i);
-          
-          leftPath[i][0] = seg.x;
-          leftPath[i][1] = seg.y;
-          
-          leftPathVelocity[i][0] = seg.position;
-          leftPathVelocity[i][1] = seg.velocity;
-        }
-        for(int i = 0;i<right.length();i++){
-          Trajectory.Segment seg = right.get(i);
-          
-          rightPath[i][0] = seg.x;
-          rightPath[i][1] = seg.y;
-          
-          rightPathVelocity[i][0] = seg.position;
-          rightPathVelocity[i][1] = seg.velocity;
-        }
-        
-        field.setSmoothPath(centerPath);
-        field.setLeftPath(leftPath);
-        field.setRightPath(rightPath);
-        
-        field.setSmoothPathVelocity(centerPathVelocity);
-        field.setLeftPathVelocity(leftPathVelocity);
-        field.setRightPathVelocity(rightPathVelocity);
-        
-        field.enableMP();
-                
-        //File newFile = new File("\\profilecsv\\tank\\"+name.getText()+".csv");
-        //Pathfinder.writeToCSV(newFile, traj);
         
         }else{//FalconPathPlanner logic
           path = new FalconPathPlanner(field.getWaypoints());
