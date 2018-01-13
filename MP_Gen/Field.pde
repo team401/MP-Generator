@@ -377,12 +377,13 @@ class Field{
     return points;
   }
   //TODO finish
-  void loadWaypoints(File file){
+  void loadWaypoints(String filePath){
     clearWaypoints();
-    String[] points = loadStrings(file);
+    String[] points = loadStrings(filePath);
     for(String u: points){
-      waypoints.add(Integer.parseInt());
-    
+      String[] temp = split(u, ",");
+      println(temp[0] + "," + temp[1]);
+      waypoints.add(new int[]{Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2])});
     }
   }
   void enableMP(){
@@ -470,7 +471,7 @@ class Field{
   void exportWaypoints(){
     PrintWriter output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+".csv");
     for(int[] u: waypoints){
-      output.println(u[0]+","+u[1]);
+      output.println(u[0]+","+u[1]+","+u[2]);
     }
       output.flush();
       output.close();

@@ -474,16 +474,20 @@ void handleButtonEvents(GButton button, GEvent event){
     graph = 2;
   }
   if(button == loadButton){
-    
+    selectInput("Choose File to load", "fileSelector");
     
   }
+  
 }
 void fileSelector(File selection){
   if(selection == null){
     System.out.println("Error");
   }else{
     System.out.println(selection.getAbsolutePath());
+    field.loadWaypoints(selection.getAbsolutePath());
+    field.printWaypoints();
   }
+  
 }
 public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
   time.setLocalColorScheme(GConstants.BLUE_SCHEME);
