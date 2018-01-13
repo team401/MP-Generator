@@ -86,7 +86,7 @@ void setup(){
   saveButton = new GButton(this, X_TEXT + 50, 520, 100, 50, "Save");
   saveButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  loadButton = new GButton(this, width/2-250, 440, 200, 100, "Load from CSV");
+  loadButton = new GButton(this, width/2-250, 440, 200, 100, "Load Path");
   loadButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   //Use for debugging
@@ -474,6 +474,7 @@ void handleButtonEvents(GButton button, GEvent event){
     graph = 2;
   }
   if(button == loadButton){
+    
     
   }
 }

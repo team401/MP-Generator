@@ -376,6 +376,15 @@ class Field{
     }
     return points;
   }
+  //TODO finish
+  void loadWaypoints(File file){
+    clearWaypoints();
+    String[] points = loadStrings(file);
+    for(String u: points){
+      waypoints.add(Integer.parseInt());
+    
+    }
+  }
   void enableMP(){
     mp = true;
   }
