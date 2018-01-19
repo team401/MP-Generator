@@ -16,6 +16,8 @@ int angle;
 //TODO:
 //add exporting csv for Pathfinder and check that these fit the new format
 
+//BUG!!! FEET TO METERS CONVERSIONS AND BACK AGAIN GOING ON. POSSIBLE ERRORS DUE TO THIS!!!
+
 void setup(){
   size(1440, 960);
   field = new Field();
@@ -272,7 +274,7 @@ void handleButtonEvents(GButton button, GEvent event){
         double vel = Double.parseDouble(findValue("maxVelocity"));
         double accel = Double.parseDouble(findValue("maxAccel"));
         double jerk = Double.parseDouble(findValue("maxJerk"));
-        double robotWidth = Double.parseDouble(findValue("width"));//in meters
+        double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
         
         Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
         
@@ -302,8 +304,8 @@ void handleButtonEvents(GButton button, GEvent event){
           for(int i = 0;i<traj.length();i++){
             Trajectory.Segment seg = traj.get(i);
             
-            centerPath[i][0] = seg.x;
-            centerPath[i][1] = seg.y;
+            centerPath[i][0] = seg.x/0.3048;
+            centerPath[i][1] = seg.y/0.3048;
             
             centerPathVelocity[i][0] = seg.position;
             centerPathVelocity[i][1] = seg.velocity;
@@ -311,8 +313,8 @@ void handleButtonEvents(GButton button, GEvent event){
           for(int i = 0;i<left.length();i++){
             Trajectory.Segment seg = left.get(i);
             
-            leftPath[i][0] = seg.x;
-            leftPath[i][1] = seg.y;
+            leftPath[i][0] = seg.x/0.3048;
+            leftPath[i][1] = seg.y/0.3048;
             
             leftPathVelocity[i][0] = seg.position;
             leftPathVelocity[i][1] = seg.velocity;
@@ -320,8 +322,8 @@ void handleButtonEvents(GButton button, GEvent event){
           for(int i = 0;i<right.length();i++){
             Trajectory.Segment seg = right.get(i);
             
-            rightPath[i][0] = seg.x;
-            rightPath[i][1] = seg.y;
+            rightPath[i][0] = seg.x/0.3048;
+            rightPath[i][1] = seg.y/0.3048;
             
             rightPathVelocity[i][0] = seg.position;
             rightPathVelocity[i][1] = seg.velocity;
@@ -513,7 +515,11 @@ void exportPathfinderToCSV(String prefix, String suffix){
   try{
     PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
     for(double[] u: field.leftPathVelocity){
-      outputL.println(u[0] + "," + u[1] + "," + findValue("timestep"));
+      
+      //meters to feet to inches to revolutions
+      //meters/0.3048 * 12 /4PI
+      double position = u[0] / 0.3048 * 12 / 4*Math.PI;
+      outputL.println(position + "," + u[1] + "," + findValue("timestep"));
     }   
     outputL.flush();
     outputL.close();
@@ -529,7 +535,8 @@ void exportPathfinderToCSV(String prefix, String suffix){
   try{
     PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
     for(double[] u: field.rightPathVelocity){
-      outputR.println(u[0] + "," + u[1] + "," + findValue("timestep"));
+      double position = u[0] / 0.3048 * 12 / 4*Math.PI;
+      outputR.println(position + "," + u[1] + "," + findValue("timestep"));
     }   
     outputR.flush();
     outputR.close();
