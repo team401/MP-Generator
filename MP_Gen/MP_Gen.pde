@@ -83,7 +83,7 @@ void setup(){
   newButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   newButton.setEnabled(false);
   
-  testButton = new GButton(this, width/2-250, 440, 200, 100, "TEST");
+  testButton = new GButton(this, 200, 800, 200, 100, "TEST");
   testButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   saveButton = new GButton(this, X_TEXT + 50, 520, 100, 50, "Save");
@@ -393,12 +393,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == testButton){
     //TEST functions
-    centerButton.setEnabled(true);
-    centerButton.setVisible(true);
-    leftButton.setEnabled(true);
-    leftButton.setVisible(true);
-    rightButton.setEnabled(true);
-    rightButton.setVisible(true);
+    //println(System.getProperty("user.home"));
   }
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
@@ -518,7 +513,6 @@ void exportPathfinderToCSV(String prefix, String suffix){
     for(double[] u: field.leftPathVelocity){
       
       //meters to feet to inches to revolutions
-      //meters/0.3048 * 12 /4PI
       double position = u[0] / 0.3048 * 12 / 2* Double.parseDouble(findValue("radius"))*Math.PI;
       //double velocity = u[1] / 0.3048 * 12 / Double.parseDouble(findValue("radius"))*Math.PI;
       outputL.println(position + "," + u[1] + "," + findValue("timestep"));
