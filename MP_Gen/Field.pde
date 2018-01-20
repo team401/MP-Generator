@@ -30,7 +30,6 @@ class Field{
       strokeWeight(0);
       textAlign(CENTER);
       textSize(12);
-            
       
       float maxVelocity = 0;
       int heightSpacing = 880/11;
