@@ -1,3 +1,4 @@
+import java.text.*;
 class Field{
   //units in feet
   private static final int WIDTH = 27;
@@ -29,19 +30,24 @@ class Field{
       strokeWeight(0);
       textAlign(CENTER);
       textSize(12);
-      
-      // the time 
-      int t = Integer.parseInt(time.getText());
-      int widthSpacing = 675/t;
-      for(int i = 0;i<=t;i++){
-        line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
-        text(i, w+(i*widthSpacing), 880 + 30);
-      }
+            
       
       float maxVelocity = 0;
       int heightSpacing = 880/11;
+      double t = 0;
+      int widthSpacing = 0;      
+      DecimalFormat df = new DecimalFormat("#.##");
+
       switch(graph){
         case 0:
+          t = (smoothPathVelocity.length * Double.parseDouble(findValue("timestep"))/1000);
+          df = new DecimalFormat("#.##");
+          widthSpacing = (int)(675/17);
+          for(int i = 0;i<=16;i++){
+            line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
+            String val = df.format((t/17)*i);
+            text(val, w+(i*widthSpacing), 880 + 30);
+          }        
           //find max velocity
           for(int i = 0;i<smoothPathVelocity.length;i++){
             if(smoothPathVelocity[i][1] > maxVelocity){
@@ -50,7 +56,7 @@ class Field{
           }
           //the velocity
           for(int i = 0;i<=10;i++){//11?
-            line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
+            line(w, 80+(i*heightSpacing), w+(16*widthSpacing), 80+(i*heightSpacing));
             text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
           }
           
@@ -60,7 +66,7 @@ class Field{
               //float posX = (float)smoothPathVelocity[i][0];
               float posX = i;
               float posY = (float)smoothPathVelocity[i][1];
-              float x = (int)map(posX, 0, smoothPathVelocity.length, w, w+(t*widthSpacing));
+              float x = (int)map(posX, 0, smoothPathVelocity.length, w, w+(16*widthSpacing));
               //float x = width/2 + (widthSpacing*i);
               float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
                 
@@ -69,10 +75,17 @@ class Field{
               vertex(x, y);
             }
             endShape();
-            
           break;
           
           case 1:
+            t = (leftPathVelocity.length * Double.parseDouble(findValue("timestep"))/1000);
+            df = new DecimalFormat("#.##");
+            widthSpacing = (int)(675/17);
+            for(int i = 0;i<=16;i++){
+              line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
+              String val = df.format((t/17)*i);
+              text(val, w+(i*widthSpacing), 880 + 30);
+            } 
             //find max velocity
             for(int i = 0;i<leftPathVelocity.length;i++){
               if(leftPathVelocity[i][1] > maxVelocity){
@@ -81,7 +94,7 @@ class Field{
             }
             //the velocity
             for(int i = 0;i<=10;i++){//11?
-              line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
+              line(w, 80+(i*heightSpacing), w+(16*widthSpacing), 80+(i*heightSpacing));
               text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
             }
             
@@ -91,7 +104,7 @@ class Field{
                 //float posX = (float)smoothPathVelocity[i][0];
                 float posX = i;
                 float posY = (float)leftPathVelocity[i][1];
-                float x = (int)map(posX, 0, leftPathVelocity.length, w, w+(t*widthSpacing));
+                float x = (int)map(posX, 0, leftPathVelocity.length, w, w+(16*widthSpacing));
                 //float x = width/2 + (widthSpacing*i);
                 float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
                   
@@ -103,6 +116,14 @@ class Field{
           break;
           
           case 2:
+            t = (rightPathVelocity.length * Double.parseDouble(findValue("timestep"))/1000);
+            df = new DecimalFormat("#.##");            
+            widthSpacing = (int)(675/17);
+            for(int i = 0;i<=16;i++){
+              line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
+              String val = df.format((t/17)*i);
+              text(val, w+(i*widthSpacing), 880 + 30);
+            } 
             //find max velocity
             for(int i = 0;i<rightPathVelocity.length;i++){
               if(rightPathVelocity[i][1] > maxVelocity){
@@ -111,7 +132,7 @@ class Field{
             }
             //the velocity
             for(int i = 0;i<=10;i++){//11?
-              line(w, 80+(i*heightSpacing), w+(t*widthSpacing), 80+(i*heightSpacing));
+              line(w, 80+(i*heightSpacing), w+(16*widthSpacing), 80+(i*heightSpacing));
               text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
             }
             
@@ -121,7 +142,7 @@ class Field{
                 //float posX = (float)smoothPathVelocity[i][0];
                 float posX = i;
                 float posY = (float)rightPathVelocity[i][1];
-                float x = (int)map(posX, 0, rightPathVelocity.length, w, w+(t*widthSpacing));
+                float x = (int)map(posX, 0, rightPathVelocity.length, w, w+(16*widthSpacing));
                 //float x = width/2 + (widthSpacing*i);
                 float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
                   
