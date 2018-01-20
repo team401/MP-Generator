@@ -513,9 +513,9 @@ void exportPathfinderToCSV(String prefix, String suffix){
     for(double[] u: field.leftPathVelocity){
       
       //meters to feet to inches to revolutions
-      double position = u[0] / 0.3048 * 12 / 2* Double.parseDouble(findValue("radius"))*Math.PI;
-      //double velocity = u[1] / 0.3048 * 12 / Double.parseDouble(findValue("radius"))*Math.PI;
-      outputL.println(position + "," + u[1] + "," + findValue("timestep"));
+      double position = u[0] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+      double velocity = u[1] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+      outputL.println(position + "," + velocity + "," + findValue("timestep"));
     }   
     outputL.flush();
     outputL.close();
@@ -531,9 +531,9 @@ void exportPathfinderToCSV(String prefix, String suffix){
   try{
     PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
     for(double[] u: field.rightPathVelocity){
-      double position = u[0] / 0.3048 * 12 / Double.parseDouble(findValue("radius"))*Math.PI;
-      //double velocity = u[1] / 0.3048 * 12 / Double.parseDouble(findValue("radius"))*Math.PI;
-      outputR.println(position + "," + u[1] + "," + findValue("timestep"));
+      double position = u[0] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+      double velocity = u[1] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+      outputR.println(position + "," + velocity + "," + findValue("timestep"));
     }   
     outputR.flush();
     outputR.close();
