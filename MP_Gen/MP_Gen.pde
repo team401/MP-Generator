@@ -3,13 +3,11 @@ import java.awt.Font;
 import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton,
 velocityButton, centerButton, leftButton, rightButton, loadButton;
-GTextField name, timeStep, time, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
+GTextField name, timeStep, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
 GLabel error;
-GSlider pathSelector;
 Field field;
-FalconPathPlanner path;
 Trajectory traj;
-boolean blue, pathfinder, velocity, exportSuccessL, exportSuccessR;
+boolean blue, velocity, exportSuccessL, exportSuccessR;
 int w, graph;
 final int X_TEXT = 130;
 int angle;
@@ -26,19 +24,9 @@ void setup(){
   angle = 0;
   graph = 0;
   
-  pathfinder = false;
   velocity = false;
   exportSuccessL = false;
   exportSuccessR = false;
-  
-  //Path generation selector
-  //default is Pathfinder
-  pathSelector = new GSlider(this, 175, 700, 50, 50, 25);
-  pathSelector.setNbrTicks(2);
-  pathSelector.setStickToTicks(true);
-  pathSelector.setShowTicks(false);
-  pathSelector.setEnabled(true);
-  pathSelector.setValue(0.0);
   
   //misc
   blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
@@ -100,11 +88,7 @@ void setup(){
   name = new GTextField(this, X_TEXT, 80, 200, 32);
   name.setFont(new Font("Dialog", Font.PLAIN, 24));
   name.setPromptText("Profile Name");
-  
-  time = new GTextField(this, X_TEXT, 120, 200, 32);
-  time.setFont(new Font("Dialog", Font.PLAIN, 24));
-  time.setPromptText("Time (sec)");
-  
+    
   wheelBase = new GTextField(this, X_TEXT, 280, 200, 32);
   wheelBase.setFont(new Font("Dialog", Font.PLAIN, 24));
   wheelBase.setText(findValue("width"));
@@ -192,12 +176,6 @@ void draw(){
   text("Max Vel", 10, 432);
   text("Max Accel", 10, 472);
   text("Max Jerk", 10, 512);
-    
-  
-  //pathSelector
-  text("FalconPathPlanner", 235, 738);
-  text("Pathfinder", 50, 738);
-  
 }
 void mouseClicked(){
   int w = width/2;
@@ -239,15 +217,10 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == fileButton){
 
     if(name.getText().length() > 0){//there is some text
-      if(pathfinder){
-        println("Pathfinder gen ran");
+        //println("Pathfinder gen ran");
         exportPathfinderToCSV("profilecsv\\tank\\"+name.getText(),"");
         field.exportWaypoints();
-      }else{
-        println("Falcon gen ran");
-        exportCSV("profilecsv\\tank\\"+name.getText(),"");
-        field.exportWaypoints();
-      }
+      
       if(exportSuccessL && exportSuccessR){
         field.clearWaypoints();
         field.disableMP();
@@ -256,7 +229,6 @@ void handleButtonEvents(GButton button, GEvent event){
         fileButton.setEnabled(false);
         loadButton.setEnabled(true);
         name.setText("");
-        time.setText("");
       }
       
     }else{
@@ -266,9 +238,9 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == pathButton){
     if(field.getWaypoints().length > 1){
-      if(!findValue("timestep").equals("") && !findValue("width").equals("") && !findValue("radius").equals("") && !time.getText().equals("")){
+      if(!findValue("timestep").equals("") && !findValue("width").equals("") && !findValue("radius").equals("")){
        
-        if(pathfinder){//pathFinder logic
+        //pathFinder logic
         //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
         double timestep = Double.parseDouble(findValue("timestep"))/1000;
         double vel = Double.parseDouble(findValue("maxVelocity"));
@@ -347,29 +319,10 @@ void handleButtonEvents(GButton button, GEvent event){
           placePaths();
         }
         
-        }else{//FalconPathPlanner logic
-          path = new FalconPathPlanner(field.getWaypoints());
-          //(time, timestep, width)
-          path.calculate(Double.parseDouble(time.getText()), Double.parseDouble(findValue("timestep"))/1000, Double.parseDouble(findValue("width")));
-          
-          field.setSmoothPath(path.smoothPath);
-          field.setLeftPath(path.leftPath);
-          field.setRightPath(path.rightPath);
-          
-          field.setSmoothPathVelocity(path.smoothCenterVelocity);
-          field.setLeftPathVelocity(path.smoothLeftVelocity);
-          field.setRightPathVelocity(path.smoothRightVelocity);
-                    
-          field.enableMP();
-          
-          pathsGenerated();
-        }    
+        
 
       }else{//if no settings
         System.out.println("Something went wrong");
-        if(time.getText().equals("")){
-          time.setLocalColorScheme(GConstants.RED_SCHEME);
-        }
         if(name.getText().equals("")){
           name.setLocalColorScheme(GConstants.RED_SCHEME);
         }
@@ -389,7 +342,6 @@ void handleButtonEvents(GButton button, GEvent event){
     field.clearWaypoints();
     field.disableMP();
     name.setText("");
-    time.setText("");
   }
   if(button == testButton){
     //TEST functions
@@ -471,41 +423,11 @@ void fileSelector(File selection){
   
 }
 public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
-  time.setLocalColorScheme(GConstants.BLUE_SCHEME);
   name.setLocalColorScheme(GConstants.BLUE_SCHEME);
   fileButton.setText("Export");
   fileButton.setEnabled(true);
 }
-public void handleSliderEvents(GValueControl slider, GEvent event) { 
-  println(slider.getValueI());
-  if(slider == pathSelector && slider.getValueI() == 1){
-    pathfinder = false;
-  }
-  if(slider == pathSelector && slider.getValueI() == 0){
-    pathfinder = true;
-  }
-}
-void exportCSV(String prefix, String suffix){
-  PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
-    for(double[] u: path.tankProfile(true)){
-      for(double val: u){
-        outputL.print(val+",");
-      }
-      outputL.println();
-    }   
-    outputL.flush();
-    outputL.close();
-    
-    PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
-    for(double[] u: path.tankProfile(false)){
-      for(double val: u){
-        outputR.print(val+",");
-      }
-      outputR.println();
-    }   
-    outputR.flush();
-    outputR.close();
-}
+
 // Doesn't work if the file is open
 void exportPathfinderToCSV(String prefix, String suffix){
   try{
