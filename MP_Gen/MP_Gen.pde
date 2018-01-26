@@ -69,7 +69,6 @@ void setup(){
   
   newButton = new GButton(this, width/2-250, 200, 200, 100, "New path");
   newButton.setFont(new Font("Dialog", Font.PLAIN, 24));
-  newButton.setEnabled(false);
   
   testButton = new GButton(this, 200, 800, 200, 100, "TEST");
   testButton.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -225,7 +224,6 @@ void handleButtonEvents(GButton button, GEvent event){
         field.clearWaypoints();
         field.disableMP();
         pathButton.setEnabled(true);
-        newButton.setEnabled(false);
         fileButton.setEnabled(false);
         loadButton.setEnabled(true);
         name.setText("");
@@ -238,7 +236,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == pathButton){
     if(field.getWaypoints().length > 1){
-      if(!findValue("timestep").equals("") && !findValue("width").equals("") && !findValue("radius").equals("")){
+      if(!findValue("timestep").equals("") && !findValue("width").equals("") && !findValue("radius").equals("") && !name.getText().equals("")){
        
         //pathFinder logic
         //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
@@ -334,7 +332,7 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
   if(button == newButton){
-    newButton.setEnabled(false);
+    //newButton.setEnabled(false);
     pathButton.setEnabled(true);
     fileButton.setEnabled(false);
     velocityButton.setEnabled(false);
@@ -482,7 +480,6 @@ String findValue(String keyword){
 //quick and dirty
 void placePaths(){
   pathButton.setEnabled(true);
-  newButton.setEnabled(false);
   fileButton.setEnabled(false);
   loadButton.setEnabled(true);
 }
