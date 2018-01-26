@@ -48,6 +48,7 @@ class Field{
             text(val, w+(i*widthSpacing), 880 + 30);
           }        
           //find max velocity
+          maxVelocity = 0;
           for(int i = 0;i<smoothPathVelocity.length;i++){
             if(smoothPathVelocity[i][1] > maxVelocity){
               maxVelocity = (float)smoothPathVelocity[i][1];
@@ -86,6 +87,7 @@ class Field{
               text(val, w+(i*widthSpacing), 880 + 30);
             } 
             //find max velocity
+            maxVelocity = 0;
             for(int i = 0;i<leftPathVelocity.length;i++){
               if(leftPathVelocity[i][1] > maxVelocity){
                 maxVelocity = (float)leftPathVelocity[i][1];
@@ -124,6 +126,7 @@ class Field{
               text(val, w+(i*widthSpacing), 880 + 30);
             } 
             //find max velocity
+            maxVelocity = 0;
             for(int i = 0;i<rightPathVelocity.length;i++){
               if(rightPathVelocity[i][1] > maxVelocity){
                 maxVelocity = (float)rightPathVelocity[i][1];
