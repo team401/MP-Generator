@@ -2,8 +2,8 @@ import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton,
-velocityButton, centerButton, leftButton, rightButton, loadButton;
-GTextField name, timeStep, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk;
+velocityButton, centerButton, leftButton, rightButton, loadButton, directoryButton;
+GTextField name, timeStep, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk, directory;
 GLabel error;
 Field field;
 Trajectory traj;
@@ -79,6 +79,9 @@ void setup(){
   loadButton = new GButton(this, width/2-250, 440, 200, 100, "Load Path");
   loadButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
+  directoryButton = new GButton(this, X_TEXT + 25, 620, 150, 50, "File Path");
+  directoryButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
   //Use for debugging
   testButton.setEnabled(false);
   testButton.setVisible(false);
@@ -123,6 +126,11 @@ void setup(){
   error.setLocalColorScheme(GConstants.RED_SCHEME);
   error.resizeToFit(false, false);
   //error.setVisible(false);
+  
+  directory = new GTextField(this, X_TEXT, 580, 200, 32);
+  directory.setFont(new Font("Dialog", Font.PLAIN, 24));
+  directory.setText("profilecsv\\tank\\");
+  directory.setPromptText("Directory");
   
 }
 void draw(){
@@ -216,8 +224,7 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == fileButton){
 
     if(name.getText().length() > 0){//there is some text
-        //println("Pathfinder gen ran");
-        exportPathfinderToCSV("profilecsv\\tank\\"+name.getText(),"");
+        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"");
         field.exportWaypoints();
       
       if(exportSuccessL && exportSuccessR){
@@ -408,7 +415,17 @@ void handleButtonEvents(GButton button, GEvent event){
     selectInput("Choose File to load", "fileSelector");
     
   }
+  if(button == directoryButton){
+    selectFolder("Choose export path", "pathSelector");
+  }
   
+}
+void pathSelector(File selection){
+  if(selection == null){
+    System.out.println("Error");
+  }else{
+    directory.setText(selection.getAbsolutePath());
+  }
 }
 void fileSelector(File selection){
   if(selection == null){
@@ -440,9 +457,7 @@ void exportPathfinderToCSV(String prefix, String suffix){
     outputL.close();
     
     exportSuccessL = true;
-    println("first");
   }catch(RuntimeException e){
-    println("second");
     error.setText("File " + prefix+"_L"+suffix+".csv is open! Close the file and try again.");
     pathsGenerated();
     exportSuccessL = false;
