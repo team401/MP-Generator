@@ -63,11 +63,9 @@ class Field{
           noFill();
             beginShape();
             for(int i = 0;i<smoothPathVelocity.length;i++){
-              //float posX = (float)smoothPathVelocity[i][0];
               float posX = i;
               float posY = (float)smoothPathVelocity[i][1];
               float x = (int)map(posX, 0, smoothPathVelocity.length, w, w+(16*widthSpacing));
-              //float x = width/2 + (widthSpacing*i);
               float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
                 
               strokeWeight(2);
@@ -102,11 +100,9 @@ class Field{
             noFill();
               beginShape();
               for(int i = 0;i<leftPathVelocity.length;i++){
-                //float posX = (float)smoothPathVelocity[i][0];
                 float posX = i;
                 float posY = (float)leftPathVelocity[i][1];
                 float x = (int)map(posX, 0, leftPathVelocity.length, w, w+(16*widthSpacing));
-                //float x = width/2 + (widthSpacing*i);
                 float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
                   
                 strokeWeight(2);
@@ -141,11 +137,9 @@ class Field{
             noFill();
               beginShape();
               for(int i = 0;i<rightPathVelocity.length;i++){
-                //float posX = (float)smoothPathVelocity[i][0];
                 float posX = i;
                 float posY = (float)rightPathVelocity[i][1];
                 float x = (int)map(posX, 0, rightPathVelocity.length, w, w+(16*widthSpacing));
-                //float x = width/2 + (widthSpacing*i);
                 float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
                   
                 strokeWeight(2);
@@ -278,7 +272,6 @@ class Field{
         
         strokeWeight(12);
         line(x, y, x, y);
-        //fill(255);
         
         //draws the arrow
         //using screen coordinates

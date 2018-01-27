@@ -416,7 +416,6 @@ void fileSelector(File selection){
   }else{
     System.out.println(selection.getAbsolutePath());
     field.loadWaypoints(selection.getAbsolutePath());
-    field.printWaypoints();
   }
   
 }
