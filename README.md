@@ -11,7 +11,7 @@ Generate Path :
 New Path : 
 	This clears the currently generated path and resets the waypoints.
 Export : 
-	This exports a left and right side csv file, representing the generated motion profile
+	This exports a left and right side .csv file, representing the generated motion profile
 	These will be saved in current_directory\profilecsv\tank
 	This will also clear the generated profile and reset the waypoints.
 Load Path : 
@@ -30,10 +30,10 @@ Center :
 	This displays the velocity of the center of the robot in m/s.
 	The x-axis is time in seconds, the y-axis is m/s.
 Left : 
-	This displays the velocity of the left side of the robot in revolutions. This is to match what is exported in the .csv file.
+	This displays the velocity of the left side of the robot in m/s. This is to match what is exported in the .csv file.
 	The x-axis is time in seconds, the y-axis is revolutions.
 Right : 
-	This displays the velocity of the right side of the robot in revolutions. This is to match what is exported in the .csv file.
+	This displays the velocity of the right side of the robot in m/s. This is to match what is exported in the .csv file.
 	The x-axis is time in seconds, the y-axis is revolutions.
 Save : 
 	This saves the values currently in the Settings parameters.
@@ -49,8 +49,8 @@ Data fields :
 	Settings :
 		Width : 
 			This is the width between the wheels of your robot in ft.
-		Raius : 
-			This is the raidus of the wheels on your robot's drive train in inches.
+		Radius : 
+			This is the radius of the wheels on your robot's drive train in inches.
 		Timestep :
 			This is the time each point of the profile will take to execute in milliseconds.
 		Max Vel :
@@ -68,7 +68,7 @@ Data fields :
 			and run the risk of damaging your robot.
 Field : 
 	This is a graphical representation of the 2018 FRC field. 
-	All dimentions are in feet.
+	All dimensions are in feet.
 	The unmarked objects are as follows :	
 		Switch - This is the barbell shaped object in the middle of the field.
 		Scale - This is the barbell shaped object at the far (top) end of the field. 

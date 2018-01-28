@@ -11,6 +11,7 @@ boolean blue, velocity, exportSuccessL, exportSuccessR;
 int w, graph;
 final int X_TEXT = 130;
 int angle;
+double METERS_TO_REV;
 //TODO:
 //add exporting csv for Pathfinder and check that these fit the new format
 
@@ -27,6 +28,8 @@ void setup(){
   velocity = false;
   exportSuccessL = false;
   exportSuccessR = false;
+  
+  METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
   
   //misc
   blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
@@ -224,7 +227,8 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == fileButton){
 
     if(name.getText().length() > 0){//there is some text
-        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"");
+        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"rpm", true);
+        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"mps", false);
         field.exportWaypoints();
       
       if(exportSuccessL && exportSuccessR){
@@ -274,9 +278,9 @@ void handleButtonEvents(GButton button, GEvent event){
           double[][] centerPath = new double[traj.length()][3];
           double[][] rightPath = new double[left.length()][3];
           double[][] leftPath = new double[right.length()][3];
-          double[][] centerPathVelocity = new double[traj.length()][2];
-          double[][] rightPathVelocity = new double[left.length()][2];
-          double[][] leftPathVelocity = new double[right.length()][2];
+          double[][] centerPathVelocity = new double[traj.length()][3];
+          double[][] rightPathVelocity = new double[left.length()][3];
+          double[][] leftPathVelocity = new double[right.length()][3];
           
           for(int i = 0;i<traj.length();i++){
             Trajectory.Segment seg = traj.get(i);
@@ -286,6 +290,7 @@ void handleButtonEvents(GButton button, GEvent event){
             
             centerPathVelocity[i][0] = seg.position;
             centerPathVelocity[i][1] = seg.velocity;
+            centerPathVelocity[i][2] = seg.acceleration;
 
           }
           for(int i = 0;i<left.length();i++){
@@ -295,7 +300,8 @@ void handleButtonEvents(GButton button, GEvent event){
             leftPath[i][1] = seg.y/0.3048;
             
             leftPathVelocity[i][0] = seg.position;
-            leftPathVelocity[i][1] = seg.velocity / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
+            leftPathVelocity[i][1] = seg.velocity;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
+            leftPathVelocity[i][2] = seg.acceleration;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
           }
           for(int i = 0;i<right.length();i++){
             Trajectory.Segment seg = right.get(i);
@@ -304,7 +310,8 @@ void handleButtonEvents(GButton button, GEvent event){
             rightPath[i][1] = seg.y/0.3048;
             
             rightPathVelocity[i][0] = seg.position;
-            rightPathVelocity[i][1] = seg.velocity / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
+            rightPathVelocity[i][1] = seg.velocity;/// 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
+            rightPathVelocity[i][2] = seg.acceleration;
           }
           
           field.setSmoothPath(centerPath);
@@ -443,15 +450,21 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
 }
 
 // Doesn't work if the file is open
-void exportPathfinderToCSV(String prefix, String suffix){
+void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
   try{
     PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
     for(double[] u: field.leftPathVelocity){
       
-      //meters to feet to inches to revolutions
-      double position = u[0] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
-      double velocity = u[1] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
-      outputL.println(position + "," + velocity + "," + findValue("timestep"));
+      if(revs){
+        //rev's per second
+        //meters to feet to inches to revolutions
+        double position = u[0] * METERS_TO_REV;
+        double velocity = u[1] * METERS_TO_REV;
+        double acceleration = u[2] * METERS_TO_REV;
+        outputL.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration);
+      }else{
+        outputL.println(u[0] + "," + u[1] + "," + findValue("timestep") + "," + u[2]);
+      }
     }   
     outputL.flush();
     outputL.close();
@@ -465,9 +478,16 @@ void exportPathfinderToCSV(String prefix, String suffix){
   try{
     PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
     for(double[] u: field.rightPathVelocity){
-      double position = u[0] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
-      double velocity = u[1] *(1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
-      outputR.println(position + "," + velocity + "," + findValue("timestep"));
+      
+      if(revs){
+        //revs per second
+        double position = u[0] * METERS_TO_REV;
+        double velocity = u[1] * METERS_TO_REV;
+        double acceleration = u[2] * METERS_TO_REV;
+        outputR.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration);
+      }else{
+        outputR.println(u[0] + "," + u[1] + "," + findValue("timestep") + "," + u[2]);
+      }
     }   
     outputR.flush();
     outputR.close();
