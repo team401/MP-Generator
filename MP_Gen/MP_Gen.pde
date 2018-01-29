@@ -227,7 +227,7 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == fileButton){
 
     if(name.getText().length() > 0){//there is some text
-        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"rps", true);
+        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"rpm", true);
         exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"mps", false);
         field.exportWaypoints();
       
@@ -458,9 +458,9 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
       if(revs){
         //rev's per second
         //meters to feet to inches to revolutions
-        double position = u[0] * METERS_TO_REV;
-        double velocity = u[1] * METERS_TO_REV;
-        double acceleration = u[2] * METERS_TO_REV;
+        double position = u[0] * METERS_TO_REV * 60.0;
+        double velocity = u[1] * METERS_TO_REV * 60.0;
+        double acceleration = u[2] * METERS_TO_REV * 360.0;
         outputL.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration);
       }else{
         outputL.println(u[0] + "," + u[1] + "," + findValue("timestep") + "," + u[2]);
@@ -481,9 +481,9 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
       
       if(revs){
         //revs per second
-        double position = u[0] * METERS_TO_REV;
-        double velocity = u[1] * METERS_TO_REV;
-        double acceleration = u[2] * METERS_TO_REV;
+        double position = u[0] * METERS_TO_REV * 60.0;
+        double velocity = u[1] * METERS_TO_REV * 60.0;
+        double acceleration = u[2] * METERS_TO_REV * 360.0;
         outputR.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration);
       }else{
         outputR.println(u[0] + "," + u[1] + "," + findValue("timestep") + "," + u[2]);
