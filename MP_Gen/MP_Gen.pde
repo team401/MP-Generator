@@ -227,7 +227,7 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == fileButton){
 
     if(name.getText().length() > 0){//there is some text
-        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"rpm", true);
+        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"rps", true);
         exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"mps", false);
         field.exportWaypoints();
       
@@ -452,7 +452,7 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
 // Doesn't work if the file is open
 void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
   try{
-    PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
+    PrintWriter outputL = createWriter(prefix+"_L_"+suffix+".csv");
     for(double[] u: field.leftPathVelocity){
       
       if(revs){
@@ -471,12 +471,12 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
     
     exportSuccessL = true;
   }catch(RuntimeException e){
-    error.setText("File " + prefix+"_L"+suffix+".csv is open! Close the file and try again.");
+    error.setText("File " + prefix+"_L_"+suffix+".csv is open! Close the file and try again.");
     pathsGenerated();
     exportSuccessL = false;
   }
   try{
-    PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
+    PrintWriter outputR = createWriter(prefix+"_R_"+suffix+".csv");
     for(double[] u: field.rightPathVelocity){
       
       if(revs){
@@ -495,7 +495,7 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
     exportSuccessR = true;
    
   }catch(RuntimeException e){
-    error.setText("File " + prefix+"_R"+suffix+".csv is open! Close the file and try again.");
+    error.setText("File " + prefix+"_R_"+suffix+".csv is open! Close the file and try again.");
     pathsGenerated();
     exportSuccessR = false;
   }
