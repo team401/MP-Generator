@@ -421,6 +421,7 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == loadButton){
     selectInput("Choose File to load", "fileSelector");
     
+    
   }
   if(button == directoryButton){
     selectFolder("Choose export path", "pathSelector");
@@ -438,8 +439,10 @@ void fileSelector(File selection){
   if(selection == null){
     System.out.println("Error");
   }else{
-    System.out.println(selection.getAbsolutePath());
     field.loadWaypoints(selection.getAbsolutePath());
+    String[] folders = selection.getAbsolutePath().split("\\\\");
+    String n = folders[folders.length-1];
+    name.setText(n.substring(0, n.length()-4));
   }
   
 }
