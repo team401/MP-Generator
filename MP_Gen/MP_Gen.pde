@@ -300,8 +300,8 @@ void handleButtonEvents(GButton button, GEvent event){
             leftPath[i][1] = seg.y/0.3048;
             
             leftPathVelocity[i][0] = seg.position;
-            leftPathVelocity[i][1] = seg.velocity / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
-            leftPathVelocity[i][2] = seg.acceleration / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
+            leftPathVelocity[i][1] = seg.velocity;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
+            leftPathVelocity[i][2] = seg.acceleration;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
           }
           for(int i = 0;i<right.length();i++){
             Trajectory.Segment seg = right.get(i);
@@ -310,8 +310,8 @@ void handleButtonEvents(GButton button, GEvent event){
             rightPath[i][1] = seg.y/0.3048;
             
             rightPathVelocity[i][0] = seg.position;
-            rightPathVelocity[i][1] = seg.velocity / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
-            rightPathVelocity[i][2] = seg.acceleration / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
+            rightPathVelocity[i][1] = seg.velocity;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
+            rightPathVelocity[i][2] = seg.acceleration;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
           }
           
           field.setSmoothPath(centerPath);
@@ -460,7 +460,7 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
         //meters to feet to inches to revolutions
         double position = u[0] * METERS_TO_REV;
         double velocity = u[1] * METERS_TO_REV;
-        double acceleration = u[2] * METERS_TO_REV ;
+        double acceleration = u[2] * METERS_TO_REV;
         outputL.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration);
       }else{
         outputL.println(u[0] + "," + u[1] + "," + findValue("timestep") + "," + u[2]);

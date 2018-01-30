@@ -2,5 +2,5 @@ width:2
 radius:2
 timestep:20
 maxVelocity:3.6
-maxAccel:3.0
-maxJerk:2.4
+maxAccel:2.8
+maxJerk:2.3
