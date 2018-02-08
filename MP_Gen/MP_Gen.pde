@@ -291,6 +291,7 @@ void handleButtonEvents(GButton button, GEvent event){
             centerPathVelocity[i][0] = seg.position;
             centerPathVelocity[i][1] = seg.velocity;
             centerPathVelocity[i][2] = seg.acceleration;
+            centerPathVelocity[i][3] = seg.heading;
 
           }
           for(int i = 0;i<left.length();i++){
@@ -302,7 +303,7 @@ void handleButtonEvents(GButton button, GEvent event){
             leftPathVelocity[i][0] = seg.position;
             leftPathVelocity[i][1] = seg.velocity;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
             leftPathVelocity[i][2] = seg.acceleration;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI;
-            leftPathVelocity[i][3] = seg.heading;
+            //leftPathVelocity[i][3] = seg.heading;
           }
           for(int i = 0;i<right.length();i++){
             Trajectory.Segment seg = right.get(i);
@@ -313,7 +314,7 @@ void handleButtonEvents(GButton button, GEvent event){
             rightPathVelocity[i][0] = seg.position;
             rightPathVelocity[i][1] = seg.velocity;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
             rightPathVelocity[i][2] = seg.acceleration;// / 0.3048 * 12 / 2*Double.parseDouble(findValue("radius"))*Math.PI ;
-            rightPathVelocity[i][3] = seg.heading;
+            //rightPathVelocity[i][3] = seg.heading;
           }
           
           field.setSmoothPath(centerPath);
@@ -327,6 +328,10 @@ void handleButtonEvents(GButton button, GEvent event){
           field.enableMP();
                             
           pathsGenerated();
+          
+          for(int i = 0;i<centerPathVelocity.length;i++){
+            println(centerPathVelocity[i][0] + " , " + leftPathVelocity[i][0] + " , " + rightPathVelocity[i][0]);
+          }
           
         }catch(Exception e){
           error.setText("The selected path could not be generated. Please revise your path and try again.");
@@ -458,18 +463,19 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
 void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
   try{
     PrintWriter outputL = createWriter(prefix+"_L_"+suffix+".csv");
-    for(double[] u: field.leftPathVelocity){
+    for(int i = 0;i<field.leftPathVelocity.length;i++){
       
       if(revs){
         //rev's per second
         //meters to feet to inches to revolutions
-        double position = u[0] * METERS_TO_REV;
-        double velocity = u[1] * METERS_TO_REV * 60.0;
-        double acceleration = u[2] * METERS_TO_REV * 60.0;
-        double heading = u[3] * (180/Math.PI);
+        double position = field.leftPathVelocity[i][0] * METERS_TO_REV;
+        double velocity = field.leftPathVelocity[i][1] * METERS_TO_REV * 60.0;
+        double acceleration = field.leftPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double heading = field.smoothPathVelocity[i][3] * (180/Math.PI);
         outputL.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
       }else{
-        outputL.println(u[0] + "," + u[1] + "," + findValue("timestep") + "," + u[2]);
+        outputL.println(field.leftPathVelocity[i][0] + "," + field.leftPathVelocity[i][1] + "," + 
+        findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
       }
     }   
     outputL.flush();
@@ -483,17 +489,18 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
   }
   try{
     PrintWriter outputR = createWriter(prefix+"_R_"+suffix+".csv");
-    for(double[] u: field.rightPathVelocity){
+    for(int i = 0;i<field.rightPathVelocity.length;i++){
       
       if(revs){
         //revs per second
-        double position = u[0] * METERS_TO_REV;
-        double velocity = u[1] * METERS_TO_REV * 60.0;
-        double acceleration = u[2] * METERS_TO_REV * 60.0;
-        double heading = u[3] * (180/Math.PI);
+        double position = field.rightPathVelocity[i][0] * METERS_TO_REV;
+        double velocity = field.rightPathVelocity[i][1] * METERS_TO_REV * 60.0;
+        double acceleration = field.rightPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double heading = field.smoothPathVelocity[i][3] * (180/Math.PI);
         outputR.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
       }else{
-        outputR.println(u[0] + "," + u[1] + "," + findValue("timestep") + "," + u[2]);
+        outputR.println(field.rightPathVelocity[i][0] + "," + field.rightPathVelocity[i][1] + "," + 
+        findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
       }
     }   
     outputR.flush();
