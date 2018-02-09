@@ -462,7 +462,8 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
 // Doesn't work if the file is open
 void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
   try{
-    PrintWriter outputL = createWriter(prefix+"_L_"+suffix+".csv");
+    //suffix = "_" + suffix;
+    PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
       
       if(revs){
@@ -483,12 +484,13 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
     
     exportSuccessL = true;
   }catch(RuntimeException e){
-    error.setText("File " + prefix+"_L_"+suffix+".csv is open! Close the file and try again.");
+    error.setText("File " + prefix+"_L"+suffix+".csv is open! Close the file and try again.");
     pathsGenerated();
     exportSuccessL = false;
   }
   try{
-    PrintWriter outputR = createWriter(prefix+"_R_"+suffix+".csv");
+    //suffix = "_" + suffix;
+    PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
     for(int i = 0;i<field.rightPathVelocity.length;i++){
       
       if(revs){
@@ -509,7 +511,7 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
     exportSuccessR = true;
    
   }catch(RuntimeException e){
-    error.setText("File " + prefix+"_R_"+suffix+".csv is open! Close the file and try again.");
+    error.setText("File " + prefix+"_R"+suffix+".csv is open! Close the file and try again.");
     pathsGenerated();
     exportSuccessR = false;
   }
