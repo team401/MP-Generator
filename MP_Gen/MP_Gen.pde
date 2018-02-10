@@ -328,10 +328,7 @@ void handleButtonEvents(GButton button, GEvent event){
           field.enableMP();
                             
           pathsGenerated();
-          
-          for(int i = 0;i<centerPathVelocity.length;i++){
-            println(centerPathVelocity[i][0] + " , " + leftPathVelocity[i][0] + " , " + rightPathVelocity[i][0]);
-          }
+         
           
         }catch(Exception e){
           error.setText("The selected path could not be generated. Please revise your path and try again.");
@@ -370,6 +367,8 @@ void handleButtonEvents(GButton button, GEvent event){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
   "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText()};
     saveStrings("settings.txt", sets);
+    
+    METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
     
   }
   if(button == velocityButton){
