@@ -1,5 +1,7 @@
 # MP-Generator - GUI for creating Motion Profiles
 
+![](img/Title)
+
 ## Buttons:
 
 * Generate Path :
