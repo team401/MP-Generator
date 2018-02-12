@@ -1,16 +1,14 @@
 # MP-Generator
-GUI for creating Motion Profiles
+# GUI for creating Motion Profiles
 
-Work in progress
+## Buttons:
 
-Buttons:
-
-Generate Path :
+* Generate Path :
 	This will generate a motion profile based on the waypoints displayed on the map
 	Please note that, although this generates the profiles, it doesn't export them to csv
-New Path : 
+* New Path : 
 	This clears the currently generated path and resets the waypoints.
-Export : 
+* Export : 
 	This exports a left and right side .csv file, representing the generated motion profile
 	These will be saved in current_directory\profilecsv\tank
 	This will also clear the generated profile and reset the waypoints.
