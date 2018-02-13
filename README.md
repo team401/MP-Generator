@@ -1,6 +1,5 @@
 # MP-Generator - GUI for creating Motion Profiles
 
-Home Screen : 
 ![](img/Title.png)
 
 ## Buttons:
