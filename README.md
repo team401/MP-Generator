@@ -1,6 +1,6 @@
 # MP-Generator - GUI for creating Motion Profiles
 
-![](img/Title)
+![](img/Title.png)
 
 ## Buttons:
 
