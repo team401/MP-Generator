@@ -567,3 +567,14 @@ boolean generatePaths(Field field){
     }//end general if statment
     return noIssues;
 }//end generatePaths()
+
+void clearPaths(Field field){
+  //newButton.setEnabled(false);
+    pathButton.setEnabled(true);
+    fileButton.setEnabled(false);
+    velocityButton.setEnabled(false);
+    loadButton.setEnabled(true);
+    field.clearWaypoints();
+    field.disableMP();
+    name.setText("");
+}
