@@ -243,83 +243,10 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
   if(button == pathButton){
-    if(field.getWaypoints().length > 1){
-      if(!findValue("timestep").equals("") && !findValue("width").equals("") && !findValue("radius").equals("") && !name.getText().equals("")){
-       
-        //pathFinder logic
-        //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
-        double timestep = Double.parseDouble(findValue("timestep"))/1000;
-        double vel = Double.parseDouble(findValue("maxVelocity"));
-        double accel = Double.parseDouble(findValue("maxAccel"));
-        double jerk = Double.parseDouble(findValue("maxJerk"));
-        double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
-        
-        Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
-        
-        Waypoint[] points = field.toWaypointObj(); // somthing is probably wrong here
-        
-        //calculates the profile
-        //NEED TO RELOCATE?
-        try{
-          traj = Pathfinder.generate(points, config);//error on this line
           
-          //Tank drive
-          TankModifier modifier = new TankModifier(traj);
-          modifier.modify(robotWidth);
-          
-          Trajectory left = modifier.getLeftTrajectory();
-          Trajectory right = modifier.getRightTrajectory();
-          
-          //add to smoothpath, rightpath, and leftpath to display?
-          double[][] centerPath = new double[traj.length()][3];
-          double[][] rightPath = new double[left.length()][3];
-          double[][] leftPath = new double[right.length()][3];
-          double[][] centerPathVelocity = new double[traj.length()][4];
-          double[][] rightPathVelocity = new double[left.length()][4];
-          double[][] leftPathVelocity = new double[right.length()][4];
-          
-          for(int i = 0;i<traj.length();i++){
-            Trajectory.Segment seg = traj.get(i);
-            
-            centerPath[i][0] = seg.x/0.3048;
-            centerPath[i][1] = seg.y/0.3048;
-            
-            centerPathVelocity[i][0] = seg.position;
-            centerPathVelocity[i][1] = seg.velocity;
-            centerPathVelocity[i][2] = seg.acceleration;
-            centerPathVelocity[i][3] = seg.heading;
-          }
-          for(int i = 0;i<left.length();i++){
-            Trajectory.Segment seg = left.get(i);
-            
-            leftPath[i][0] = seg.x/0.3048;
-            leftPath[i][1] = seg.y/0.3048;
-            
-            leftPathVelocity[i][0] = seg.position;
-            leftPathVelocity[i][1] = seg.velocity;
-            leftPathVelocity[i][2] = seg.acceleration;
-          }
-          for(int i = 0;i<right.length();i++){
-            Trajectory.Segment seg = right.get(i);
-            
-            rightPath[i][0] = seg.x/0.3048;
-            rightPath[i][1] = seg.y/0.3048;
-            
-            rightPathVelocity[i][0] = seg.position;
-            rightPathVelocity[i][1] = seg.velocity;
-            rightPathVelocity[i][2] = seg.acceleration;
-          }
-          
-          field.setSmoothPath(centerPath);
-          field.setLeftPath(leftPath);
-          field.setRightPath(rightPath);
-          
-          field.setSmoothPathVelocity(centerPathVelocity);
-          field.setLeftPathVelocity(leftPathVelocity);
-          field.setRightPathVelocity(rightPathVelocity);
-          
-          field.enableMP();
-                            
+    
+    generatePaths();
+    
           pathsGenerated();
         }catch(Exception e){
           error.setText("The selected path could not be generated. Please revise your path and try again.");
@@ -561,7 +488,8 @@ void autoGenerate(){
   
 }//end method
 
-void generatePaths(Field field){    
+boolean generatePaths(Field field){  
+  boolean issues = true;
     Trajectory trajectory;
     
     //pathFinder logic
@@ -640,10 +568,14 @@ void generatePaths(Field field){
           field.setSmoothPathVelocity(centerPathVelocity);
           field.setLeftPathVelocity(leftPathVelocity);
           field.setRightPathVelocity(rightPathVelocity);
-        }catch(Exception e){}
+        }catch(Exception e){
+          issues = false;
+        }
         
       }else{//if no settings
         System.out.println("Something went wrong");
+        issues = false;
       }
     }//end general if statment
+    return issues
 }//end generatePaths()
