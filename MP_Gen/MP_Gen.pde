@@ -222,7 +222,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == fileButton){
     if(name.getText().length() > 0){//there is some text
-        boolean exportSuccess = exportToCSV(field, directory.getText() + "\\" + name.getText(), true);
+        boolean exportSuccess = exportToCSV(field, name.getText(), true);
         field.exportWaypoints();
       
       if(exportSuccess){
@@ -382,7 +382,7 @@ boolean exportToCSV(Field field, String name, boolean revs){
   PrintWriter outputR = null;
   try{
     //suffix = "_" + suffix;
-    outputL = createWriter(name+"_L.csv");
+    outputL = createWriter(directory.getText() + "/" + name+"_L.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
       
       if(revs){
@@ -411,7 +411,7 @@ boolean exportToCSV(Field field, String name, boolean revs){
   outputL.close();
   try{
     //suffix = "_" + suffix;
-    outputR = createWriter(name+"_R.csv");
+    outputR = createWriter(directory.getText() + "/" + name+"_R.csv");
     for(int i = 0;i<field.rightPathVelocity.length;i++){
       
       if(revs){
