@@ -222,7 +222,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == fileButton){
     if(name.getText().length() > 0){//there is some text
-        boolean exportSuccess = exportPathfinderToCSV(field, directory.getText() + "\\" + name.getText(),"", true);
+        boolean exportSuccess = exportToCSV(field, directory.getText() + "\\" + name.getText(), true);
         field.exportWaypoints();
       
       if(exportSuccess){
@@ -240,7 +240,7 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
   if(button == pathButton){
-    boolean success = generatePaths(field);
+    boolean success = generatePaths(field, name.getText());
     if(success){
       pathsGenerated();
     }else{
@@ -340,7 +340,6 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == directoryButton){
     selectFolder("Choose export path", "pathSelector");
   }
-  
 }
 void pathSelector(File selection){
   if(selection == null){
@@ -376,12 +375,14 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
 }
 
 // Doesn't work if the file is open
-boolean exportPathfinderToCSV(Field field, String prefix, String suffix, boolean revs){
+boolean exportToCSV(Field field, String name, boolean revs){
   boolean exportSuccessL = false;
   boolean exportSuccessR = false;
+  PrintWriter outputL = null;
+  PrintWriter outputR = null;
   try{
     //suffix = "_" + suffix;
-    PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
+    outputL = createWriter(name+"_L.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
       
       if(revs){
@@ -397,18 +398,20 @@ boolean exportPathfinderToCSV(Field field, String prefix, String suffix, boolean
         findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
       }
     }   
-    outputL.flush();
-    outputL.close();
+    
     
     exportSuccessL = true;
   }catch(RuntimeException e){
-    error.setText("File " + prefix+"_L"+suffix+".csv is open! Close the file and try again.");
+    error.setText("File " + name + "_L.csv is open! Close the file and try again.");
+    println(e);
     //pathsGenerated();
     exportSuccessL = false;
   }
+  outputL.flush();
+  outputL.close();
   try{
     //suffix = "_" + suffix;
-    PrintWriter outputR = createWriter(prefix+"_R"+suffix+".csv");
+    outputR = createWriter(name+"_R.csv");
     for(int i = 0;i<field.rightPathVelocity.length;i++){
       
       if(revs){
@@ -423,16 +426,17 @@ boolean exportPathfinderToCSV(Field field, String prefix, String suffix, boolean
         findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
       }
     }   
-    outputR.flush();
-    outputR.close();
-    
+   
     exportSuccessR = true;
    
   }catch(RuntimeException e){
-    error.setText("File " + prefix+"_R"+suffix+".csv is open! Close the file and try again.");
-    //pathsGenerated();
+    error.setText("File " + name + "_R.csv is open! Close the file and try again.");
+    println(e);
     exportSuccessR = false;
   }
+  
+  outputR.flush();
+  outputR.close();
   return exportSuccessL && exportSuccessR;
 }
 //needs better
@@ -460,22 +464,32 @@ void pathsGenerated(){
   velocityButton.setEnabled(true);
 }
 
-void autoGenerate(){
-  String[] folders = massExport.getAbsolutePath().split("\\\\");
-  String n = folders[folders.length-2];
-  
+void autoGenerate(){  
   File[] files = massExport.listFiles();
   Field f = new Field();
   
   for(File file : files){
-    f.loadWaypoints(file.getAbsolutePath());    
+    f.loadWaypoints(file.getAbsolutePath()); 
+        
+    String n = file.getName().substring(0, file.getName().length()-4);
+    
+    boolean temp = generatePaths(f, n);
+        
+    if(temp){
+      exportToCSV(f, n, true);
+    }
+    
+    f.exportWaypoints();
+    
+    f.disableMP();
+    f.clearWaypoints();
   }
  
   println("All files exported");
   
 }//end method
 
-boolean generatePaths(Field field){  
+boolean generatePaths(Field field, String name){  
   boolean noIssues = true;
   Trajectory trajectory;
     
@@ -487,7 +501,6 @@ boolean generatePaths(Field field){
   double jerk = Double.parseDouble(findValue("maxJerk"));
   double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
         
-  String name = this.name.getText();
     if(field.getWaypoints().length > 1){
       if(timestep != 0 && robotWidth != 0 && vel != 0 && accel != 0 && jerk != 0 && !name.equals("")){
        
@@ -558,10 +571,12 @@ boolean generatePaths(Field field){
           field.enableMP();
         }catch(Exception e){
           error.setText("This profile cannot be generated! Please revise your waypoints and try again.");
+          println("Exception : " + e);
           noIssues = false;
         }
         
       }else{//if no settings
+        println("Incorrect settings");
         noIssues = false;
       }
     }//end general if statment
