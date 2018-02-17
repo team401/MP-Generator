@@ -7,7 +7,7 @@ GTextField name, timeStep, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk, di
 GLabel error;
 Field field;
 Trajectory traj;
-boolean blue, velocity, exportSuccessL, exportSuccessR;
+boolean blue, velocity;
 int w, graph;
 final int X_TEXT = 130;
 int angle;
@@ -225,10 +225,10 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == fileButton){
 
     if(name.getText().length() > 0){//there is some text
-        exportPathfinderToCSV(directory.getText() + "\\" + name.getText(),"", true);
+        boolean exportSuccess = exportPathfinderToCSV(field, directory.getText() + "\\" + name.getText(),"", true);
         field.exportWaypoints();
       
-      if(exportSuccessL && exportSuccessR){
+      if(exportSuccess){
         field.clearWaypoints();
         field.disableMP();
         pathButton.setEnabled(true);
@@ -462,7 +462,9 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
 }
 
 // Doesn't work if the file is open
-void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
+boolean exportPathfinderToCSV(Field field, String prefix, String suffix, boolean revs){
+  boolean exportSuccessL = false;
+  boolean exportSuccessR = false;
   try{
     //suffix = "_" + suffix;
     PrintWriter outputL = createWriter(prefix+"_L"+suffix+".csv");
@@ -487,7 +489,7 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
     exportSuccessL = true;
   }catch(RuntimeException e){
     error.setText("File " + prefix+"_L"+suffix+".csv is open! Close the file and try again.");
-    pathsGenerated();
+    //pathsGenerated();
     exportSuccessL = false;
   }
   try{
@@ -514,9 +516,10 @@ void exportPathfinderToCSV(String prefix, String suffix, boolean revs){
    
   }catch(RuntimeException e){
     error.setText("File " + prefix+"_R"+suffix+".csv is open! Close the file and try again.");
-    pathsGenerated();
+    //pathsGenerated();
     exportSuccessR = false;
   }
+  return exportSuccessL && exportSuccessR;
 }
 //needs better
 String findValue(String keyword){
@@ -551,8 +554,14 @@ void autoGenerate(){
   Field f = new Field();
   
   for(File file : files){
-    f.loadWaypoints(file.getAbsolutePath());
-    
+    f.loadWaypoints(file.getAbsolutePath());    
+  }
+ 
+  println("All files exported");
+  
+}//end method
+
+void generatePaths(Field field){    
     Trajectory trajectory;
     
     //pathFinder logic
@@ -563,14 +572,14 @@ void autoGenerate(){
         double jerk = Double.parseDouble(findValue("maxJerk"));
         double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
         
-        String name = file.getName();
+        String name = this.name.getText();
     
-    if(f.getWaypoints().length > 1){
-      if(timestep != 0 && robotWidth != 0 && !name.equals("")){
+    if(field.getWaypoints().length > 1){
+      if(timestep != 0 && robotWidth != 0 && vel != 0 && accel != 0 && jerk != 0 && !name.equals("")){
        
         Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
         
-        Waypoint[] points = f.toWaypointObj();
+        Waypoint[] points = field.toWaypointObj();
         
         //calculates the profile
         try{
@@ -624,62 +633,17 @@ void autoGenerate(){
             rightPathVelocity[i][2] = seg.acceleration;
           }
           
-          f.setSmoothPath(centerPath);
-          f.setLeftPath(leftPath);
-          f.setRightPath(rightPath);
+          field.setSmoothPath(centerPath);
+          field.setLeftPath(leftPath);
+          field.setRightPath(rightPath);
           
-          f.setSmoothPathVelocity(centerPathVelocity);
-          f.setLeftPathVelocity(leftPathVelocity);
-          f.setRightPathVelocity(rightPathVelocity);
+          field.setSmoothPathVelocity(centerPathVelocity);
+          field.setLeftPathVelocity(leftPathVelocity);
+          field.setRightPathVelocity(rightPathVelocity);
         }catch(Exception e){}
         
       }else{//if no settings
         System.out.println("Something went wrong");
       }
-      
     }//end general if statment
-    
-    //export 
-    if(name.length() > 0){//there is some text
-          try{
-          PrintWriter outputL = createWriter(directory.getText() + "\\" + name + "_L.csv");
-          for(int i = 0;i<f.leftPathVelocity.length;i++){
-              //rev's per second
-              //meters to feet to inches to revolutions
-              double position = f.leftPathVelocity[i][0] * METERS_TO_REV;
-              double velocity = f.leftPathVelocity[i][1] * METERS_TO_REV * 60.0;
-              double acceleration = f.leftPathVelocity[i][2] * METERS_TO_REV * 60.0;
-              double heading = f.smoothPathVelocity[i][3] * (180/Math.PI);
-              outputL.println(position + "," + velocity + "," + timestep + "," + acceleration + "," + heading);
-          }
-          outputL.flush();
-          outputL.close();
-        }catch(RuntimeException e){}
-        try{
-          //suffix = "_" + suffix;
-          PrintWriter outputR = createWriter(directory.getText() + "\\" + name + "_R.csv");
-          for(int i = 0;i<f.rightPathVelocity.length;i++){
-              //revs per second
-              double position = f.rightPathVelocity[i][0] * METERS_TO_REV;
-              double velocity = f.rightPathVelocity[i][1] * METERS_TO_REV * 60.0;
-              double acceleration = f.rightPathVelocity[i][2] * METERS_TO_REV * 60.0;
-              double heading = f.smoothPathVelocity[i][3] * (180/Math.PI);
-              outputR.println(position + "," + velocity + "," + timestep + "," + acceleration + "," + heading);
-          }   
-          outputR.flush();
-          outputR.close();
-                   
-        }catch(RuntimeException e){}
-        f.exportWaypoints();
-      
-        f.clearWaypoints();
-        name = "";
-      
-      
-    }//end if
-    
-  }//end for loop
-  
-  println("All files exported");
-  
-}//end method
+}//end generatePaths()
