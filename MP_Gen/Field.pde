@@ -394,7 +394,6 @@ class Field{
     String[] points = loadStrings(filePath);
     for(String u: points){
       String[] temp = split(u, ",");
-      println(temp[0] + "," + temp[1]);
       waypoints.add(new int[]{Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2])});
     }
   }
