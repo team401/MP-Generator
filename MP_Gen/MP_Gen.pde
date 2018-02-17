@@ -25,8 +25,6 @@ void setup(){
   graph = 0;
   
   velocity = false;
-  exportSuccessL = false;
-  exportSuccessR = false;
 
   METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
   
@@ -223,7 +221,6 @@ void handleButtonEvents(GButton button, GEvent event){
     blue = false;
   }
   if(button == fileButton){
-
     if(name.getText().length() > 0){//there is some text
         boolean exportSuccess = exportPathfinderToCSV(field, directory.getText() + "\\" + name.getText(),"", true);
         field.exportWaypoints();
@@ -243,28 +240,18 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
   if(button == pathButton){
-          
-    
-    generatePaths();
-    
-          pathsGenerated();
-        }catch(Exception e){
-          error.setText("The selected path could not be generated. Please revise your path and try again.");
-          placePaths();
-        }
-        
-        
-
-      }else{//if no settings
-        System.out.println("Something went wrong");
-        if(name.getText().equals("")){
-          name.setLocalColorScheme(GConstants.RED_SCHEME);
-        }
+    boolean success = generatePaths(field);
+    if(success){
+      pathsGenerated();
+    }else{
+      //field.printWaypoints();
+      System.out.println("Something went wrong");
+      if(name.getText().equals("")){
+        name.setLocalColorScheme(GConstants.RED_SCHEME);
       }
-    }else{//if no waypoints
-      field.printWaypoints();
-      
-      pathButton.setText("Please enter a path");
+      if(field.getWaypoints() == null){
+        pathButton.setText("Please enter a path");
+      }
     }
   }
   if(button == newButton){
@@ -489,37 +476,36 @@ void autoGenerate(){
 }//end method
 
 boolean generatePaths(Field field){  
-  boolean issues = true;
-    Trajectory trajectory;
+  boolean noIssues = true;
+  Trajectory trajectory;
     
-    //pathFinder logic
-        //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
-        double timestep = Double.parseDouble(findValue("timestep"))/1000;
-        double vel = Double.parseDouble(findValue("maxVelocity"));
-        double accel = Double.parseDouble(findValue("maxAccel"));
-        double jerk = Double.parseDouble(findValue("maxJerk"));
-        double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
+  //pathFinder logic
+  //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
+  double timestep = Double.parseDouble(findValue("timestep"))/1000;
+  double vel = Double.parseDouble(findValue("maxVelocity"));
+  double accel = Double.parseDouble(findValue("maxAccel"));
+  double jerk = Double.parseDouble(findValue("maxJerk"));
+  double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
         
-        String name = this.name.getText();
-    
+  String name = this.name.getText();
     if(field.getWaypoints().length > 1){
       if(timestep != 0 && robotWidth != 0 && vel != 0 && accel != 0 && jerk != 0 && !name.equals("")){
        
         Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
         
         Waypoint[] points = field.toWaypointObj();
-        
+
         //calculates the profile
         try{
           trajectory = Pathfinder.generate(points, config);//error on this line
-          
+                    
           //Tank drive
-          TankModifier modifier = new TankModifier(traj);
+          TankModifier modifier = new TankModifier(trajectory);
           modifier.modify(robotWidth);
-          
+                    
           Trajectory left = modifier.getLeftTrajectory();
           Trajectory right = modifier.getRightTrajectory();
-          
+                    
           //add to smoothpath, rightpath, and leftpath to display?
           double[][] centerPath = new double[trajectory.length()][3];
           double[][] rightPath = new double[left.length()][3];
@@ -527,8 +513,8 @@ boolean generatePaths(Field field){
           double[][] centerPathVelocity = new double[trajectory.length()][4];
           double[][] rightPathVelocity = new double[left.length()][4];
           double[][] leftPathVelocity = new double[right.length()][4];
-          
-          for(int i = 0;i<traj.length();i++){
+                    
+          for(int i = 0;i<trajectory.length();i++){
             Trajectory.Segment seg = trajectory.get(i);
             
             centerPath[i][0] = seg.x/0.3048;
@@ -560,7 +546,7 @@ boolean generatePaths(Field field){
             rightPathVelocity[i][1] = seg.velocity;
             rightPathVelocity[i][2] = seg.acceleration;
           }
-          
+                    
           field.setSmoothPath(centerPath);
           field.setLeftPath(leftPath);
           field.setRightPath(rightPath);
@@ -568,14 +554,16 @@ boolean generatePaths(Field field){
           field.setSmoothPathVelocity(centerPathVelocity);
           field.setLeftPathVelocity(leftPathVelocity);
           field.setRightPathVelocity(rightPathVelocity);
+          
+          field.enableMP();
         }catch(Exception e){
-          issues = false;
+          error.setText("This profile cannot be generated! Please revise your waypoints and try again.");
+          noIssues = false;
         }
         
       }else{//if no settings
-        System.out.println("Something went wrong");
-        issues = false;
+        noIssues = false;
       }
     }//end general if statment
-    return issues
+    return noIssues;
 }//end generatePaths()
