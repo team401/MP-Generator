@@ -221,8 +221,8 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == fileButton){
     if(name.getText().length() > 0){//there is some text
-        boolean exportSuccess = exportToCSV(field, name.getText(), true);
-        field.exportWaypoints();
+      boolean exportSuccess = exportToCSV(field, name.getText(), true);
+      field.exportWaypoints();
       
       if(exportSuccess){
         field.clearWaypoints();
@@ -243,7 +243,6 @@ void handleButtonEvents(GButton button, GEvent event){
     if(success){
       pathsGenerated();
     }else{
-      //field.printWaypoints();
       if(name.getText().equals("")){
         name.setLocalColorScheme(GConstants.RED_SCHEME);
       }
@@ -253,7 +252,6 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
   if(button == newButton){
-    //newButton.setEnabled(false);
     pathButton.setEnabled(true);
     fileButton.setEnabled(false);
     velocityButton.setEnabled(false);
@@ -264,7 +262,6 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == testButton){
     //TEST functions
-    //(System.getProperty("user.home"));
   }
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
@@ -340,6 +337,7 @@ void handleButtonEvents(GButton button, GEvent event){
 }
 void pathSelector(File selection){
   if(selection == null){
+    //no nothing
   }else{
     directory.setText(selection.getAbsolutePath());
   }
@@ -375,10 +373,8 @@ boolean exportToCSV(Field field, String name, boolean revs){
   PrintWriter outputL = null;
   PrintWriter outputR = null;
   try{
-    //suffix = "_" + suffix;
     outputL = createWriter(directory.getText() + "/" + name+"_L.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
-      
       if(revs){
         //rev's per second
         //meters to feet to inches to revolutions
@@ -391,23 +387,18 @@ boolean exportToCSV(Field field, String name, boolean revs){
         outputL.println(field.leftPathVelocity[i][0] + "," + field.leftPathVelocity[i][1] + "," + 
         findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
       }
-    }   
-    
-    
+    }     
     exportSuccessL = true;
   }catch(RuntimeException e){
     error.setText("File " + name + "_L.csv is open! Close the file and try again.");
     println(e);
-    //pathsGenerated();
     exportSuccessL = false;
   }
   outputL.flush();
   outputL.close();
   try{
-    //suffix = "_" + suffix;
     outputR = createWriter(directory.getText() + "/" + name+"_R.csv");
     for(int i = 0;i<field.rightPathVelocity.length;i++){
-      
       if(revs){
         //revs per second
         double position = field.rightPathVelocity[i][0] * METERS_TO_REV;
@@ -574,7 +565,6 @@ boolean generatePaths(Field field, String name){
 }//end generatePaths()
 
 void clearPaths(Field field){
-  //newButton.setEnabled(false);
     pathButton.setEnabled(true);
     fileButton.setEnabled(false);
     velocityButton.setEnabled(false);
