@@ -21,7 +21,7 @@ void setup(){
   field = new Field();
   frameRate(120);
   w = width/2;
-  angle = 0;
+  angle = 90;
   graph = 0;
   
   velocity = false;
@@ -198,7 +198,6 @@ void mouseClicked(){
 }
 void mouseWheel(MouseEvent event){
   float e = event.getAmount();
-
   if(e>0){
     angle+=2;
   }
