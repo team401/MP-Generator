@@ -244,7 +244,6 @@ void handleButtonEvents(GButton button, GEvent event){
       pathsGenerated();
     }else{
       //field.printWaypoints();
-      System.out.println("Something went wrong");
       if(name.getText().equals("")){
         name.setLocalColorScheme(GConstants.RED_SCHEME);
       }
@@ -265,7 +264,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == testButton){
     //TEST functions
-    //println(System.getProperty("user.home"));
+    //(System.getProperty("user.home"));
   }
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
@@ -330,7 +329,6 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == loadButton){
     if(keyCode == SHIFT){
-      println("Shift key pressed");
       selectFolder("Choose folder to export", "massFileSelector");
     }else{
       selectInput("Choose File to load", "fileSelector");
@@ -342,14 +340,12 @@ void handleButtonEvents(GButton button, GEvent event){
 }
 void pathSelector(File selection){
   if(selection == null){
-    System.out.println("Error");
   }else{
     directory.setText(selection.getAbsolutePath());
   }
 }
 void fileSelector(File selection){
   if(selection == null){
-    System.out.println("Error");
   }else{
     field.loadWaypoints(selection.getAbsolutePath());
     String[] folders = selection.getAbsolutePath().split("\\\\");
@@ -359,7 +355,6 @@ void fileSelector(File selection){
 }
 void massFileSelector(File selection){
   if(selection == null){
-     println("Error"); 
   }else{
     massExport = selection;
     
@@ -468,7 +463,6 @@ void autoGenerate(){
   Field field = new Field();
   
   for(File file : files){
-    println("Line ran");
     
     field.loadWaypoints(file.getAbsolutePath()); 
         
@@ -484,9 +478,7 @@ void autoGenerate(){
     field.disableMP();
     field.clearWaypoints();
   }
- 
-  println("All files exported");
-  
+   
 }//end method
 
 boolean generatePaths(Field field, String name){  
@@ -571,12 +563,10 @@ boolean generatePaths(Field field, String name){
           field.enableMP();
         }catch(Exception e){
           error.setText("This profile cannot be generated! Please revise your waypoints and try again.");
-          println("Exception : " + e);
           noIssues = false;
         }
         
       }else{//if no settings
-        println("Incorrect settings");
         noIssues = false;
       }
     }//end general if statment
