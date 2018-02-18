@@ -434,9 +434,9 @@ boolean exportToCSV(Field field, String name, boolean revs){
     println(e);
     exportSuccessR = false;
   }
-  
   outputR.flush();
   outputR.close();
+  
   return exportSuccessL && exportSuccessR;
 }
 //needs better
@@ -466,23 +466,24 @@ void pathsGenerated(){
 
 void autoGenerate(){  
   File[] files = massExport.listFiles();
-  Field f = new Field();
+  Field field = new Field();
   
   for(File file : files){
-    f.loadWaypoints(file.getAbsolutePath()); 
+    println("Line ran");
+    
+    field.loadWaypoints(file.getAbsolutePath()); 
         
     String n = file.getName().substring(0, file.getName().length()-4);
     
-    boolean temp = generatePaths(f, n);
+    boolean temp = generatePaths(field, n);
         
-    if(temp){
-      exportToCSV(f, n, true);
+    if(temp && this.name.getText().length() > 0){
+      exportToCSV(field, n, true);
+      field.exportWaypoints();
     }
     
-    f.exportWaypoints();
-    
-    f.disableMP();
-    f.clearWaypoints();
+    field.disableMP();
+    field.clearWaypoints();
   }
  
   println("All files exported");
