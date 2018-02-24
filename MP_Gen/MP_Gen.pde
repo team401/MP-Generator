@@ -487,7 +487,7 @@ boolean generatePaths(Field field, String name){
     if(field.getWaypoints().length > 1){
       if(timestep != 0 && robotWidth != 0 && vel != 0 && accel != 0 && jerk != 0 && !name.equals("")){
        
-        Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
+        Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
         
         Waypoint[] points = field.toWaypointObj();
 
