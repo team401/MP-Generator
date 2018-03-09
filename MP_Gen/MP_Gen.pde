@@ -5,6 +5,7 @@ GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, sa
 velocityButton, centerButton, leftButton, rightButton, loadButton, directoryButton;
 GTextField name, timeStep, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk, directory;
 GLabel error;
+GSlider reverse;
 Field field;
 Trajectory traj;
 boolean blue, velocity;
@@ -130,6 +131,16 @@ void setup(){
   directory.setFont(new Font("Dialog", Font.PLAIN, 24));
   directory.setText("profilecsv\\tank\\");
   directory.setPromptText("Directory");
+  
+  //sliders
+  reverse = new GSlider(this, X_TEXT, 780, 50, 50,25);
+  reverse.setNbrTicks(2);
+  reverse.setStickToTicks(true);
+  reverse.setShowTicks(false);
+  reverse.setEnabled(true);
+  
+  
+  
   
 }
 void draw(){
@@ -365,6 +376,79 @@ public void handleTextEvents(GEditableTextControl textcontrol, GEvent event){
   fileButton.setText("Export");
   fileButton.setEnabled(true);
 }
+public void handleSliderEvents(GValueControl slider, GEvent event) { 
+  if(slider == reverse){
+    if(reverse.getValueI() == 0){// Forward
+      setReverse(field, false);
+    }else{//Reverse
+      setReverse(field, true);
+    }
+    println(reverse.getValueI());
+    // 1 is reverse, 0 is forward
+  }
+}
+boolean exportToCSVReverse(Field field, String name, boolean revs){
+  boolean exportSuccessL = false;
+  boolean exportSuccessR = false;
+  PrintWriter outputL = null;
+  PrintWriter outputR = null;
+  try{
+      outputL = createWriter(directory.getText() + "/" + name+"_R.csv");
+    for(int i = 0;i<field.leftPathVelocity.length;i++){
+      if(revs){
+        //rev's per second
+        //meters to feet to inches to revolutions
+        double position = field.leftPathVelocity[i][0] * METERS_TO_REV * -1;
+        double velocity = field.leftPathVelocity[i][1] * METERS_TO_REV * 60.0 * -1;
+        double acceleration = field.leftPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double heading = (field.smoothPathVelocity[i][3] * (180/Math.PI) - 180) % 360;
+        outputL.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
+      }/*
+      else{//Possible error...
+        outputL.println(field.leftPathVelocity[i][0]*-1 + "," + field.leftPathVelocity[i][1]*-1 + "," + 
+        findValue("timestep") + "," + field.smoothPathVelocity[i][3]*-1);
+      }
+      */
+    }     
+    exportSuccessL = true;
+  }catch(RuntimeException e){
+    error.setText("File " + name + "_L.csv is open! Close the file and try again.");
+    println(e);
+    exportSuccessL = false;
+  }
+  outputL.flush();
+  outputL.close();
+  
+  try{
+    outputR = createWriter(directory.getText() + "/" + name+"_L.csv");
+    for(int i = 0;i<field.rightPathVelocity.length;i++){
+      if(revs){
+        //revs per second
+        double position = field.rightPathVelocity[i][0] * METERS_TO_REV * -1;
+        double velocity = field.rightPathVelocity[i][1] * METERS_TO_REV * 60.0 * -1;
+        double acceleration = field.rightPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double heading = (field.smoothPathVelocity[i][3] * (180/Math.PI) - 180) % 360;
+        outputR.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
+      }
+      /*else{
+        outputR.println(field.rightPathVelocity[i][0]*-1 + "," + field.rightPathVelocity[i][1]*-1 + "," + 
+        findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
+      }
+      */
+    }   
+   
+    exportSuccessR = true;
+   
+  }catch(RuntimeException e){
+    error.setText("File " + name + "_R.csv is open! Close the file and try again.");
+    println(e);
+    exportSuccessR = false;
+  }
+  outputR.flush();
+  outputR.close();
+  
+  return exportSuccessL && exportSuccessR;
+}
 
 // Doesn't work if the file is open
 boolean exportToCSV(Field field, String name, boolean revs){
@@ -373,7 +457,7 @@ boolean exportToCSV(Field field, String name, boolean revs){
   PrintWriter outputL = null;
   PrintWriter outputR = null;
   try{
-    outputL = createWriter(directory.getText() + "/" + name+"_L.csv");
+      outputL = createWriter(directory.getText() + "/" + name+"_L.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
       if(revs){
         //rev's per second
@@ -572,4 +656,7 @@ void clearPaths(Field field){
     field.clearWaypoints();
     field.disableMP();
     name.setText("");
+}
+void setReverse(Field field, boolean reverse){
+  field.setReverse(reverse);
 }

@@ -16,6 +16,7 @@ class Field{
   private ArrayList<int[]> waypoints;
   
   //private int angle;
+  private boolean reverse;
   
   Field(){
     waypoints = new ArrayList<int[]>();
@@ -423,6 +424,12 @@ class Field{
   }
   double[][] getRightPath(){
     return rightPath;
+  }
+  boolean getReverse(){
+    return reverse;
+  }
+  void setReverse(boolean r){
+    reverse = r;
   }
   void setSmoothPathVelocity(double[][] path){
     smoothPathVelocity = path;
