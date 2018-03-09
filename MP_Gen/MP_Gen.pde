@@ -138,9 +138,7 @@ void setup(){
   reverse.setStickToTicks(true);
   reverse.setShowTicks(false);
   reverse.setEnabled(true);
-  
-  
-  
+  reverse.setValue(0);
   
 }
 void draw(){
@@ -193,6 +191,10 @@ void draw(){
   text("Max Vel", 10, 432);
   text("Max Accel", 10, 472);
   text("Max Jerk", 10, 512);
+  
+  text("Direction", 105, 780);
+  text("Forward", 30, 820);
+  text("Reverse", 190, 820);
 }
 void mouseClicked(){
   int w = width/2;
