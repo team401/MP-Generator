@@ -393,8 +393,12 @@ class Field{
   void loadWaypoints(String filePath){
     clearWaypoints();
     String[] points = loadStrings(filePath);
-    for(String u: points){
-      String[] temp = split(u, ",");
+    
+    reverse = filePath.contains("_REV");
+    println(reverse);
+    
+    for(int i = 0;i<points.length;i++){
+      String[] temp = split(points[i], ",");
       waypoints.add(new int[]{Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2])});
     }
   }
@@ -482,10 +486,18 @@ class Field{
   }
   void exportWaypoints(){
     println("Export Waypoints ran");
-    PrintWriter output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+".csv");
+    PrintWriter output;
+    if(reverse){
+      output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+"_REV.csv");
+    }else{
+      output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+".csv");
+    }
+    
     for(int[] u: waypoints){
       output.println(u[0]+","+u[1]+","+u[2]);
     }
+      output.println(reverse);
+      
       output.flush();
       output.close();
     }

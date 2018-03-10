@@ -234,7 +234,12 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == fileButton){
     if(name.getText().length() > 0){//there is some text
-      boolean exportSuccess = exportToCSV(field, name.getText(), true);
+      boolean exportSuccess = false;
+      if(field.getReverse()){
+        exportSuccess = exportToCSVReverse(field, name.getText(), true);
+      }else{
+        exportSuccess = exportToCSV(field, name.getText(), true); 
+      }
       field.exportWaypoints();
       
       if(exportSuccess){
@@ -362,6 +367,12 @@ void fileSelector(File selection){
     String[] folders = selection.getAbsolutePath().split("\\\\");
     String n = folders[folders.length-1];
     name.setText(n.substring(0, n.length()-4));
+    println(field.getReverse());
+    if(field.getReverse()){
+      reverse.setValue(1); 
+    }else{
+      reverse.setValue(0); 
+    }
   }  
 }
 void massFileSelector(File selection){
@@ -548,7 +559,11 @@ void autoGenerate(){
     boolean temp = generatePaths(field, n);
         
     if(temp && this.name.getText().length() > 0){
-      exportToCSV(field, n, true);
+      if(field.getReverse()){
+        exportToCSVReverse(field, n, true);
+      }else{
+        exportToCSV(field, n, true);
+      }
       field.exportWaypoints();
     }
     
