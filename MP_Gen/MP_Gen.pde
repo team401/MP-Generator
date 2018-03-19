@@ -234,7 +234,8 @@ void handleButtonEvents(GButton button, GEvent event){
     blue = false;
   }
   if(button == fileButton){
-    if(name.getText().length() > 0){//there is some text
+    println("Name.getText() : " + name.getText());
+    if(name.getText().length() > 0 && !name.getText().equals(" ")){//there is some text
       boolean exportSuccess = false;
       if(field.getReverse()){
         exportSuccess = exportToCSVReverse(field, name.getText(), true);
@@ -253,6 +254,7 @@ void handleButtonEvents(GButton button, GEvent event){
       }
       
     }else{
+      name.setLocalColorScheme(GConstants.RED_SCHEME);
       fileButton.setEnabled(false);
       fileButton.setText("Please enter a name");
     }
@@ -262,9 +264,6 @@ void handleButtonEvents(GButton button, GEvent event){
     if(success){
       pathsGenerated();
     }else{
-      if(name.getText().equals("")){
-        name.setLocalColorScheme(GConstants.RED_SCHEME);
-      }
       if(field.getWaypoints() == null){
         pathButton.setText("Please enter a path");
       }
@@ -586,7 +585,7 @@ boolean generatePaths(Field field, String name){
   double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
         
     if(field.getWaypoints().length > 1){
-      if(timestep != 0 && robotWidth != 0 && vel != 0 && accel != 0 && jerk != 0 && !name.equals("")){
+      if(timestep != 0 && robotWidth != 0 && vel != 0 && accel != 0 && jerk != 0){
        
         Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, timestep, vel, accel, jerk);
         
