@@ -5,3 +5,4 @@ maxVelocity:2.1
 maxAccel:1.9
 maxJerk:1.7
 angle:15
+mapIncrements:0.25

@@ -13,13 +13,13 @@ class Field{
   private double[][] leftPathVelocity;
   private double[][] rightPathVelocity;
   
-  private ArrayList<int[]> waypoints;
+  private ArrayList<float[]> waypoints;
   
   //private int angle;
   private boolean reverse;
   
   Field(){
-    waypoints = new ArrayList<int[]>();
+    waypoints = new ArrayList<float[]>();
   }
   void display(){
     
@@ -256,8 +256,8 @@ class Field{
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
         fill(0);
         textSize(24);
-        int mapX = toMapX(mouseX);
-        int mapY = toMapY(mouseY);
+        float mapX = toMapX(mouseX);
+        float mapY = toMapY(mouseY);
         
         int x = toCoordX(mapX);
         int y = toCoordY(mapY);
@@ -328,8 +328,8 @@ class Field{
       noFill();
       beginShape();
       for(int i = 0;i<waypoints.size();i++){
-        int posX = waypoints.get(i)[0];
-        int posY = waypoints.get(i)[1];
+        float posX = waypoints.get(i)[0];
+        float posY = waypoints.get(i)[1];
         int x = toCoordX(posX);
         int y = toCoordY(posY);
         
@@ -348,10 +348,10 @@ class Field{
   void addWaypoint(int msX, int msY){
     //int angle = 0;//make this real later
     int w = width/2;
-    int mapX = toMapX(msX);
-    int mapY = toMapY(msY);
+    float mapX = toMapX(msX);
+    float mapY = toMapY(msY);
                     
-    waypoints.add(new int[]{mapX,mapY,angle});
+    waypoints.add(new float[]{mapX,mapY,angle});
   }
   void removeWaypoint(){
     if(waypoints.size()>=1){
@@ -376,7 +376,7 @@ class Field{
     if(waypoints.size()<=0){
       System.out.println("Waypoints is empty");
     }else{
-      for(int[] u: waypoints){
+      for(float[] u: waypoints){
         System.out.println("("+u[0]+","+u[1]+","+u[2]+")");
       }
     }
@@ -399,7 +399,8 @@ class Field{
     
     for(int i = 0;i<points.length;i++){
       String[] temp = split(points[i], ",");
-      waypoints.add(new int[]{Integer.parseInt(temp[0]), Integer.parseInt(temp[1]), Integer.parseInt(temp[2])});
+      
+      waypoints.add(new float[]{Float.parseFloat(temp[0]), Float.parseFloat(temp[1]), Float.parseFloat(temp[2])});
     }
   }
   void enableMP(){
@@ -471,11 +472,14 @@ class Field{
         
   }
   //
-  int toMapX(float x){
-    return (int)round(map(x, w, w+(WIDTH*SPACING), 0, WIDTH));
+  DecimalFormat df = new DecimalFormat("#.##");
+  float toMapX(float x){
+    float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
+    return value - value % Float.parseFloat(findValue("mapIncrements"));
   }
-  int toMapY(float y){
-    return (int)round(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0));
+  float toMapY(float y){
+    float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0)));
+    return value - value % Float.parseFloat(findValue("mapIncrements"));
   }
   //
   int toCoordX(float x){
@@ -493,7 +497,7 @@ class Field{
       output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+".csv");
     }
     
-    for(int[] u: waypoints){
+    for(float[] u: waypoints){
       output.println(u[0]+","+u[1]+","+u[2]);
     }
       output.println(reverse);
