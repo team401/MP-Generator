@@ -211,11 +211,12 @@ void mouseClicked(){
 }
 void mouseWheel(MouseEvent event){
   float e = event.getAmount();
+  int da = Integer.parseInt(findValue("angle"));
   if(e>0){
-    angle+=2;
+    angle+=da;
   }
   if(e<0){
-    angle-=2;
+    angle-=da;
   }
 }
 void handleButtonEvents(GButton button, GEvent event){

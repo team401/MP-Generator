@@ -266,7 +266,7 @@ class Field{
           angle = 0;
         }
         if(angle < 0){
-          angle = 359;
+          angle = 360 - Integer.parseInt(findValue("angle"));
         }
               
         text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
