@@ -367,7 +367,6 @@ void fileSelector(File selection){
     String[] folders = selection.getAbsolutePath().split("\\\\");
     String n = folders[folders.length-1];
     name.setText(n.substring(0, n.length()-4));
-    println(field.getReverse());
     if(field.getReverse()){
       reverse.setValue(1); 
     }else{
