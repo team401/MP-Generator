@@ -405,7 +405,6 @@ class Field{
     String[] points = loadStrings(filePath);
     
     reverse = filePath.contains("_REV");
-    println(reverse);
     
     for(int i = 0;i<points.length;i++){
       String[] temp = split(points[i], ",");

@@ -71,7 +71,7 @@ void setup(){
   newButton = new GButton(this, width/2-250, 200, 200, 100, "New path");
   newButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  testButton = new GButton(this, 200, 800, 200, 100, "TEST");
+  testButton = new GButton(this, 300, 800, 100, 100, "TEST");
   testButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   saveButton = new GButton(this, X_TEXT + 50, 520, 100, 50, "Save");
@@ -122,11 +122,11 @@ void setup(){
   maxJerk.setText(findValue("maxJerk"));
   maxJerk.setPromptText("Max Jerk");
   
-  error = new GLabel(this, 75, 750, 400, 100);
+  error = new GLabel(this, 75, 800, 400, 100);
   error.setFont(new Font("Dialog", Font.PLAIN, 24));
   error.setLocalColorScheme(GConstants.RED_SCHEME);
   error.resizeToFit(false, false);
-  
+        
   directory = new GTextField(this, X_TEXT, 580, 200, 32);
   directory.setFont(new Font("Dialog", Font.PLAIN, 24));
   directory.setText("profilecsv\\tank\\");
@@ -280,6 +280,8 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == testButton){
     //TEST functions
+    error.setText("TEST");
+    println("TESTING");
   }
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
@@ -569,6 +571,7 @@ void autoGenerate(){
     field.disableMP();
     field.clearWaypoints();
   }
+  error.setText("Mass export complete");
    
 }//end method
 
