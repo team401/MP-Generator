@@ -498,7 +498,6 @@ class Field{
     return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING), 80);
   }
   void exportWaypoints(){
-    println("Export Waypoints ran");
     PrintWriter output;
     if(reverse){
       output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+"_REV.csv");

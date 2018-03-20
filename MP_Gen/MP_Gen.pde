@@ -549,17 +549,20 @@ void pathsGenerated(){
 
 void autoGenerate(){  
   File[] files = massExport.listFiles();
-  Field field = new Field();
-  
+  Field field = this.field;
+    
   for(File file : files){
     
     field.loadWaypoints(file.getAbsolutePath()); 
         
     String n = file.getName().substring(0, file.getName().length()-4);
+    this.name.setText(n);
+    
+    println("Working on file " + n);
     
     boolean temp = generatePaths(field, n);
-        
-    if(temp && this.name.getText().length() > 0){
+    
+    if(temp && n.length() > 0){
       if(field.getReverse()){
         exportToCSVReverse(field, n, true);
       }else{
