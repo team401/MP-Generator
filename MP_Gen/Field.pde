@@ -3,7 +3,7 @@ class Field{
   //units in feet
   private static final int WIDTH = 27;
   private static final int HEIGHT = 32;
-  private static final int SPACING = 25;//(height-100)/HEIGHT;
+  private static final int SPACING = 25;
   private boolean mp = false;
   private double[][] smoothPath;
   private double[][] leftPath;
@@ -14,6 +14,7 @@ class Field{
   private double[][] rightPathVelocity;
   
   private ArrayList<float[]> waypoints;
+  private float scale = Float.parseFloat(findValue("mapIncrements"));
   
   //private int angle;
   private boolean reverse;
@@ -166,13 +167,22 @@ class Field{
       stroke(0);
       
       //grid
-      for(int i = 0;i<=WIDTH;i++){
-        line(w+(i*SPACING), 80, w+(i*SPACING),80+(HEIGHT*SPACING));
-        text(i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
+      int xAxis = (WIDTH);
+      //xAxis = (int)map(xAxis, 0, WIDTH, 0, WIDTH*2);
+      //println(xAxis);
+      int yAxis = (HEIGHT);
+      //int space = (SPACING)/2;
+      for(int i = 0;i<=xAxis*(1/scale);i++){
+        line(toCoordX(i*scale), toCoordY(0), toCoordX(i*scale),toCoordY(HEIGHT));
+        if(i <= WIDTH){
+          text(i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
+        }
       }
-      for(int i = 0;i<=HEIGHT;i++){
-        line(w, 80+(i*SPACING), w+(WIDTH*SPACING), 80+(i*SPACING));
-        text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
+      for(int i = 0;i<=yAxis*(1/scale);i++){
+        line(toCoordX(0), toCoordY(i*scale), toCoordX(WIDTH), toCoordY(i*scale));
+        if(i <= HEIGHT){
+          text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
+        }
       }
       
       //zones
@@ -271,7 +281,7 @@ class Field{
               
         text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
         
-        strokeWeight(12);
+        strokeWeight(12*scale);
         line(x, y, x, y);
         
         //draws the arrow
