@@ -509,9 +509,7 @@ class Field{
     
     for(float[] u: waypoints){
       output.println(u[0]+","+u[1]+","+u[2]);
-    }
-      output.println(reverse);
-      
+    }      
       output.flush();
       output.close();
     }
