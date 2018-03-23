@@ -234,7 +234,6 @@ void handleButtonEvents(GButton button, GEvent event){
     blue = false;
   }
   if(button == fileButton){
-    println("Name.getText() : " + name.getText());
     if(name.getText().length() > 0 && !name.getText().equals(" ")){//there is some text
       boolean exportSuccess = false;
       if(field.getReverse()){
@@ -397,7 +396,6 @@ public void handleSliderEvents(GValueControl slider, GEvent event) {
     }else{//Reverse
       setReverse(field, true);
     }
-    println(reverse.getValueI());
     // 1 is reverse, 0 is forward
   }
 }
