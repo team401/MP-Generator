@@ -500,9 +500,10 @@ class Field{
   void exportWaypoints(){
     PrintWriter output;
     if(reverse && !name.getText().contains("_REV")){
-      output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+"_REV.csv");
+      //output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+"_REV.csv");
+      output = createWriter(directory.getText() + "/waypoints/" + name.getText()+"_REV.csv");
     }else{
-      output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+".csv");
+      output = createWriter(directory.getText() + "/waypoints/" + name.getText()+".csv");
     }
     
     for(float[] u: waypoints){

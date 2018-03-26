@@ -17,6 +17,10 @@ File massExport;
 
 //BUG!!! FEET TO METERS CONVERSIONS AND BACK AGAIN GOING ON. POSSIBLE ERRORS DUE TO THIS!!!
 
+//TODO : make waypoints export as well
+//If possible, make it able to load the generated profiles, not just the waypoints
+//Don't know how to tell where on the field the profile is.
+
 void setup(){
   size(1440, 960);
   field = new Field();
@@ -260,7 +264,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == pathButton){
     boolean success = generatePaths(field, name.getText());
-    if(success){
+    if(success && field.getWaypoints().length > 0){
       pathsGenerated();
     }else{
       if(field.getWaypoints() == null){
@@ -405,7 +409,7 @@ boolean exportToCSVReverse(Field field, String name, boolean revs){
   PrintWriter outputL = null;
   PrintWriter outputR = null;
   try{
-      outputL = createWriter(directory.getText() + "/" + name+"_R.csv");
+      outputL = createWriter(directory.getText() + "/profiles/" + name+"_R.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
       if(revs){
         //rev's per second
@@ -432,7 +436,7 @@ boolean exportToCSVReverse(Field field, String name, boolean revs){
   outputL.close();
   
   try{
-    outputR = createWriter(directory.getText() + "/" + name+"_L.csv");
+    outputR = createWriter(directory.getText() + "/profiles/" + name+"_L.csv");
     for(int i = 0;i<field.rightPathVelocity.length;i++){
       if(revs){
         //revs per second
@@ -469,7 +473,7 @@ boolean exportToCSV(Field field, String name, boolean revs){
   PrintWriter outputL = null;
   PrintWriter outputR = null;
   try{
-      outputL = createWriter(directory.getText() + "/" + name+"_L.csv");
+      outputL = createWriter(directory.getText() + "/profiles/" + name+"_L.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
       if(revs){
         //rev's per second
@@ -493,7 +497,7 @@ boolean exportToCSV(Field field, String name, boolean revs){
   outputL.flush();
   outputL.close();
   try{
-    outputR = createWriter(directory.getText() + "/" + name+"_R.csv");
+    outputR = createWriter(directory.getText() + "/profiles/" + name+"_R.csv");
     for(int i = 0;i<field.rightPathVelocity.length;i++){
       if(revs){
         //revs per second
