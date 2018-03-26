@@ -15,12 +15,6 @@ int angle;
 double METERS_TO_REV;
 File massExport;
 
-//BUG!!! FEET TO METERS CONVERSIONS AND BACK AGAIN GOING ON. POSSIBLE ERRORS DUE TO THIS!!!
-
-//TODO : make waypoints export as well
-//If possible, make it able to load the generated profiles, not just the waypoints
-//Don't know how to tell where on the field the profile is.
-
 void setup(){
   size(1440, 960);
   field = new Field();
