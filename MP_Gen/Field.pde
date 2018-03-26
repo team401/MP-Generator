@@ -173,12 +173,22 @@ class Field{
       int yAxis = (HEIGHT);
       //int space = (SPACING)/2;
       for(int i = 0;i<=xAxis*(1/scale);i++){
+        if(i%(1/scale)==0){
+          strokeWeight(1);
+        }else{
+          strokeWeight(0);
+        }
         line(toCoordX(i*scale), toCoordY(0), toCoordX(i*scale),toCoordY(HEIGHT));
         if(i <= WIDTH){
           text(i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
       }
       for(int i = 0;i<=yAxis*(1/scale);i++){
+        if(i%(1/scale)==0){
+          strokeWeight(1);
+        }else{
+          strokeWeight(0);
+        }
         line(toCoordX(0), toCoordY(i*scale), toCoordX(WIDTH), toCoordY(i*scale));
         if(i <= HEIGHT){
           text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
