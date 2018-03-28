@@ -14,6 +14,7 @@ final int X_TEXT = 130;
 int angle;
 double METERS_TO_REV;
 File massExport;
+double timestep, pos, vel, accel, jerk, robotWidth;
 
 void setup(){
   size(1440, 960);
@@ -26,6 +27,12 @@ void setup(){
   velocity = false;
 
   METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+  
+  timestep = Double.parseDouble(findValue("timestep"))/1000;
+  vel = Double.parseDouble(findValue("maxVelocity"));
+  accel = Double.parseDouble(findValue("maxAccel"));
+  jerk = Double.parseDouble(findValue("maxJerk"));
+  robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
   
   //misc
   blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
@@ -286,7 +293,11 @@ void handleButtonEvents(GButton button, GEvent event){
     saveStrings("settings.txt", sets);
     
     METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
-    
+    timestep = Double.parseDouble(findValue("timestep"))/1000;
+    vel = Double.parseDouble(findValue("maxVelocity"));
+    accel = Double.parseDouble(findValue("maxAccel"));
+    jerk = Double.parseDouble(findValue("maxJerk"));
+    robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
   }
   if(button == velocityButton){
     if(velocity){//currently displaying velocity graphs
@@ -580,11 +591,6 @@ boolean generatePaths(Field field, String name){
     
   //pathFinder logic
   //config(Fitmethod, sampleRate, timestep, max velocity, max acceleration, max jerk)
-  double timestep = Double.parseDouble(findValue("timestep"))/1000;
-  double vel = Double.parseDouble(findValue("maxVelocity"));
-  double accel = Double.parseDouble(findValue("maxAccel"));
-  double jerk = Double.parseDouble(findValue("maxJerk"));
-  double robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
         
     if(field.getWaypoints().length > 1){
       if(timestep != 0 && robotWidth != 0 && vel != 0 && accel != 0 && jerk != 0){

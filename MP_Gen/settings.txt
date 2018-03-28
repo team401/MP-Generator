@@ -1,4 +1,4 @@
-width:1.13
+width:1.125
 radius:3
 timestep:20
 maxVelocity:2.1
