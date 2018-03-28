@@ -12,7 +12,7 @@ boolean blue, velocity;
 int w, graph;
 final int X_TEXT = 130;
 int angle;
-double METERS_TO_REV;
+double METERS_TO_REV, METERS_TO_INCHES;
 File massExport;
 
 void setup(){
@@ -26,6 +26,7 @@ void setup(){
   velocity = false;
 
   METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+  METERS_TO_INCHES = (1/0.3048) * 12;
   
   //misc
   blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
@@ -408,9 +409,9 @@ boolean exportToCSVReverse(Field field, String name, boolean revs){
       if(revs){
         //rev's per second
         //meters to feet to inches to revolutions
-        double position = field.leftPathVelocity[i][0] * METERS_TO_REV * -1;
-        double velocity = field.leftPathVelocity[i][1] * METERS_TO_REV * 60.0 * -1;
-        double acceleration = field.leftPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double position = field.leftPathVelocity[i][0] * METERS_TO_INCHES * -1;
+        double velocity = field.leftPathVelocity[i][1] * METERS_TO_INCHES * 60.0 * -1;
+        double acceleration = field.leftPathVelocity[i][2] * METERS_TO_INCHES * 60.0;
         double heading = (field.smoothPathVelocity[i][3] * (180/Math.PI) - 180) % 360;
         outputL.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
       }/*
@@ -434,9 +435,9 @@ boolean exportToCSVReverse(Field field, String name, boolean revs){
     for(int i = 0;i<field.rightPathVelocity.length;i++){
       if(revs){
         //revs per second
-        double position = field.rightPathVelocity[i][0] * METERS_TO_REV * -1;
-        double velocity = field.rightPathVelocity[i][1] * METERS_TO_REV * 60.0 * -1;
-        double acceleration = field.rightPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double position = field.rightPathVelocity[i][0] * METERS_TO_INCHES * -1;
+        double velocity = field.rightPathVelocity[i][1] * METERS_TO_INCHES * 60.0 * -1;
+        double acceleration = field.rightPathVelocity[i][2] * METERS_TO_INCHES * 60.0;
         double heading = (field.smoothPathVelocity[i][3] * (180/Math.PI) - 180) % 360;
         outputR.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
       }
@@ -472,9 +473,9 @@ boolean exportToCSV(Field field, String name, boolean revs){
       if(revs){
         //rev's per second
         //meters to feet to inches to revolutions
-        double position = field.leftPathVelocity[i][0] * METERS_TO_REV;
-        double velocity = field.leftPathVelocity[i][1] * METERS_TO_REV * 60.0;
-        double acceleration = field.leftPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double position = field.leftPathVelocity[i][0] * METERS_TO_INCHES;
+        double velocity = field.leftPathVelocity[i][1] * METERS_TO_INCHES * 60.0;
+        double acceleration = field.leftPathVelocity[i][2] * METERS_TO_INCHES * 60.0;
         double heading = field.smoothPathVelocity[i][3] * (180/Math.PI);
         outputL.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
       }else{
@@ -495,9 +496,9 @@ boolean exportToCSV(Field field, String name, boolean revs){
     for(int i = 0;i<field.rightPathVelocity.length;i++){
       if(revs){
         //revs per second
-        double position = field.rightPathVelocity[i][0] * METERS_TO_REV;
-        double velocity = field.rightPathVelocity[i][1] * METERS_TO_REV * 60.0;
-        double acceleration = field.rightPathVelocity[i][2] * METERS_TO_REV * 60.0;
+        double position = field.rightPathVelocity[i][0] * METERS_TO_INCHES;
+        double velocity = field.rightPathVelocity[i][1] * METERS_TO_INCHES * 60.0;
+        double acceleration = field.rightPathVelocity[i][2] * METERS_TO_INCHES * 60.0;
         double heading = field.smoothPathVelocity[i][3] * (180/Math.PI);
         outputR.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
       }else{
