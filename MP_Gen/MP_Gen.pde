@@ -282,7 +282,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
-  "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText() , "mapIncrements:"+findValue("mapIncrements")};
+  "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText(), "angle:"+findValue("angle"),"mapIncrements:"+findValue("mapIncrements")};
     saveStrings("settings.txt", sets);
     
     METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
