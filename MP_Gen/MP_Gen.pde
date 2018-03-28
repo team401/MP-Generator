@@ -115,17 +115,17 @@ void setup(){
   maxVel = new GTextField(this, X_TEXT, 400, 200, 32);
   maxVel.setFont(new Font("Dialog", Font.PLAIN, 24));
   maxVel.setText(findValue("maxVelocity"));
-  maxVel.setPromptText("Max Velocity");
+  maxVel.setPromptText("Max Vel (meters)");
   
   maxAccel = new GTextField(this, X_TEXT, 440, 200, 32);
   maxAccel.setFont(new Font("Dialog", Font.PLAIN, 24));
   maxAccel.setText(findValue("maxAccel"));
-  maxAccel.setPromptText("Max Acceleration");
+  maxAccel.setPromptText("Max Accel (meters)");
   
   maxJerk = new GTextField(this, X_TEXT, 480, 200, 32);
   maxJerk.setFont(new Font("Dialog", Font.PLAIN, 24));
   maxJerk.setText(findValue("maxJerk"));
-  maxJerk.setPromptText("Max Jerk");
+  maxJerk.setPromptText("Max Jerk (meters)");
   
   error = new GLabel(this, 75, 800, 400, 100);
   error.setFont(new Font("Dialog", Font.PLAIN, 24));
