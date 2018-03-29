@@ -357,6 +357,7 @@ void handleButtonEvents(GButton button, GEvent event){
       selectFolder("Choose folder to export", "massFileSelector");
     }else{
       selectInput("Choose File to load", "fileSelector");
+      
     }
   }
   if(button == directoryButton){
@@ -376,7 +377,11 @@ void fileSelector(File selection){
     field.loadWaypoints(selection.getAbsolutePath());
     String[] folders = selection.getAbsolutePath().split("\\\\");
     String n = folders[folders.length-1];
-    name.setText(n.substring(0, n.length()-4));
+    if(n.contains("_REV")){
+      name.setText(n.substring(0, n.length()-8));
+    }else{
+      name.setText(n.substring(0, n.length()-4));
+    }
     if(field.getReverse()){
       reverse.setValue(1); 
     }else{
@@ -562,7 +567,12 @@ void autoGenerate(){
     
     field.loadWaypoints(file.getAbsolutePath()); 
         
-    String n = file.getName().substring(0, file.getName().length()-4);
+    String n = file.getName();//.substring(0, file.getName().length()-4);
+    if(n.contains("_REV")){
+      n = n.substring(0, n.length()-8);
+    }else{
+      n = n.substring(0, n.length()-4);
+    }
     this.name.setText(n);
     
     println("Working on file " + n);
@@ -581,6 +591,7 @@ void autoGenerate(){
     field.disableMP();
     field.clearWaypoints();
   }
+  name.setText("");
   error.setText("Mass export complete");
    
 }//end method
