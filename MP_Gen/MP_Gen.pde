@@ -265,6 +265,7 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == newButton){
     pathButton.setText("Generate Path");
+    fileButton.setText("Export");
     pathButton.setEnabled(true);
     fileButton.setEnabled(false);
     velocityButton.setEnabled(false);
