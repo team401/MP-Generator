@@ -2,8 +2,8 @@ import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
 GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton,
-velocityButton, centerButton, leftButton, rightButton, loadButton, directoryButton;
-GTextField name, timeStep, wheelBase, wheelRadius, maxVel, maxAccel, maxJerk, directory;
+velocityButton, mirrorButton, centerButton, leftButton, rightButton, loadButton, directoryButton;
+GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxJerk, directory;//,wheelRadius;
 GLabel error;
 GSlider reverse;
 Field field;
@@ -26,7 +26,7 @@ void setup(){
   
   velocity = false;
 
-  METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+  //METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
   METERS_TO_INCHES = (1/0.3048) * 12;
   
   timestep = Double.parseDouble(findValue("timestep"))/1000;
@@ -36,22 +36,27 @@ void setup(){
   robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
   
   //misc
-  blueButton = new GButton(this, width/2-250, 550, 100, 100, "Blue");
+  /*
+  blueButton = new GButton(this, width/2-270, 560, 100, 100, "Blue");
   blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  redButton = new GButton(this, width/2-250, 660, 100, 100, "Red");
+  redButton = new GButton(this, width/2-270 + 120, 560, 100, 100, "Red");
   redButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  */
   
-  velocityButton = new GButton(this, width/2-250, 770, 100, 100, "Velocity");
+  velocityButton = new GButton(this, width/2-270, 560, 100, 100, "Velocity");
   velocityButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  centerButton = new GButton(this, width/2-250 + 110, 550, 100, 100, "Center");
+  mirrorButton = new GButton(this, width/2-150, 560, 100, 100, "Mirror");
+  mirrorButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  centerButton = new GButton(this, width/2-270, 670, 100, 100, "Center");
   centerButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  leftButton = new GButton(this, width/2-250 + 110, 660, 100, 100, "Left");
+  leftButton = new GButton(this, width/2-270 + 120, 670, 100, 100, "Left");
   leftButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  rightButton = new GButton(this, width/2-250 + 110, 770, 100, 100, "Right");
+  rightButton = new GButton(this, width/2-270, 780, 100, 100, "Right");
   rightButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   centerButton.setEnabled(false);
@@ -61,32 +66,32 @@ void setup(){
   rightButton.setEnabled(false);
   rightButton.setVisible(false);
   
-  blueButton.setEnabled(true);
-  redButton.setEnabled(false);
+  //blueButton.setEnabled(true);
+  //redButton.setEnabled(false);
   velocityButton.setEnabled(false);
   blue = false;
   
-  fileButton = new GButton(this, width/2-250, 320, 200, 100, "Export");
+  fileButton = new GButton(this, width/2-270, 320, 220, 100, "Export");
   fileButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   fileButton.setEnabled(false);
   
   //path stuff
-  pathButton = new GButton(this, width/2-250, 80, 200, 100, "Generate Path");
+  pathButton = new GButton(this, width/2-270, 80, 220, 100, "Generate Path");
   pathButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  newButton = new GButton(this, width/2-250, 200, 200, 100, "New path");
+  newButton = new GButton(this, width/2-270, 200, 220, 100, "New path");
   newButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   testButton = new GButton(this, 300, 800, 100, 100, "TEST");
   testButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  saveButton = new GButton(this, X_TEXT + 50, 520, 100, 50, "Save");
+  saveButton = new GButton(this, X_TEXT + 50, 520-40, 100, 50, "Save");
   saveButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  loadButton = new GButton(this, width/2-250, 440, 200, 100, "Load Path");
+  loadButton = new GButton(this, width/2-270, 440, 220, 100, "Load Path");
   loadButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  directoryButton = new GButton(this, X_TEXT + 25, 620, 150, 50, "File Path");
+  directoryButton = new GButton(this, X_TEXT + 25, 620-40, 150, 50, "File Path");
   directoryButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   //Use for debugging
@@ -103,27 +108,29 @@ void setup(){
   wheelBase.setText(findValue("width"));
   wheelBase.setPromptText("Robot Width (feet)");
   
+  /*
   wheelRadius = new GTextField(this, X_TEXT, 320, 200, 32);
   wheelRadius.setFont(new Font("Dialog", Font.PLAIN, 24));
   wheelRadius.setText(findValue("radius"));
   wheelRadius.setPromptText("Wheel Radius (in)");
+  */
   
-  timeStep = new GTextField(this, X_TEXT, 360, 200, 32);
+  timeStep = new GTextField(this, X_TEXT, 360-40, 200, 32);
   timeStep.setFont(new Font("Dialog", Font.PLAIN, 24));
   timeStep.setText(findValue("timestep"));
   timeStep.setPromptText("Timestep (millisec)");
   
-  maxVel = new GTextField(this, X_TEXT, 400, 200, 32);
+  maxVel = new GTextField(this, X_TEXT, 400-40, 200, 32);
   maxVel.setFont(new Font("Dialog", Font.PLAIN, 24));
   maxVel.setText(findValue("maxVelocity"));
   maxVel.setPromptText("Max Vel (meters)");
   
-  maxAccel = new GTextField(this, X_TEXT, 440, 200, 32);
+  maxAccel = new GTextField(this, X_TEXT, 440-40, 200, 32);
   maxAccel.setFont(new Font("Dialog", Font.PLAIN, 24));
   maxAccel.setText(findValue("maxAccel"));
   maxAccel.setPromptText("Max Accel (meters)");
   
-  maxJerk = new GTextField(this, X_TEXT, 480, 200, 32);
+  maxJerk = new GTextField(this, X_TEXT, 480-40, 200, 32);
   maxJerk.setFont(new Font("Dialog", Font.PLAIN, 24));
   maxJerk.setText(findValue("maxJerk"));
   maxJerk.setPromptText("Max Jerk (meters)");
@@ -133,13 +140,13 @@ void setup(){
   error.setLocalColorScheme(GConstants.RED_SCHEME);
   error.resizeToFit(false, false);
         
-  directory = new GTextField(this, X_TEXT, 580, 200, 32);
+  directory = new GTextField(this, X_TEXT, 580-40, 200, 32);
   directory.setFont(new Font("Dialog", Font.PLAIN, 24));
   directory.setText("profilecsv\\tank\\");
   directory.setPromptText("Directory");
   
   //sliders
-  reverse = new GSlider(this, X_TEXT, 780, 50, 50,25);
+  reverse = new GSlider(this, X_TEXT, 780-40, 50, 50,25);
   reverse.setNbrTicks(2);
   reverse.setStickToTicks(true);
   reverse.setShowTicks(false);
@@ -192,15 +199,15 @@ void draw(){
   textAlign(LEFT, BOTTOM);
   text("Settings", 120, 270);
   text("Width", 10, 312);
-  text("Radius", 10, 352);
-  text("Timestep", 10, 392);
-  text("Max Vel", 10, 432);
-  text("Max Accel", 10, 472);
-  text("Max Jerk", 10, 512);
+  //text("Radius", 10, 352);
+  text("Timestep", 10, 392-40);
+  text("Max Vel", 10, 432-40);
+  text("Max Accel", 10, 472-40);
+  text("Max Jerk", 10, 512-40);
   
-  text("Direction", 105, 780);
-  text("Forward", 30, 820);
-  text("Reverse", 190, 820);
+  text("Direction", 105, 780-40);
+  text("Forward", 30, 820-40);
+  text("Reverse", 190, 820-40);
 }
 void mouseClicked(){
   int w = width/2;
@@ -289,11 +296,11 @@ void handleButtonEvents(GButton button, GEvent event){
     println("TESTING");
   }
   if(button == saveButton){
-    String[] sets = {"width:"+wheelBase.getText(), "radius:"+wheelRadius.getText(), "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
+    String[] sets = {"width:"+wheelBase.getText(),/* "radius:"+wheelRadius.getText(),*/ "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
   "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText(), "angle:"+findValue("angle"),"mapIncrements:"+findValue("mapIncrements")};
     saveStrings("settings.txt", sets);
     
-    METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
+    //METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
     timestep = Double.parseDouble(findValue("timestep"))/1000;
     vel = Double.parseDouble(findValue("maxVelocity"));
     accel = Double.parseDouble(findValue("maxAccel"));
@@ -305,6 +312,7 @@ void handleButtonEvents(GButton button, GEvent event){
       velocity = false;
       velocityButton.setText("Velocity");
       
+      mirrorButton.setEnabled(true);
       centerButton.setEnabled(false);
       centerButton.setVisible(false);
       leftButton.setEnabled(false);
@@ -312,6 +320,7 @@ void handleButtonEvents(GButton button, GEvent event){
       rightButton.setEnabled(false);
       rightButton.setVisible(false);
       
+      /*
       if(blue){
         blueButton.setEnabled(false);
         redButton.setEnabled(true);
@@ -319,6 +328,7 @@ void handleButtonEvents(GButton button, GEvent event){
         blueButton.setEnabled(true);
         redButton.setEnabled(false);
       }
+      */
       pathButton.setEnabled(true);
       newButton.setEnabled(true);
       fileButton.setEnabled(true);
@@ -328,6 +338,7 @@ void handleButtonEvents(GButton button, GEvent event){
       velocity = true;
       velocityButton.setText("Paths");
       
+      mirrorButton.setEnabled(false);
       centerButton.setEnabled(true);
       centerButton.setVisible(true);
       leftButton.setEnabled(true);
@@ -335,14 +346,19 @@ void handleButtonEvents(GButton button, GEvent event){
       rightButton.setEnabled(true);
       rightButton.setVisible(true);
       
+      /*
       blueButton.setEnabled(false);
       redButton.setEnabled(false);
+      */
       pathButton.setEnabled(false);
       newButton.setEnabled(false);
       fileButton.setEnabled(false);
       testButton.setEnabled(false);
       loadButton.setEnabled(false);
     }
+  }
+  if(button == mirrorButton){
+    error.setText("JK! This feature is under development");
   }
   if(button == centerButton){
     graph = 0;
