@@ -422,6 +422,17 @@ class Field{
       waypoints.add(new float[]{Float.parseFloat(temp[0]), Float.parseFloat(temp[1]), Float.parseFloat(temp[2])});
     }
   }
+  void mirror(){
+    for (int i = 0;i<waypoints.size();i++){
+      waypoints.get(i)[0] = 27 - waypoints.get(i)[0];
+      if(waypoints.get(i)[2] > 180){
+        waypoints.get(i)[2] = 360 - (waypoints.get(i)[2] - 180);
+      }else{
+        waypoints.get(i)[2] = 180 - waypoints.get(i)[2];
+      }
+    }
+  }
+  
   void enableMP(){
     mp = true;
   }

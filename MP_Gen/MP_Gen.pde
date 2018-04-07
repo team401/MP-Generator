@@ -315,7 +315,7 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
   if(button == mirrorButton){
-    error.setText("JK! This feature is under development");
+    field.mirror();
   }
   if(button == centerButton){
     graph = 0;
