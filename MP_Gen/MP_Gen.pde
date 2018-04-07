@@ -187,8 +187,8 @@ void draw(){
   text("Max Jerk", 10, 512-40);
   
   text("Direction", X_TEXT + 50, 780-40);
-  text("Forward", X_TEXT + 130, 820-40);
-  text("Reverse", X_TEXT-20, 820-40);
+  text("Forward", X_TEXT - 25, 820-40);
+  text("Reverse", X_TEXT + 130, 820-40);
 }
 void mouseClicked(){
   int w = width/2;
