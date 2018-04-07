@@ -1,7 +1,7 @@
 import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
-GButton blueButton, redButton, fileButton, pathButton, testButton, newButton, saveButton,
+GButton fileButton, pathButton, testButton, newButton, saveButton,
 velocityButton, mirrorButton, centerButton, leftButton, rightButton, loadButton, directoryButton;
 GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxJerk, directory;//,wheelRadius;
 GLabel error;
@@ -12,7 +12,7 @@ boolean blue, velocity;
 int w, graph;
 final int X_TEXT = 130;
 int angle;
-double METERS_TO_REV, METERS_TO_INCHES;
+double METERS_TO_INCHES;
 File massExport;
 double timestep, pos, vel, accel, jerk, robotWidth;
 
@@ -26,7 +26,6 @@ void setup(){
   
   velocity = false;
 
-  //METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
   METERS_TO_INCHES = (1/0.3048) * 12;
   
   timestep = Double.parseDouble(findValue("timestep"))/1000;
@@ -35,15 +34,7 @@ void setup(){
   jerk = Double.parseDouble(findValue("maxJerk"));
   robotWidth = Double.parseDouble(findValue("width"))*0.3048;//in meters
   
-  //misc
-  /*
-  blueButton = new GButton(this, width/2-270, 560, 100, 100, "Blue");
-  blueButton.setFont(new Font("Dialog", Font.PLAIN, 24));
-  
-  redButton = new GButton(this, width/2-270 + 120, 560, 100, 100, "Red");
-  redButton.setFont(new Font("Dialog", Font.PLAIN, 24));
-  */
-  
+  //misc  
   velocityButton = new GButton(this, width/2-270, 560, 100, 100, "Velocity");
   velocityButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
@@ -66,8 +57,6 @@ void setup(){
   rightButton.setEnabled(false);
   rightButton.setVisible(false);
   
-  //blueButton.setEnabled(true);
-  //redButton.setEnabled(false);
   velocityButton.setEnabled(false);
   blue = false;
   
@@ -107,14 +96,7 @@ void setup(){
   wheelBase.setFont(new Font("Dialog", Font.PLAIN, 24));
   wheelBase.setText(findValue("width"));
   wheelBase.setPromptText("Robot Width (feet)");
-  
-  /*
-  wheelRadius = new GTextField(this, X_TEXT, 320, 200, 32);
-  wheelRadius.setFont(new Font("Dialog", Font.PLAIN, 24));
-  wheelRadius.setText(findValue("radius"));
-  wheelRadius.setPromptText("Wheel Radius (in)");
-  */
-  
+    
   timeStep = new GTextField(this, X_TEXT, 360-40, 200, 32);
   timeStep.setFont(new Font("Dialog", Font.PLAIN, 24));
   timeStep.setText(findValue("timestep"));
@@ -199,7 +181,6 @@ void draw(){
   textAlign(LEFT, BOTTOM);
   text("Settings", 120, 270);
   text("Width", 10, 312);
-  //text("Radius", 10, 352);
   text("Timestep", 10, 392-40);
   text("Max Vel", 10, 432-40);
   text("Max Accel", 10, 472-40);
@@ -236,16 +217,6 @@ void handleButtonEvents(GButton button, GEvent event){
   
   error.setText("");
   
-  if(button == blueButton){
-    blueButton.setEnabled(false);
-    redButton.setEnabled(true);
-    blue = true;
-  }
-  if(button == redButton){
-    blueButton.setEnabled(true);
-    redButton.setEnabled(false);
-    blue = false;
-  }
   if(button == fileButton){
     if(name.getText().length() > 0 && !name.getText().equals(" ")){//there is some text
       boolean exportSuccess = false;
@@ -300,7 +271,6 @@ void handleButtonEvents(GButton button, GEvent event){
   "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText(), "angle:"+findValue("angle"),"mapIncrements:"+findValue("mapIncrements")};
     saveStrings("settings.txt", sets);
     
-    //METERS_TO_REV = (1/ 0.3048) * 12 * (1 / (2 * Double.parseDouble(findValue("radius"))*Math.PI));
     timestep = Double.parseDouble(findValue("timestep"))/1000;
     vel = Double.parseDouble(findValue("maxVelocity"));
     accel = Double.parseDouble(findValue("maxAccel"));
@@ -320,15 +290,6 @@ void handleButtonEvents(GButton button, GEvent event){
       rightButton.setEnabled(false);
       rightButton.setVisible(false);
       
-      /*
-      if(blue){
-        blueButton.setEnabled(false);
-        redButton.setEnabled(true);
-      }else{
-        blueButton.setEnabled(true);
-        redButton.setEnabled(false);
-      }
-      */
       pathButton.setEnabled(true);
       newButton.setEnabled(true);
       fileButton.setEnabled(true);
@@ -346,10 +307,6 @@ void handleButtonEvents(GButton button, GEvent event){
       rightButton.setEnabled(true);
       rightButton.setVisible(true);
       
-      /*
-      blueButton.setEnabled(false);
-      redButton.setEnabled(false);
-      */
       pathButton.setEnabled(false);
       newButton.setEnabled(false);
       fileButton.setEnabled(false);
