@@ -128,7 +128,7 @@ void setup(){
   directory.setPromptText("Directory");
   
   //sliders
-  reverse = new GSlider(this, X_TEXT, 780-40, 50, 50,25);
+  reverse = new GSlider(this, X_TEXT+75, 780-40, 50, 50,25);
   reverse.setNbrTicks(2);
   reverse.setStickToTicks(true);
   reverse.setShowTicks(false);
@@ -186,9 +186,9 @@ void draw(){
   text("Max Accel", 10, 472-40);
   text("Max Jerk", 10, 512-40);
   
-  text("Direction", 105, 780-40);
-  text("Forward", 30, 820-40);
-  text("Reverse", 190, 820-40);
+  text("Direction", X_TEXT + 50, 780-40);
+  text("Forward", X_TEXT + 130, 820-40);
+  text("Reverse", X_TEXT-20, 820-40);
 }
 void mouseClicked(){
   int w = width/2;
