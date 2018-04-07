@@ -267,7 +267,7 @@ class Field{
       rect(toCoordX(9.07), toCoordY(27.3)-5, 9*SPACING, 1.16*SPACING);
       //plates
       rect(toCoordX(6.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
-      rect(toCoordX(18.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
+      rect(toCoordX(17.83), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
       
       noFill();
       

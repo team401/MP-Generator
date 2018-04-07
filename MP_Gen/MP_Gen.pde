@@ -281,7 +281,7 @@ void handleButtonEvents(GButton button, GEvent event){
   if(button == saveButton){
     String[] sets = {"width:"+wheelBase.getText(),/* "radius:"+wheelRadius.getText(),*/ "timestep:"+timeStep.getText(), "maxVelocity:"+maxVel.getText(),
   "maxAccel:"+maxAccel.getText(), "maxJerk:"+maxJerk.getText(), "angle:"+findValue("angle"),"mapIncrements:"+findValue("mapIncrements")};
-    saveStrings("settings.txt", sets);
+    saveStrings("config.cfg", sets);
     
     timestep = Double.parseDouble(findValue("timestep"))/1000;
     vel = Double.parseDouble(findValue("maxVelocity"));
@@ -522,7 +522,7 @@ boolean exportToCSV(Field field, String name, boolean revs){
 }
 //needs better
 String findValue(String keyword){
-  String[] data = loadStrings("settings.txt");
+  String[] data = loadStrings("config.cfg");
   int index = 0;
   for(int i = 0;i<data.length;i++){
     if(data[i].startsWith(keyword)){
