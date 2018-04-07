@@ -243,16 +243,28 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
   if(button == pathButton){
-    boolean success = generatePaths(field, name.getText());
-    if(success && field.getWaypoints().length > 0){
-      pathsGenerated();
+    if(field.getMP()){
+      pathButton.setText("Generate Path");
+      field.disableMP();
+      field.clearGeneratedPaths();
+      
     }else{
-      if(field.getWaypoints() == null){
-        pathButton.setText("Please enter a path");
+      boolean success = generatePaths(field, name.getText());
+      if(success && field.getWaypoints().length > 0){
+        pathButton.setText("Waypoints");
+        newButton.setEnabled(true);
+        fileButton.setEnabled(true);
+        loadButton.setEnabled(false);
+        velocityButton.setEnabled(true);
+      }else{
+        if(field.getWaypoints() == null){
+          pathButton.setText("Please enter a path");
+        }
       }
     }
   }
   if(button == newButton){
+    pathButton.setText("Generate Path");
     pathButton.setEnabled(true);
     fileButton.setEnabled(false);
     velocityButton.setEnabled(false);

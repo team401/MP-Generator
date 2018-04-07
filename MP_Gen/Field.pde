@@ -475,6 +475,11 @@ class Field{
   void setRightPathVelocity(double[][] path){
     rightPathVelocity = path;
   }
+  void clearGeneratedPaths(){
+    smoothPathVelocity = null;
+    leftPathVelocity = null;
+    rightPathVelocity = null;
+  }
   void printPath(double[][] path){
     for(int i = 0;i<path.length;i++){
       println("("+path[i][0]+","+path[i][1]+")");
