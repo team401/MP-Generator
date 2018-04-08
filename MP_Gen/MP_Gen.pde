@@ -158,11 +158,7 @@ void draw(){
       break;
     }
   }else{
-    if(blue){
-      text("Blue Alliance", width*0.75, 50);
-    }else{
-      text("Red Alliance", width*0.75, 50);
-    }
+    text("Field", width*0.75-25, 50);
   }
   
   //text inputs
