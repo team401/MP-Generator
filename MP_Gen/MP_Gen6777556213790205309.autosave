@@ -146,15 +146,15 @@ void draw(){
   if(velocity){
     switch(graph){
       case 0:
-        text("Center Path Velocity", width*0.75, 50);
+        text("Center Path Velocity", width*0.75-25, 50);
       break;
       
       case 1:
-        text("Left Path Velocity", width*0.75, 50);
+        text("Left Path Velocity", width*0.75-25, 50);
       break;
       
       case 2:
-        text("Right Path Velocity", width*0.75, 50);
+        text("Right Path Velocity", width*0.75-25, 50);
       break;
     }
   }else{
