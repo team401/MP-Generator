@@ -173,7 +173,7 @@ class Field{
       int yAxis = (HEIGHT);
       //int space = (SPACING)/2;
       for(int i = 0;i<=xAxis*(1/scale);i++){
-        if(i%(1/scale)==0){
+        if(i%(1/scale)==0 && scale != 1.0){
           strokeWeight(1);
         }else{
           strokeWeight(0);
@@ -184,7 +184,7 @@ class Field{
         }
       }
       for(int i = 0;i<=yAxis*(1/scale);i++){
-        if(i%(1/scale)==0){
+        if(i%(1/scale)==0 && scale != 1.0){
           strokeWeight(1);
         }else{
           strokeWeight(0);
