@@ -230,6 +230,7 @@ void handleButtonEvents(GButton button, GEvent event){
         fileButton.setEnabled(false);
         loadButton.setEnabled(true);
         name.setText("");
+        pathButton.setText("Generate Path");
       }
       
     }else{
