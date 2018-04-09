@@ -400,8 +400,10 @@ public void handleSliderEvents(GValueControl slider, GEvent event) {
 boolean exportToCSVReverse(Field field, String name, boolean revs){
   boolean exportSuccessL = false;
   boolean exportSuccessR = false;
+  boolean exportSuccessC = false;
   PrintWriter outputL = null;
   PrintWriter outputR = null;
+  PrintWriter outputC = null;
   try{
       outputL = createWriter(directory.getText() + "/profiles/" + name+"_R.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
@@ -457,15 +459,43 @@ boolean exportToCSVReverse(Field field, String name, boolean revs){
   outputR.flush();
   outputR.close();
   
-  return exportSuccessL && exportSuccessR;
+  try{
+      outputC = createWriter(directory.getText() + "/profiles/" + name+"_C.csv");
+    for(int i = 0;i<field.smoothPathVelocity.length;i++){
+      if(revs){
+        //rev's per second
+        //meters to feet to inches to revolutions
+        double position = field.smoothPathVelocity[i][0] * METERS_TO_INCHES * -1; 
+        double velocity = field.smoothPathVelocity[i][1] * METERS_TO_INCHES * -1 ;
+        double acceleration = field.smoothPathVelocity[i][2] * METERS_TO_INCHES;
+        double heading = (field.smoothPathVelocity[i][3] * (180/Math.PI) - 180) % 360;
+        outputC.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
+      }else{
+        outputC.println(field.smoothPathVelocity[i][0] + "," + field.smoothPathVelocity[i][1] + "," + 
+        findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
+      }
+    }
+    exportSuccessC = true;
+  }catch(RuntimeException e){
+    error.setText("File " + name + "_C.csv is open! Close the file and try again.");
+    println(e);
+    exportSuccessC = false;
+  }
+  outputC.flush();
+  outputC.close();
+  
+  return exportSuccessL && exportSuccessR && exportSuccessC;
 }
 
 // Doesn't work if the file is open
 boolean exportToCSV(Field field, String name, boolean revs){
   boolean exportSuccessL = false;
   boolean exportSuccessR = false;
+  boolean exportSuccessC = false;
   PrintWriter outputL = null;
   PrintWriter outputR = null;
+  PrintWriter outputC = null;
+  
   try{
       outputL = createWriter(directory.getText() + "/profiles/" + name+"_L.csv");
     for(int i = 0;i<field.leftPathVelocity.length;i++){
@@ -516,7 +546,32 @@ boolean exportToCSV(Field field, String name, boolean revs){
   outputR.flush();
   outputR.close();
   
-  return exportSuccessL && exportSuccessR;
+  try{
+      outputC = createWriter(directory.getText() + "/profiles/" + name+"_C.csv");
+    for(int i = 0;i<field.smoothPathVelocity.length;i++){
+      if(revs){
+        //rev's per second
+        //meters to feet to inches to revolutions
+        double position = field.smoothPathVelocity[i][0] * METERS_TO_INCHES;
+        double velocity = field.smoothPathVelocity[i][1] * METERS_TO_INCHES;
+        double acceleration = field.smoothPathVelocity[i][2] * METERS_TO_INCHES;
+        double heading = field.smoothPathVelocity[i][3] * (180/Math.PI);
+        outputC.println(position + "," + velocity + "," + findValue("timestep") + "," + acceleration + "," + heading);
+      }else{
+        outputC.println(field.smoothPathVelocity[i][0] + "," + field.smoothPathVelocity[i][1] + "," + 
+        findValue("timestep") + "," + field.smoothPathVelocity[i][3]);
+      }
+    }     
+    exportSuccessC = true;
+  }catch(RuntimeException e){
+    error.setText("File " + name + "_C.csv is open! Close the file and try again.");
+    println(e);
+    exportSuccessC = false;
+  }
+  outputC.flush();
+  outputC.close();
+  
+  return exportSuccessL && exportSuccessR && exportSuccessC;
 }
 //needs better
 String findValue(String keyword){
