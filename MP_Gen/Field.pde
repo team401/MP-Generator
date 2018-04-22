@@ -200,7 +200,7 @@ class Field{
       fill(255);
       
       //Power Cube Zone
-      rect(toCoordX(11.625), toCoordY(12), 3.75*SPACING, 3.5*SPACING);
+      rect(toCoordX(11.625), toCoordY(11.605), 3.75*SPACING, 3.5*SPACING);
       
       //Null territory
       rect(toCoordX(0), toCoordY(30), 8*SPACING, 6*SPACING);
@@ -228,7 +228,7 @@ class Field{
       noFill();
       stroke(0);
       strokeWeight(5);
-      rect(toCoordX(7.5), toCoordY(16), 12*SPACING, 4*SPACING);
+      rect(toCoordX(7.105), toCoordY(16.3), 12.79*SPACING, 4.6*SPACING);
       
       fill(220,220,220);
       //plates
@@ -274,15 +274,15 @@ class Field{
       strokeWeight(3);
       fill(255,255,0);
       for(int i = 0;i<6;i++){
-        rect(toCoordX(7.5 + i*2.18), toCoordY(17.083), 1.083*SPACING, 1.083*SPACING);
+        rect(toCoordX(7.105 + i*2.34), toCoordY(17.478), 1.083*SPACING, 1.083*SPACING);
       }
       //rect(toCoordX(11.625), toCoordY(12), 3.75*SPACING, 3.5*SPACING);
       for(int i = 0;i<3;i++){
-        rect(toCoordX(11.85 + i*1.083), toCoordY(12), 1.083*SPACING, 1.083*SPACING);
+        rect(toCoordX(11.85 + i*1.083), toCoordY(11.605), 1.083*SPACING, 1.083*SPACING);
       }
-      rect(toCoordX(12.4), toCoordY(12-1.083), 1.083*SPACING, 1.083*SPACING);
-      rect(toCoordX(12.4 + 1.083), toCoordY(12-1.083), 1.083*SPACING, 1.083*SPACING);
-      rect(toCoordX(13), toCoordY(12-2.166), 1.083*SPACING, 1.083*SPACING);
+      rect(toCoordX(12.4), toCoordY(11.605-1.083), 1.083*SPACING, 1.083*SPACING);
+      rect(toCoordX(12.4 + 1.083), toCoordY(11.605-1.083), 1.083*SPACING, 1.083*SPACING);
+      rect(toCoordX(13), toCoordY(11.605-2.166), 1.083*SPACING, 1.083*SPACING);
       
       
       noFill();
