@@ -269,6 +269,22 @@ class Field{
       rect(toCoordX(6.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
       rect(toCoordX(17.83), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
       
+      
+      //Power cubes
+      strokeWeight(3);
+      fill(255,255,0);
+      for(int i = 0;i<6;i++){
+        rect(toCoordX(7.5 + i*2.225), toCoordY(17), 0.916*SPACING, 0.916*SPACING);
+      }
+      //rect(toCoordX(11.625), toCoordY(12), 3.75*SPACING, 3.5*SPACING);
+      for(int i = 0;i<3;i++){
+        rect(toCoordX(12.0961 + i*0.916), toCoordY(12), 0.916*SPACING, 0.916*SPACING);
+      }
+      rect(toCoordX(12.6), toCoordY(12-0.961), 0.916*SPACING, 0.916*SPACING);
+      rect(toCoordX(12.6 + 0.916), toCoordY(12-0.961), 0.916*SPACING, 0.916*SPACING);
+      rect(toCoordX(13.05), toCoordY(12-1.922), 0.916*SPACING, 0.916*SPACING);
+      
+      
       noFill();
       
       
