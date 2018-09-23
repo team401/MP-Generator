@@ -377,6 +377,7 @@ class Field{
         vertex(x, y);
       }
       endShape();
+      stroke(0);
       fill(255);
       }
     }//end velocity
