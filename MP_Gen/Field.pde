@@ -384,8 +384,8 @@ class Field{
       }
     }
   }
-  void exportCrateLayout(String filepath){
-    PrintWriter layout = createWriter(filepath + ".csv");
+  void exportCrateLayout(String filepath, String name){
+    PrintWriter layout = createWriter(filepath + "\\" + name + ".csv");
     for(Crate crate : crates){
       layout.println(crate.getPoint());
     }
@@ -397,7 +397,7 @@ class Field{
     //clear the arraylist
     int temp = crates.size();
     for(int i = 0;i<temp;i++){
-      crates.remove(i);
+      crates.remove(crates.size() - 1);
     }
     
     String[] cratePoints = loadStrings(filepath);
@@ -406,8 +406,9 @@ class Field{
       //So point[0] = x point[1] = y
       String[] point = split(cratePoints[i], ",");
       
-      crates.add(new Crate(toMapX(Float.parseFloat(point[0])), toMapY(Float.parseFloat(point[1]))));
+      crates.add(new Crate(toCoordX(Float.parseFloat(point[0])), toCoordY(Float.parseFloat(point[1]))));
     }
+    
   }
   int getCrateLayoutLength(){
     return crates.size();

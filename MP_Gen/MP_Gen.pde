@@ -430,15 +430,14 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == loadCratesButton){
     String filepath = findValue("crateLayoutPath:");
-    File defaultStart = new File(sketchPath(filepath + " "));
-    println(defaultStart.getAbsolutePath());
+    File defaultStart = new File(sketchPath(filepath + "\\ "));
     selectInput("Select crate layout", "crateLayoutSelector", defaultStart);
     
   }
   if(button == saveCratesButton){
     if(layout.getText().length() > 0 && field.getCrateLayoutLength() > 0){
       String filepath = findValue("crateLayoutPath:");
-      field.exportCrateLayout(filepath + "/" + layout.getText());
+      field.exportCrateLayout(filepath, layout.getText());
       layout.setLocalColorScheme(GConstants.BLUE_SCHEME);
     }else{
       layout.setLocalColorScheme(GConstants.RED_SCHEME);
@@ -447,6 +446,7 @@ void handleButtonEvents(GButton button, GEvent event){
 }
 void crateLayoutSelector(File selection){
   if(selection != null){
+    println(selection.getAbsolutePath());
     field.loadCrateLayout(selection.getAbsolutePath());
   }
 }
