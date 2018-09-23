@@ -11,7 +11,9 @@ class Crate{
   }
   
   private void display(){
+    fill(255);
     rect(x, y, WIDTH, HEIGHT);
+    fill(0);
   }
   boolean mouseOverCrate(){
     return (x > mouseX && x < mouseX + WIDTH && y > y && y < mouseY + HEIGHT);

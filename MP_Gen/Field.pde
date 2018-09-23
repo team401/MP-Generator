@@ -195,11 +195,12 @@ class Field{
       //CenterLine
       strokeWeight(5);
       line(toCoordX(0), toCoordY(27), toCoordX(27), toCoordY(27));
-      strokeWeight(2);
-      
-      //can still add to wayPoints
-      //TODO fix that
-      if(mp){     
+      strokeWeight(2); 
+    }
+  }
+  
+  void displayInfo(){
+    if(mp){     
         //draws the smooth path
         noFill();
         beginShape();
@@ -260,14 +261,9 @@ class Field{
         vertex(x, y);
       }
       endShape();
-      stroke(0);
-      fill(255);
       }
-      
-    }//end velocity
-  }
-  
-  void displayInfo(){
+      stroke(0);
+      fill(0);
    //display the coordinates
       if(withinField()){
         fill(0);
