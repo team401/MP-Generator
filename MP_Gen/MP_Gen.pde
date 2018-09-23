@@ -2,7 +2,8 @@ import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
 GButton fileButton, pathButton, testButton, newButton, saveButton,
-velocityButton, mirrorButton, centerButton, leftButton, rightButton, loadButton, directoryButton, loadCratesButton;
+velocityButton, mirrorButton, centerButton, leftButton, rightButton,
+loadButton, directoryButton, saveCratesButton, loadCratesButton;
 GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxJerk, directory;//,wheelRadius;
 GLabel error;
 GSlider reverse;
@@ -14,7 +15,7 @@ boolean addingCrate;
 int w, graph, crateOffsetX, crateOffsetY, crateX, crateY;
 ArrayList<Crate> crates;
 final int X_TEXT = 130;
-final int ADD_CRATE_X = 510, ADD_CRATE_Y = 750, ADD_CRATE_SIZE = 100;
+final int ADD_CRATE_SIZE = 75, ADD_CRATE_X = (1440/2 - 160 - ADD_CRATE_SIZE/2), ADD_CRATE_Y = 700;
 int angle;
 double METERS_TO_INCHES;
 File massExport;
@@ -95,7 +96,10 @@ void setup(){
   directoryButton = new GButton(this, X_TEXT + 25, 620-40, 150, 50, "File Path");
   directoryButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
-  loadCratesButton = new GButton(this, width/2-270, 875, 220, 50, "Load Crates Layout");
+  saveCratesButton = new GButton(this, width/2-270, ADD_CRATE_Y + 100, 220, 50, "Save Crate Layout");
+  saveCratesButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  loadCratesButton = new GButton(this, width/2-270, ADD_CRATE_Y + 160, 220, 50, "Load Crate Layout");
   loadCratesButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
   //Use for debugging
@@ -206,10 +210,11 @@ void draw(){
   text("Reverse", X_TEXT + 130, 820-40);
   
   //Crates
-  text("Place Crates", width/2 - 230, 725);
+  text("Place Crates", width/2 - 230, ADD_CRATE_Y - 5);
   
   fill(255);
-  if(mouseX > width/2 - 210 && mouseX < width/2 - 110 && mouseY > 750 && mouseY < 850){
+  if(mouseX > ADD_CRATE_X && mouseX < ADD_CRATE_X + ADD_CRATE_SIZE
+  && mouseY > ADD_CRATE_Y && mouseY < ADD_CRATE_Y + ADD_CRATE_SIZE){
     strokeWeight(3);
   }else{
     strokeWeight(1.5);
