@@ -2,15 +2,19 @@ import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
 GButton fileButton, pathButton, testButton, newButton, saveButton,
-velocityButton, mirrorButton, centerButton, leftButton, rightButton, loadButton, directoryButton;
+velocityButton, mirrorButton, centerButton, leftButton, rightButton, loadButton, directoryButton, loadCratesButton;
 GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxJerk, directory;//,wheelRadius;
 GLabel error;
 GSlider reverse;
 Field field;
 Trajectory traj;
 boolean blue, velocity;
-int w, graph;
+
+boolean addingCrate;
+int w, graph, crateOffsetX, crateOffsetY, crateX, crateY;
+ArrayList<Crate> crates;
 final int X_TEXT = 130;
+final int ADD_CRATE_X = 510, ADD_CRATE_Y = 750, ADD_CRATE_SIZE = 100;
 int angle;
 double METERS_TO_INCHES;
 File massExport;
@@ -23,6 +27,14 @@ void setup(){
   w = width/2;
   angle = 90;
   graph = 0;
+  
+  addingCrate = false;
+  crateOffsetX = ADD_CRATE_SIZE/2;
+  crateOffsetY = ADD_CRATE_SIZE/2;
+  crateX = ADD_CRATE_X;
+  crateY = ADD_CRATE_Y;
+  crates = new ArrayList<Crate>();
+  
   
   velocity = false;
 
@@ -83,6 +95,9 @@ void setup(){
   directoryButton = new GButton(this, X_TEXT + 25, 620-40, 150, 50, "File Path");
   directoryButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
+  loadCratesButton = new GButton(this, width/2-270, 875, 220, 50, "Load Crates Layout");
+  loadCratesButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
   //Use for debugging
   testButton.setEnabled(false);
   testButton.setVisible(false);
@@ -140,6 +155,10 @@ void draw(){
   background(200);
   field.display();
   
+  for(Crate crate : crates){
+    crate.display();
+  }
+  
   fill(0);
   textSize(24);
   
@@ -185,11 +204,34 @@ void draw(){
   text("Direction", X_TEXT + 50, 780-40);
   text("Forward", X_TEXT - 25, 820-40);
   text("Reverse", X_TEXT + 130, 820-40);
+  
+  //Crates
+  text("Place Crates", width/2 - 230, 725);
+  
+  fill(255);
+  if(mouseX > width/2 - 210 && mouseX < width/2 - 110 && mouseY > 750 && mouseY < 850){
+    strokeWeight(3);
+  }else{
+    strokeWeight(1.5);
+  }
+  
+  rect(ADD_CRATE_X, ADD_CRATE_Y, ADD_CRATE_SIZE, ADD_CRATE_SIZE);
+  
+  if(addingCrate){
+    if(field.withinField()){
+      rect(crateX, crateY, Crate.WIDTH, Crate.HEIGHT);
+    }else{
+      rect(crateX, crateY, ADD_CRATE_SIZE, ADD_CRATE_SIZE);
+    }
+  }
+  fill(0);
+  
+  field.displayInfo();
 }
+
 void mouseClicked(){
   int w = width/2;
-  if(mouseX >= w && mouseX <= w+(Field.WIDTH*Field.SPACING) && mouseY >= 80 && mouseY <= 80+(Field.HEIGHT*Field.SPACING) 
-  && !field.getMP()){
+  if(field.withinField() && !field.getMP()){
     if(mouseButton == LEFT){
       field.addWaypoint(mouseX, mouseY);
       pathButton.setText("Generate Path");
@@ -199,6 +241,35 @@ void mouseClicked(){
     }
   }
 }
+void mousePressed(MouseEvent event){
+  if(mouseX > width/2 - 210 && mouseX < width/2 - 110 && mouseY > 750 && mouseY < 850){
+    addingCrate = true;
+  }else{
+    addingCrate = false;
+  }
+  
+}
+void mouseDragged(MouseEvent event){
+  if(addingCrate){
+    if(field.withinField()){
+      crateX = mouseX - Crate.WIDTH/2;
+      crateY = mouseY - Crate.HEIGHT/2;
+    }else{
+      crateX = mouseX - ADD_CRATE_SIZE/2;
+      crateY = mouseY - ADD_CRATE_SIZE/2;
+    }
+  }
+}
+void mouseReleased(MouseEvent event){
+  if(field.withinField() && addingCrate){
+    Crate crate = new Crate(mouseX - (Crate.WIDTH/2), mouseY - (Crate.HEIGHT/2));
+    crates.add(crate);
+  }
+  addingCrate = false;
+  crateX = ADD_CRATE_X;
+  crateY = ADD_CRATE_Y;
+}
+
 void mouseWheel(MouseEvent event){
   float e = event.getAmount();
   int da = Integer.parseInt(findValue("angle"));
@@ -346,6 +417,9 @@ void handleButtonEvents(GButton button, GEvent event){
   }
   if(button == directoryButton){
     selectFolder("Choose export path", "pathSelector");
+  }
+  if(button == loadCratesButton){
+    
   }
 }
 void pathSelector(File selection){

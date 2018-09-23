@@ -168,10 +168,7 @@ class Field{
       
       //grid
       int xAxis = (WIDTH);
-      //xAxis = (int)map(xAxis, 0, WIDTH, 0, WIDTH*2);
-      //println(xAxis);
       int yAxis = (HEIGHT);
-      //int space = (SPACING)/2;
       for(int i = 0;i<=xAxis*(1/scale);i++){
         if(i%(1/scale)==0 && scale != 1.0){
           strokeWeight(1);
@@ -198,34 +195,8 @@ class Field{
       //CenterLine
       strokeWeight(5);
       line(toCoordX(0), toCoordY(27), toCoordX(27), toCoordY(27));
+      strokeWeight(2);
       
-      
-      //display the coordinates
-      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
-        fill(0);
-        textSize(24);
-        float mapX = toMapX(mouseX);
-        float mapY = toMapY(mouseY);
-        
-        int x = toCoordX(mapX);
-        int y = toCoordY(mapY);
-        
-        if(angle > 359){
-          angle = 0;
-        }
-        if(angle < 0){
-          angle = 360 - Integer.parseInt(findValue("angle"));
-        }
-              
-        text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
-        
-        strokeWeight(12*scale);
-        line(x, y, x, y);
-        
-        //draws the arrow
-        //using screen coordinates
-        arrow(mapX, mapY, angle);
-      }
       //can still add to wayPoints
       //TODO fix that
       if(mp){     
@@ -289,10 +260,45 @@ class Field{
         vertex(x, y);
       }
       endShape();
+      stroke(0);
       fill(255);
       }
+      
     }//end velocity
   }
+  
+  void displayInfo(){
+   //display the coordinates
+      if(withinField()){
+        fill(0);
+        textSize(24);
+        float mapX = toMapX(mouseX);
+        float mapY = toMapY(mouseY);
+        
+        int x = toCoordX(mapX);
+        int y = toCoordY(mapY);
+        
+        if(angle > 359){
+          angle = 0;
+        }
+        if(angle < 0){
+          angle = 360 - Integer.parseInt(findValue("angle"));
+        }
+              
+        
+        if(!addingCrate){
+          text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+        
+          strokeWeight(12*scale);
+          line(x, y, x, y);
+        
+          //draws the arrow
+          //using screen coordinates
+          arrow(mapX, mapY, angle);
+        }
+      }
+  }
+  
   void addWaypoint(int msX, int msY){
     //int angle = 0;//make this real later
     int w = width/2;
@@ -412,6 +418,10 @@ class Field{
     for(int i = 0;i<path.length;i++){
       println("("+path[i][0]+","+path[i][1]+")");
     }
+  }
+  boolean withinField(){
+    return mouseX >= w && mouseX <= w+(Field.WIDTH*Field.SPACING) 
+    && mouseY >= 80 && mouseY <= 80+(Field.HEIGHT*Field.SPACING);
   }
   //angle in degrees
   private void arrow(float x1, float y1, int angle){
