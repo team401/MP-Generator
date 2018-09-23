@@ -4,7 +4,7 @@ import java.awt.Color;
 GButton fileButton, pathButton, testButton, newButton, saveButton,
 velocityButton, mirrorButton, centerButton, leftButton, rightButton,
 loadButton, directoryButton, saveCratesButton, loadCratesButton;
-GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxJerk, directory;//,wheelRadius;
+GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxJerk, directory, layout;//,wheelRadius;
 GLabel error;
 GSlider reverse;
 Field field;
@@ -13,7 +13,6 @@ boolean blue, velocity;
 
 boolean addingCrate;
 int w, graph, crateOffsetX, crateOffsetY, crateX, crateY;
-ArrayList<Crate> crates;
 final int X_TEXT = 130;
 final int ADD_CRATE_SIZE = 75, ADD_CRATE_X = (1440/2 - 160 - ADD_CRATE_SIZE/2), ADD_CRATE_Y = 700;
 int angle;
@@ -34,7 +33,6 @@ void setup(){
   crateOffsetY = ADD_CRATE_SIZE/2;
   crateX = ADD_CRATE_X;
   crateY = ADD_CRATE_Y;
-  crates = new ArrayList<Crate>();
   
   
   velocity = false;
@@ -146,6 +144,10 @@ void setup(){
   directory.setText("profilecsv\\tank\\");
   directory.setPromptText("Directory");
   
+  layout = new GTextField(this, X_TEXT, 120, 200, 32);
+  layout.setFont(new Font("Dialog", Font.PLAIN, 24));
+  layout.setPromptText("Layout Name");
+  
   //sliders
   reverse = new GSlider(this, X_TEXT+75, 780-40, 50, 50,25);
   reverse.setNbrTicks(2);
@@ -159,9 +161,6 @@ void draw(){
   background(200);
   field.display();
   
-  for(Crate crate : crates){
-    crate.display();
-  }
   
   fill(0);
   textSize(24);
@@ -230,7 +229,7 @@ void draw(){
     }
   }
   fill(0);
-  
+  strokeWeight(1.5);
   field.displayInfo();
 }
 
@@ -242,12 +241,17 @@ void mouseClicked(){
       pathButton.setText("Generate Path");
     }
     if(mouseButton == RIGHT){
-      field.removeWaypoint();
+      if(field.mouseOverCrate()){
+        field.removeCrateUnderMouse();
+      }else{
+        field.removeWaypoint();
+      }
     }
   }
 }
 void mousePressed(MouseEvent event){
-  if(mouseX > width/2 - 210 && mouseX < width/2 - 110 && mouseY > 750 && mouseY < 850){
+  if(mouseX > ADD_CRATE_X && mouseX < ADD_CRATE_X + ADD_CRATE_SIZE 
+  && mouseY > ADD_CRATE_Y && mouseY < ADD_CRATE_Y + ADD_CRATE_SIZE){
     addingCrate = true;
   }else{
     addingCrate = false;
@@ -268,7 +272,7 @@ void mouseDragged(MouseEvent event){
 void mouseReleased(MouseEvent event){
   if(field.withinField() && addingCrate){
     Crate crate = new Crate(mouseX - (Crate.WIDTH/2), mouseY - (Crate.HEIGHT/2));
-    crates.add(crate);
+    field.addCrate(crate);
   }
   addingCrate = false;
   crateX = ADD_CRATE_X;
@@ -413,10 +417,11 @@ void handleButtonEvents(GButton button, GEvent event){
     graph = 2;
   }
   if(button == loadButton){
+    File defaultPath = new File(sketchPath("/profilecsv/tank/Waypoints/ "));
     if(keyCode == SHIFT){
-      selectFolder("Choose folder to export", "massFileSelector");
+      selectFolder("Choose folder to export", "massFileSelector", defaultPath);
     }else{
-      selectInput("Choose File to load", "fileSelector");
+      selectInput("Choose File to load", "fileSelector", defaultPath);
       
     }
   }
@@ -424,7 +429,25 @@ void handleButtonEvents(GButton button, GEvent event){
     selectFolder("Choose export path", "pathSelector");
   }
   if(button == loadCratesButton){
+    String filepath = findValue("crateLayoutPath:");
+    File defaultStart = new File(sketchPath(filepath + " "));
+    println(defaultStart.getAbsolutePath());
+    selectInput("Select crate layout", "crateLayoutSelector", defaultStart);
     
+  }
+  if(button == saveCratesButton){
+    if(layout.getText().length() > 0 && field.getCrateLayoutLength() > 0){
+      String filepath = findValue("crateLayoutPath:");
+      field.exportCrateLayout(filepath + "/" + layout.getText());
+      layout.setLocalColorScheme(GConstants.BLUE_SCHEME);
+    }else{
+      layout.setLocalColorScheme(GConstants.RED_SCHEME);
+    }
+  }
+}
+void crateLayoutSelector(File selection){
+  if(selection != null){
+    field.loadCrateLayout(selection.getAbsolutePath());
   }
 }
 void pathSelector(File selection){

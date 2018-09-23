@@ -16,11 +16,14 @@ class Field{
   private ArrayList<float[]> waypoints;
   private float scale = Float.parseFloat(findValue("mapIncrements"));
   
+  private ArrayList<Crate> crates;
+  
   //private int angle;
   private boolean reverse;
   
   Field(){
     waypoints = new ArrayList<float[]>();
+    crates = new ArrayList<Crate>();
   }
   void display(){
     
@@ -245,6 +248,15 @@ class Field{
         endShape();
     
       }else{
+        
+      for(Crate crate : crates){
+        if(crate.mouseOverCrate()){
+          strokeWeight(3);
+        }
+        crate.display();
+        strokeWeight(1.5);
+      }
+ 
       noFill();
       beginShape();
       for(int i = 0;i<waypoints.size();i++){
@@ -282,7 +294,7 @@ class Field{
         }
               
         
-        if(!addingCrate){
+        if(!addingCrate && !mouseOverCrate()){
           text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
         
           strokeWeight(12*scale);
@@ -352,6 +364,55 @@ class Field{
       waypoints.add(new float[]{Float.parseFloat(temp[0]), Float.parseFloat(temp[1]), Float.parseFloat(temp[2])});
     }
   }
+  void addCrate(Crate crate){
+    crates.add(crate);
+  }
+  boolean mouseOverCrate(){
+    boolean over = false;
+    for(int i = 0;i<crates.size();i++){
+      if(crates.get(i).mouseOverCrate()){
+        over = true;
+      }
+    }
+    return over;
+  }
+  void removeCrateUnderMouse(){
+    for(int i = 0;i<crates.size();i++){
+      if(crates.get(i).mouseOverCrate()){
+        crates.remove(i);
+        return;
+      }
+    }
+  }
+  void exportCrateLayout(String filepath){
+    PrintWriter layout = createWriter(filepath + ".csv");
+    for(Crate crate : crates){
+      layout.println(crate.getPoint());
+    }
+    
+    layout.flush();
+    layout.close();
+  }
+  void loadCrateLayout(String filepath){
+    //clear the arraylist
+    int temp = crates.size();
+    for(int i = 0;i<temp;i++){
+      crates.remove(i);
+    }
+    
+    String[] cratePoints = loadStrings(filepath);
+    for(int i = 0;i<cratePoints.length;i++){
+      //Should be in "x,y"
+      //So point[0] = x point[1] = y
+      String[] point = split(cratePoints[i], ",");
+      
+      crates.add(new Crate(toMapX(Float.parseFloat(point[0])), toMapY(Float.parseFloat(point[1]))));
+    }
+  }
+  int getCrateLayoutLength(){
+    return crates.size();
+  }
+  
   void mirror(){
     for (int i = 0;i<waypoints.size();i++){
       waypoints.get(i)[0] = 27 - waypoints.get(i)[0];

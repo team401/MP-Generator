@@ -16,7 +16,10 @@ class Crate{
     fill(0);
   }
   boolean mouseOverCrate(){
-    return (x > mouseX && x < mouseX + WIDTH && y > y && y < mouseY + HEIGHT);
+    return (mouseX > x && mouseX < x + WIDTH && mouseY > y && mouseY < y + HEIGHT);
+  }
+  String getPoint(){
+    return mapX + "," + mapY;
   }
   
   DecimalFormat df = new DecimalFormat("#.##");
