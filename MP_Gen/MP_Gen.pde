@@ -263,6 +263,9 @@ void mouseDragged(MouseEvent event){
     if(field.withinField()){
       crateX = mouseX - Crate.WIDTH/2;
       crateY = mouseY - Crate.HEIGHT/2;
+      
+      crateX = (int)field.toCoordX(field.toMapX(crateX));
+      crateY = (int)field.toCoordY(field.toMapY(crateY));
     }else{
       crateX = mouseX - ADD_CRATE_SIZE/2;
       crateY = mouseY - ADD_CRATE_SIZE/2;
@@ -271,7 +274,7 @@ void mouseDragged(MouseEvent event){
 }
 void mouseReleased(MouseEvent event){
   if(field.withinField() && addingCrate){
-    Crate crate = new Crate(mouseX - (Crate.WIDTH/2), mouseY - (Crate.HEIGHT/2));
+    Crate crate = new Crate(crateX, crateY);
     field.addCrate(crate);
   }
   addingCrate = false;
