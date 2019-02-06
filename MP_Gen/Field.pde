@@ -14,7 +14,7 @@ class Field{
   private double[][] rightPathVelocity;
   
   private ArrayList<float[]> waypoints;
-  private float scale = Float.parseFloat(findValue("mapIncrements"));
+  private float scale = 1.0;
   
   //private int angle;
   private boolean reverse;
@@ -39,6 +39,7 @@ class Field{
       int widthSpacing = 0;      
       DecimalFormat df = new DecimalFormat("#.##");
 
+      /*
       switch(graph){
         case 0:
           t = (smoothPathVelocity.length * Double.parseDouble(findValue("timestep"))/1000);
@@ -156,6 +157,7 @@ class Field{
           break;
           
       }
+      */
       
     }else{
       //vertical lines
@@ -195,97 +197,7 @@ class Field{
         }
       }
       
-      //zones
-      strokeWeight(3);
-      fill(255);
-      
-      //Power Cube Zone
-      rect(toCoordX(11.625), toCoordY(11.605), 3.75*SPACING, 3.5*SPACING);
-      
-      //Null territory
-      rect(toCoordX(0), toCoordY(30), 8*SPACING, 6*SPACING);
-      rect(toCoordX(27), toCoordY(30), -8*SPACING, 6*SPACING);
-      
-      textSize(26);
-      fill(0);
-      text("NULL", toCoordX(3), toCoordY(27.55));
-      text("TERRITORY", toCoordX(3), toCoordY(25.65));
-      
-      text("NULL", toCoordX(24), toCoordY(27.55));
-      text("TERRITORY", toCoordX(24), toCoordY(25.65));
-      fill(255);
-      
-      //Exchange Zone
-      rect(toCoordX(8.2), toCoordY(3), 4*SPACING, 3*SPACING);
-      
-      //auto line
-      line(toCoordX(0), toCoordY(10), toCoordX(WIDTH), toCoordY(10));
-      
-      //halfway
-      line(toCoordX(0), toCoordY(27), toCoordX(WIDTH), toCoordY(27));
-      
-      //switch
-      noFill();
-      stroke(0);
-      strokeWeight(5);
-      rect(toCoordX(7.105), toCoordY(16.3), 12.79*SPACING, 4.6*SPACING);
-      
-      fill(220,220,220);
-      //plates
-      rect(toCoordX(7.5), toCoordY(16), 3*SPACING, 4*SPACING);
-      rect(toCoordX(16.5), toCoordY(16), 3*SPACING, 4*SPACING);
-      //boom
-      rect(toCoordX(10.5), toCoordY(14.6), 6*SPACING, 1.2*SPACING);
-      
-      noFill();
-      //platform
-      noStroke();
-      if(blue){
-        fill(255,0,0);
-        rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 5*SPACING);
-        fill(0,0,255);
-        rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
-      }else{
-        fill(0,0,255);
-        rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 5*SPACING);
-        fill(255,0,0);
-        rect(toCoordX(8.1), toCoordY(26.8)-5, 10.8*SPACING, 5*SPACING);
-      }
-      noFill();
-      stroke(0);
-      strokeWeight(5);
-      
-      //outer boundary
-      rect(toCoordX(8.1), toCoordY(31.8)-5, 10.8*SPACING, 10*SPACING);
-      
-      //raised boundary
-      rect(toCoordX(9.1), toCoordY(30.8)-5, 8.7*SPACING, 7.9*SPACING);
-      
-      //scale
-      fill(220, 220,220);
-      //boom
-      rect(toCoordX(9.07), toCoordY(27.3)-5, 9*SPACING, 1.16*SPACING);
-      //plates
-      rect(toCoordX(6.07), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
-      rect(toCoordX(17.83), toCoordY(28.7)-5, 3*SPACING, 4*SPACING);
-      
-      
-      //Power cubes
-      strokeWeight(3);
-      fill(255,255,0);
-      for(int i = 0;i<6;i++){
-        rect(toCoordX(7.105 + i*2.34), toCoordY(17.478), 1.083*SPACING, 1.083*SPACING);
-      }
-      //rect(toCoordX(11.625), toCoordY(12), 3.75*SPACING, 3.5*SPACING);
-      for(int i = 0;i<3;i++){
-        rect(toCoordX(11.85 + i*1.083), toCoordY(11.605), 1.083*SPACING, 1.083*SPACING);
-      }
-      rect(toCoordX(12.4), toCoordY(11.605-1.083), 1.083*SPACING, 1.083*SPACING);
-      rect(toCoordX(12.4 + 1.083), toCoordY(11.605-1.083), 1.083*SPACING, 1.083*SPACING);
-      rect(toCoordX(13), toCoordY(11.605-2.166), 1.083*SPACING, 1.083*SPACING);
-      
-      
-      noFill();
+      // TODO ADD FIELD LAYOUT HERE
       
       
       //display the coordinates
@@ -302,7 +214,7 @@ class Field{
           angle = 0;
         }
         if(angle < 0){
-          angle = 360 - Integer.parseInt(findValue("angle"));
+          angle = 360 - 15;
         }
               
         text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
@@ -527,11 +439,11 @@ class Field{
   DecimalFormat df = new DecimalFormat("#.##");
   float toMapX(float x){
     float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
-    return value - value % Float.parseFloat(findValue("mapIncrements"));
+    return value;// - value % Float.parseFloat(findValue("mapIncrements"));
   }
   float toMapY(float y){
     float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0)));
-    return value - value % Float.parseFloat(findValue("mapIncrements"));
+    return value;// - value % Float.parseFloat(findValue("mapIncrements"));
   }
   //
   int toCoordX(float x){
