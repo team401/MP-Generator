@@ -199,6 +199,13 @@ class Field{
       
       // TODO ADD FIELD LAYOUT HERE
       
+      line(toCoordX(0), toCoordY(27), toCoordX(27), toCoordY(27)); // Midline
+      
+      Rocket rocket = new Rocket(20, 20);
+      rocket.display();
+      
+      
+      
       
       //display the coordinates
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
@@ -417,7 +424,6 @@ class Field{
   //angle in degrees
   private void arrow(float x1, float y1, int angle){arrow(x1, y1, angle, "");}
   private void arrow(float x1, float y1, int angle, String text){
-    println(angle);
     double radians = Math.toRadians(angle - 90);
         
     float posX = (float)(x1+Math.cos(-radians));
@@ -439,7 +445,7 @@ class Field{
     int angY = (int)(toMapY(y2) - Math.sin(Math.PI/2 - radians));
         
   }
-  //THESE ARE BACKWARDS. I DON'T WANTO SKREW THINGS UP BY CHANGING IT
+  //THESE ARE BACKWARDS. I DON'T WANT TO SKREW THINGS UP BY CHANGING IT
   DecimalFormat df = new DecimalFormat("#.##");
   float toMapX(float x){ 
     //float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
@@ -460,5 +466,29 @@ class Field{
   int toCoordY(float y){
     return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING), 80);
     //return (int)map(y, 0, HEIGHT, 80, 80+(HEIGHT*SPACING));
+  }
+}
+private class Rocket extends Field{
+  private float x;
+  private float y;
+  private boolean reverse;
+  
+  Rocket(float x, float y){
+    this.x = x;
+    this.y = y;
+    reverse = false;
+  }
+  public void reverse(){reverse = !reverse;}
+  public void display(){
+    noFill();
+    beginShape();
+    //back and side struts
+    vertex(toCoordX(x), toCoordY(y));
+    vertex(toCoordX(x + 8 + (5/6.0)), toCoordY(y));
+    vertex(toCoordX(x + 2 + 5/12.0), toCoordY(y));
+    vertex(toCoordX(x + 2 + 5/12.0 + 13.8/12), toCoordY(y + 24.8/12));
+    vertex(toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12), toCoordY(y + 24.8/12));
+    vertex(toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12), toCoordY(y));
+    endShape();
   }
 }
