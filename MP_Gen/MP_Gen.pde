@@ -21,7 +21,7 @@ void setup(){
   field = new Field();
   frameRate(120);
   w = width/2;
-  angle = 90;
+  angle = 0;
   graph = 0;
   
   velocity = false;

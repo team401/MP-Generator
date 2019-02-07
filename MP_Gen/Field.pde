@@ -170,19 +170,16 @@ class Field{
       
       //grid
       int xAxis = (WIDTH);
-      //xAxis = (int)map(xAxis, 0, WIDTH, 0, WIDTH*2);
-      //println(xAxis);
       int yAxis = (HEIGHT);
-      //int space = (SPACING)/2;
       for(int i = 0;i<=xAxis*(1/scale);i++){
         if(i%(1/scale)==0 && scale != 1.0){
           strokeWeight(1);
         }else{
           strokeWeight(0);
         }
-        line(toCoordX(i*scale), toCoordY(0), toCoordX(i*scale),toCoordY(HEIGHT));
+        line(toCoordX(i*scale), toCoordY(0), toCoordX(i*scale), toCoordY(HEIGHT));
         if(i <= WIDTH){
-          text(i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
+          text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
       }
       for(int i = 0;i<=yAxis*(1/scale);i++){
@@ -196,6 +193,9 @@ class Field{
           text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
         }
       }
+      // Adds axis labels
+      arrow(0, 0, 0, "x");//x axis
+      arrow(0, 0, 90, "y");
       
       // TODO ADD FIELD LAYOUT HERE
       
@@ -415,11 +415,13 @@ class Field{
     }
   }
   //angle in degrees
-  private void arrow(float x1, float y1, int angle){
-    double radians = Math.toRadians(angle);
+  private void arrow(float x1, float y1, int angle){arrow(x1, y1, angle, "");}
+  private void arrow(float x1, float y1, int angle, String text){
+    println(angle);
+    double radians = Math.toRadians(angle - 90);
         
-    float posX = (float)(x1+Math.cos(radians));
-    float posY = (float)(y1+Math.sin(radians));
+    float posX = (float)(x1+Math.cos(-radians));
+    float posY = (float)(y1+Math.sin(-radians));
     
     x1 = toCoordX(x1);
     y1 = toCoordY(y1);    
@@ -430,41 +432,33 @@ class Field{
     strokeWeight(2);
     line(x1, y1, x2, y2);
     
-    //top    
+    text(text, (int)(x2-10*Math.cos(-radians)), (int)(y2-10*Math.sin(-radians)));
+    
+    //arrowhead
     int angX = (int)(toMapX(x2) - Math.cos(Math.PI/2 - radians));
     int angY = (int)(toMapY(y2) - Math.sin(Math.PI/2 - radians));
         
   }
-  //
+  //THESE ARE BACKWARDS. I DON'T WANTO SKREW THINGS UP BY CHANGING IT
   DecimalFormat df = new DecimalFormat("#.##");
-  float toMapX(float x){
-    float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
-    return value;// - value % Float.parseFloat(findValue("mapIncrements"));
+  float toMapX(float x){ 
+    //float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
+    float value = Float.parseFloat(df.format(map(x, w+(WIDTH*SPACING), w, 0, WIDTH)));
+    return value - value % 0.5;
   }
   float toMapY(float y){
     float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0)));
-    return value;// - value % Float.parseFloat(findValue("mapIncrements"));
+    //float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), 0, HEIGHT)));
+    return value - value % 0.5;
   }
   //
   int toCoordX(float x){
-    return (int)map(x, 0, WIDTH, w, w+(WIDTH*SPACING));
+    //int value = (int)map(x, 0, WIDTH, w, w+(WIDTH*SPACING));
+    int value = (int)map(x, 0, WIDTH, w+(WIDTH*SPACING), w);
+    return value;
   }
   int toCoordY(float y){
     return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING), 80);
+    //return (int)map(y, 0, HEIGHT, 80, 80+(HEIGHT*SPACING));
   }
-  void exportWaypoints(){
-    PrintWriter output;
-    if(reverse && !name.getText().contains("_REV")){
-      //output = createWriter("\\profilecsv\\tank\\Waypoints\\"+name.getText()+"_REV.csv");
-      output = createWriter(directory.getText() + "/waypoints/" + name.getText()+"_REV.csv");
-    }else{
-      output = createWriter(directory.getText() + "/waypoints/" + name.getText()+".csv");
-    }
-    
-    for(float[] u: waypoints){
-      output.println(u[0]+","+u[1]+","+u[2]);
-    }      
-      output.flush();
-      output.close();
-    }
 }
