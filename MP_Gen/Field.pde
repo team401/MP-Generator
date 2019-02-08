@@ -177,7 +177,7 @@ class Field{
         }else{
           strokeWeight(0);
         }
-        line(toCoordX(i*scale), toCoordY(0), toCoordX(i*scale), toCoordY(HEIGHT));
+        line(toCoordY(i*scale), toCoordX(0), toCoordY(i*scale), toCoordX(HEIGHT));
         if(i <= WIDTH){
           text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
@@ -188,7 +188,7 @@ class Field{
         }else{
           strokeWeight(0);
         }
-        line(toCoordX(0), toCoordY(i*scale), toCoordX(WIDTH), toCoordY(i*scale));
+        line(toCoordY(0), toCoordX(i*scale), toCoordY(WIDTH), toCoordX(i*scale));
         if(i <= HEIGHT){
           text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
         }
@@ -199,10 +199,12 @@ class Field{
       
       // TODO ADD FIELD LAYOUT HERE
       
-      line(toCoordX(0), toCoordY(27), toCoordX(27), toCoordY(27)); // Midline
+      line(toCoordY(0), toCoordX(27), toCoordY(27), toCoordX(27)); // Midline
       
-      Rocket rocket = new Rocket(20, 20);
-      rocket.display();
+      Rocket rocket1 = new Rocket(27 - 16 - 5/6.0, 0, false);
+      Rocket rocket2 = new Rocket(27 - 16 - 5/6.0, WIDTH, true);
+      rocket1.display();
+      rocket2.display();
       
       
       
@@ -211,11 +213,11 @@ class Field{
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
         fill(0);
         textSize(24);
-        float mapX = toMapX(mouseX);
-        float mapY = toMapY(mouseY);
+        float mapX = toMapY(mouseX);
+        float mapY = toMapX(mouseY);
         
-        int x = toCoordX(mapX);
-        int y = toCoordY(mapY);
+        int x = toCoordY(mapX);
+        int y = toCoordX(mapY);
         
         if(angle > 359){
           angle = 0;
@@ -224,7 +226,7 @@ class Field{
           angle = 360 - 15;
         }
               
-        text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+        text("(" + mapY + "," + mapX + ","+angle + (char)176 + ")", x+45, y-30);
         
         strokeWeight(12*scale);
         line(x, y, x, y);
@@ -242,8 +244,8 @@ class Field{
         for(int i = 0;i<smoothPath.length;i++){
           float posX = (float)smoothPath[i][0];
           float posY = (float)smoothPath[i][1];
-          float x = toCoordX(posX);
-          float y = toCoordY(posY);
+          float x = toCoordY(posX);
+          float y = toCoordX(posY);
             
           strokeWeight(2);
           stroke(255, 0, 255);
@@ -256,8 +258,8 @@ class Field{
         for(int i = 0;i<leftPath.length;i++){
           float posX = (float)leftPath[i][0];
           float posY = (float)leftPath[i][1];
-          float x = toCoordX(posX);
-          float y = toCoordY(posY);
+          float x = toCoordY(posX);
+          float y = toCoordX(posY);
             
           strokeWeight(2);
           stroke(255, 0, 255);
@@ -270,8 +272,8 @@ class Field{
         for(int i = 0;i<rightPath.length;i++){
           float posX = (float)rightPath[i][0];
           float posY = (float)rightPath[i][1];
-          float x = toCoordX(posX);
-          float y = toCoordY(posY);
+          float x = toCoordY(posX);
+          float y = toCoordX(posY);
             
           strokeWeight(2);
           stroke(255, 0, 255);
@@ -285,8 +287,8 @@ class Field{
       for(int i = 0;i<waypoints.size();i++){
         float posX = waypoints.get(i)[0];
         float posY = waypoints.get(i)[1];
-        int x = toCoordX(posX);
-        int y = toCoordY(posY);
+        int x = toCoordY(posX);
+        int y = toCoordX(posY);
         
         strokeWeight(12);
         stroke(255,0,0);
@@ -304,8 +306,8 @@ class Field{
   void addWaypoint(int msX, int msY){
     //int angle = 0;//make this real later
     int w = width/2;
-    float mapX = toMapX(msX);
-    float mapY = toMapY(msY);
+    float mapX = toMapY(msX);
+    float mapY = toMapX(msY);
                     
     waypoints.add(new float[]{mapX,mapY,angle});
   }
@@ -429,11 +431,11 @@ class Field{
     float posX = (float)(x1+Math.cos(-radians));
     float posY = (float)(y1+Math.sin(-radians));
     
-    x1 = toCoordX(x1);
-    y1 = toCoordY(y1);    
+    x1 = toCoordY(x1);
+    y1 = toCoordX(y1);    
     
-    int x2 = toCoordX(posX);
-    int y2 = toCoordY(posY);
+    int x2 = toCoordY(posX);
+    int y2 = toCoordX(posY);
         
     strokeWeight(2);
     line(x1, y1, x2, y2);
@@ -441,29 +443,29 @@ class Field{
     text(text, (int)(x2-10*Math.cos(-radians)), (int)(y2-10*Math.sin(-radians)));
     
     //arrowhead
-    int angX = (int)(toMapX(x2) - Math.cos(Math.PI/2 - radians));
-    int angY = (int)(toMapY(y2) - Math.sin(Math.PI/2 - radians));
+    int angX = (int)(toMapY(x2) - Math.cos(Math.PI/2 - radians));
+    int angY = (int)(toMapX(y2) - Math.sin(Math.PI/2 - radians));
         
   }
   //THESE ARE BACKWARDS. I DON'T WANT TO SKREW THINGS UP BY CHANGING IT
   DecimalFormat df = new DecimalFormat("#.##");
-  float toMapX(float x){ 
+  float toMapY(float x){ 
     //float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
     float value = Float.parseFloat(df.format(map(x, w+(WIDTH*SPACING), w, 0, WIDTH)));
     return value - value % 0.5;
   }
-  float toMapY(float y){
+  float toMapX(float y){
     float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0)));
     //float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), 0, HEIGHT)));
     return value - value % 0.5;
   }
   //
-  int toCoordX(float x){
+  int toCoordY(float x){
     //int value = (int)map(x, 0, WIDTH, w, w+(WIDTH*SPACING));
     int value = (int)map(x, 0, WIDTH, w+(WIDTH*SPACING), w);
     return value;
   }
-  int toCoordY(float y){
+  int toCoordX(float y){
     return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING), 80);
     //return (int)map(y, 0, HEIGHT, 80, 80+(HEIGHT*SPACING));
   }
@@ -473,22 +475,30 @@ private class Rocket extends Field{
   private float y;
   private boolean reverse;
   
-  Rocket(float x, float y){
+  Rocket(float x, float y, boolean reverse){
     this.x = x;
     this.y = y;
-    reverse = false;
+    this.reverse = reverse;
   }
-  public void reverse(){reverse = !reverse;}
   public void display(){
     noFill();
     beginShape();
     //back and side struts
-    vertex(toCoordX(x), toCoordY(y));
-    vertex(toCoordX(x + 8 + (5/6.0)), toCoordY(y));
-    vertex(toCoordX(x + 2 + 5/12.0), toCoordY(y));
-    vertex(toCoordX(x + 2 + 5/12.0 + 13.8/12), toCoordY(y + 24.8/12));
-    vertex(toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12), toCoordY(y + 24.8/12));
-    vertex(toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12), toCoordY(y));
+    if (!reverse){
+      vertex(toCoordY(y), toCoordX(x));
+      vertex(toCoordY(y), toCoordX(x + 8 + (5/6.0)));
+      vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0));
+      vertex(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12));
+      vertex(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12));
+      vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
+    }else{
+      vertex(toCoordY(y), toCoordX(x));
+      vertex(toCoordY(y), toCoordX(x + 8 + (5/6.0)));
+      vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0));
+      vertex(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12));
+      vertex(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12));
+      vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
+    }
     endShape();
   }
 }
