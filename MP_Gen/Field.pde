@@ -179,7 +179,7 @@ class Field{
         }
         line(toCoordY(i*scale), toCoordX(0), toCoordY(i*scale), toCoordX(HEIGHT));
         if(i <= WIDTH){
-          text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
+          //text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
       }
       for(int i = 0;i<=yAxis*(1/scale);i++){
@@ -190,7 +190,7 @@ class Field{
         }
         line(toCoordY(0), toCoordX(i*scale), toCoordY(WIDTH), toCoordX(i*scale));
         if(i <= HEIGHT){
-          text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
+          //text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
         }
       }
       // Adds axis labels
@@ -203,12 +203,15 @@ class Field{
       
       Rocket rocket1 = new Rocket(27 - 16 - 5/6.0, 0, false);
       Rocket rocket2 = new Rocket(27 - 16 - 5/6.0, WIDTH, true);
+      CargoShip cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
+      HABPlateform hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
+      
       rocket1.display();
       rocket2.display();
-      
-      
-      
-      
+      cargoShip.display();
+      hab.display();
+           
+           
       //display the coordinates
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
         fill(0);
@@ -500,5 +503,59 @@ private class Rocket extends Field{
       vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
     }
     endShape();
+  }
+}
+private class CargoShip extends Field{
+  private float x;
+  private float y;
+  CargoShip(float x, float y){
+    this.x = x;
+    this.y = y;
+  }
+  public void display(){
+    // Main body
+    beginShape();
+    vertex(toCoordY(y), toCoordX(x));
+    vertex(toCoordY(y + 3 + 9/12.0), toCoordX(x));
+    vertex(toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12));
+    vertex(toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + 75.13/12));
+    vertex(toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + 75.13/12));
+    vertex(toCoordY(y - 10.75/12), toCoordX(x + 20.62/12));
+    vertex(toCoordY(y), toCoordX(x));
+    endShape();
+    
+    // Hatch lines
+    line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0), 
+    toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0));
+    line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0), 
+    toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0));
+    line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0), 
+    toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0));
+    
+    line(toCoordY(y - 10.75/12 - 1.5), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0), 
+    toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0));
+    line(toCoordY(y - 10.75/12 - 1.5), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0), 
+    toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0));
+    line(toCoordY(y - 10.75/12 - 1.5), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0), 
+    toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0));
+  }
+}
+private class HABPlateform extends Field{
+  private float x;
+  private float y;
+  HABPlateform(float x, float y){
+    this.x = x;
+    this.y = y;
+  }
+  public void display(){
+    rectMode(CORNERS);
+    rect(toCoordY(y), toCoordX(x), toCoordY(y + 1 + 10.625/12), toCoordX(x + 4));// Right most cargo
+    rect(toCoordY(y + 1 + 10.625/12 + 10 + 8.0/12), toCoordX(x), toCoordY(y + 1 + 10.625/12 + 10 + 8.0/12 + 1 + 10.625/12), toCoordX(x + 4));// Left most cargo
+    
+    rect(toCoordY(y + 1 + 10.625/12), toCoordX(x), toCoordY(y + 1 + 10.625/12 + 3 + 4.0/12), toCoordX(x + 4));// Right level 1
+    rect(toCoordY(y + 1 + 10.625/12 + 3 + 4.0/12), toCoordX(x), toCoordY(y + 1 + 10.625/12 + 3 + 4.0/12 + 4), toCoordX(x + 4));//Center
+    rect(toCoordY(y + 1 + 10.625/12 + 3 + 4.0/12 + 4), toCoordX(x), toCoordY(y + 1 + 10.625/12 + 3 + 4.0/12 + 4 + 3 + 4.0/12), toCoordX(x + 4));//Left
+    
+    rect(toCoordY(y + 11.375/12), toCoordX(x + 4), toCoordY(y + 11.375/12 + 12 + 6.5/12), toCoordX(x + 7 + 11.25/12));
   }
 }
