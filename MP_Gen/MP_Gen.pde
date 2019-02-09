@@ -120,6 +120,7 @@ void setup(){
   reverse.setEnabled(true);
   reverse.setValue(0);
   
+  
 }
 void draw(){
   background(200);
@@ -163,27 +164,33 @@ void mouseClicked(){
   println("mouse clicked");
   if(mouseX >= w && mouseX <= w+(Field.WIDTH*Field.SPACING) && mouseY >= 80 && mouseY <= 80+(Field.HEIGHT*Field.SPACING) 
   && !field.displayingVelocityGraph()){
-    if(mouseButton == LEFT){
-      field.addWaypoint(mouseX, mouseY);
+    if(!field.mouseOverWaypoint()){
+      if(mouseButton == LEFT){
+        field.addWaypoint(mouseX, mouseY);
         field.generateProfile();
         field.enableMP();
-    }
-    if(mouseButton == RIGHT){
-      field.removeWaypoint();
-      field.generateProfile();
+      }
+      if(mouseButton == RIGHT){
+        field.removeWaypoint();
+        field.generateProfile();
+      }
+    }else{
+      field.changeWaypointAngle();
     }
   }
 }
 void mouseDragged(){
+  println("mouse dragged");
   int w = width/2;
   if(mouseX >= w && mouseX <= w+(Field.WIDTH*Field.SPACING) && mouseY >= 80 && mouseY <= 80+(Field.HEIGHT*Field.SPACING) 
   && !field.displayingVelocityGraph()){
-    if(mouseButton == LEFT){
+    if(mouseButton == LEFT && field.mouseOverWaypoint()){
       field.moveWaypoint();
     }
   }
 }
 void mouseWheel(MouseEvent event){
+  println("mouse wheel");
   float e = event.getAmount();
   int da = 15;
   if(e>0){

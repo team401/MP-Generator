@@ -5,7 +5,7 @@ class Field{
   private static final int HEIGHT = 32;
   private static final int SPACING = 25;
   private boolean mp = false;
-  private boolean movingWaypoint = false;
+  private boolean changingWaypointAngle = false;
   private int movingWaypointIndex = -1;
   private double[][] smoothPath;
   private double[][] leftPath;
@@ -105,8 +105,7 @@ class Field{
           angle = 360 - 15;
         }
         
-        if(!movingWaypoint){
-          println("Not moving waypoint");
+        if(!mouseOverWaypoint()){
           text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
           
           strokeWeight(12*scale);
@@ -115,8 +114,17 @@ class Field{
           //draws the arrow
           //using screen coordinates
           arrow(mapY, mapX, angle);
-        }else{
-          println("mw");
+        }else{// VERY BAD FORM
+          if(changingWaypointAngle){
+            waypoints.get(movingWaypointIndex)[2] = angle;
+            text(angle + "" +(char)176, x+45, y-30);
+                    
+            //draws the arrow
+            //using screen coordinates
+            arrow(waypoints.get(movingWaypointIndex)[1], waypoints.get(movingWaypointIndex)[0], angle);
+            
+            field.generateProfile();
+          }
         }
         
       }
@@ -177,7 +185,10 @@ class Field{
             int x = toCoordY(posY);
             
             if(movingWaypointIndex == i){
-              strokeWeight(18);
+              strokeWeight(20);
+              stroke(0);
+              line(x, y, x, y);
+              strokeWeight(16);
             }else{
               strokeWeight(12);
             }
@@ -302,23 +313,12 @@ class Field{
     return mouseOver;
   }
   void moveWaypoint(){
-    boolean mouseOver = false;
-    float tolerance = 1f;
-    for(int i = 0;i<waypoints.size();i++){
-      if(toCoordX(waypoints.get(i)[0] + tolerance) < mouseY && toCoordX(waypoints.get(i)[0] - tolerance) > mouseY && toCoordY(waypoints.get(i)[1] + tolerance) < mouseX && toCoordY(waypoints.get(i)[1] - tolerance) > mouseX){
-        println("Waypoint selected");
-        waypoints.get(i)[0] = toMapX(mouseY);
-        waypoints.get(i)[1] = toMapY(mouseX);
-        mouseOver = true;
-        movingWaypointIndex = i;
-        movingWaypoint = true;
-        generateProfile();
-      }
-    }
-    if(!mouseOver){
-      movingWaypointIndex = -1;
-      movingWaypoint = false;
-    }
+    waypoints.get(movingWaypointIndex)[0] = toMapX(mouseY);
+    waypoints.get(movingWaypointIndex)[1] = toMapY(mouseX);
+    generateProfile();
+  }
+  void changeWaypointAngle(){
+    changingWaypointAngle = !changingWaypointAngle;
   }
   void mirror(){
     for (int i = 0;i<waypoints.size();i++){
@@ -387,11 +387,12 @@ class Field{
   }
   //angle in degrees
   private void arrow(float x1, float y1, int angle){arrow(x1, y1, angle, "");}
-  private void arrow(float x1, float y1, int angle, String text){
+  private void arrow(float x1, float y1, int angle, String text){arrow(x1, y1, angle, text, 1f);}
+  private void arrow(float x1, float y1, int angle, String text, float len){
     double radians = Math.toRadians(angle - 90);
         
-    float posX = (float)(x1+Math.cos(-radians));
-    float posY = (float)(y1+Math.sin(-radians));
+    float posX = (float)(x1 + len * Math.cos(-radians));
+    float posY = (float)(y1 + len * Math.sin(-radians));
     
     x1 = toCoordY(x1);
     y1 = toCoordX(y1);    
