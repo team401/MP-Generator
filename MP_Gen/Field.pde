@@ -197,20 +197,22 @@ class Field{
       arrow(0, 0, 0, "x");//x axis
       arrow(0, 0, 90, "y");
       
-      // TODO ADD FIELD LAYOUT HERE
-      
-      line(toCoordY(0), toCoordX(27), toCoordY(27), toCoordX(27)); // Midline
+      for(int i = 0; i< 27;i+=2){
+        line(toCoordY(i), toCoordX(27), toCoordY(i + 1), toCoordX(27)); // Midline
+      }
+      line(toCoordY(0), toCoordX(27 - 9.0/12), toCoordY(27), toCoordX(27 - 9.0/12)); // Cargo Ship line
+      line(toCoordY(0), toCoordX(7 + 11.25/12), toCoordY(27), toCoordX(7 + 11.25/12));// HAB line
       
       Rocket rocket1 = new Rocket(27 - 16 - 5/6.0, 0, false);
       Rocket rocket2 = new Rocket(27 - 16 - 5/6.0, WIDTH, true);
       CargoShip cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
       HABPlateform hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
       
+      
       rocket1.display();
       rocket2.display();
       cargoShip.display();
       hab.display();
-           
            
       //display the coordinates
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
@@ -484,7 +486,7 @@ private class Rocket extends Field{
     this.reverse = reverse;
   }
   public void display(){
-    noFill();
+    fill(220, 220, 220);
     beginShape();
     //back and side struts
     if (!reverse){
@@ -494,6 +496,12 @@ private class Rocket extends Field{
       vertex(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12));
       vertex(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12));
       vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
+      // angle 61 degrees 
+      stroke(255);
+      line(toCoordY(y + 12.4/12), toCoordX(x + 2 + 11.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y + 12.4/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12), toCoordY(y + 24.8/12 + 1.5), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12));
+      stroke(0);
     }else{
       vertex(toCoordY(y), toCoordX(x));
       vertex(toCoordY(y), toCoordX(x + 8 + (5/6.0)));
@@ -501,8 +509,15 @@ private class Rocket extends Field{
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12));
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12));
       vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
+      // Alignment lines
+      stroke(255);
+      line(toCoordY(y - 12.4/12), toCoordX(x + 2 + 11.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y - 12.4/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12), toCoordY(y - 24.8/12 - 1.5), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12));
+      stroke(0);
     }
     endShape();
+    noFill();
   }
 }
 private class CargoShip extends Field{
@@ -514,6 +529,7 @@ private class CargoShip extends Field{
   }
   public void display(){
     // Main body
+    fill(220, 220, 220);
     beginShape();
     vertex(toCoordY(y), toCoordX(x));
     vertex(toCoordY(y + 3 + 9/12.0), toCoordX(x));
@@ -524,7 +540,9 @@ private class CargoShip extends Field{
     vertex(toCoordY(y), toCoordX(x));
     endShape();
     
+    
     // Hatch lines
+    stroke(255);
     line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0), 
     toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0));
     line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0), 
@@ -538,6 +556,16 @@ private class CargoShip extends Field{
     toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0));
     line(toCoordY(y - 10.75/12 - 1.5), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0), 
     toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0));
+    
+    line(toCoordY(y + 21.5/24.0), toCoordX(x), toCoordY(y + 21.5/24.0), toCoordX(x - 1.5));
+    line(toCoordY(y + (23 + 44)/24.0), toCoordX(x), toCoordY(y + (23 + 44)/24.0), toCoordX(x - 1.5));
+    
+    stroke(0);
+    noFill();
+    
+    fill(0);
+    textSize(16);
+    text("The Walrus", toCoordY(y + 2), toCoordX(x + 4));
   }
 }
 private class HABPlateform extends Field{
@@ -548,6 +576,7 @@ private class HABPlateform extends Field{
     this.y = y;
   }
   public void display(){
+    fill(220, 220, 220);
     rectMode(CORNERS);
     rect(toCoordY(y), toCoordX(x), toCoordY(y + 1 + 10.625/12), toCoordX(x + 4));// Right most cargo
     rect(toCoordY(y + 1 + 10.625/12 + 10 + 8.0/12), toCoordX(x), toCoordY(y + 1 + 10.625/12 + 10 + 8.0/12 + 1 + 10.625/12), toCoordX(x + 4));// Left most cargo
@@ -557,5 +586,7 @@ private class HABPlateform extends Field{
     rect(toCoordY(y + 1 + 10.625/12 + 3 + 4.0/12 + 4), toCoordX(x), toCoordY(y + 1 + 10.625/12 + 3 + 4.0/12 + 4 + 3 + 4.0/12), toCoordX(x + 4));//Left
     
     rect(toCoordY(y + 11.375/12), toCoordX(x + 4), toCoordY(y + 11.375/12 + 12 + 6.5/12), toCoordX(x + 7 + 11.25/12));
+    
+    noFill();
   }
 }

@@ -133,7 +133,6 @@ void mouseClicked(){
   && !field.getMP()){
     if(mouseButton == LEFT){
       field.addWaypoint(mouseX, mouseY);
-      pathButton.setText("Generate Path");
     }
     if(mouseButton == RIGHT){
       field.removeWaypoint();
