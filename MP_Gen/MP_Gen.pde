@@ -1,3 +1,34 @@
+import kotlin.collections.*;
+import kotlin.jvm.internal.*;
+import kotlin.coroutines.*;
+import kotlin.coroutines.intrinsics.*;
+import kotlin.coroutines.jvm.internal.*;
+import kotlin.*;
+import kotlin.io.*;
+import kotlin.internal.*;
+import kotlin.random.*;
+import kotlin.js.*;
+import kotlin.reflect.*;
+import kotlin.jvm.*;
+import kotlin.jvm.internal.markers.*;
+import kotlin.jvm.internal.unsafe.*;
+import kotlin.jvm.functions.*;
+import kotlin.system.*;
+import kotlin.contracts.*;
+import kotlin.sequences.*;
+import kotlin.comparisons.*;
+import kotlin.text.*;
+import kotlin.experimental.*;
+import kotlin.concurrent.*;
+import kotlin.properties.*;
+import kotlin.annotation.*;
+import kotlin.ranges.*;
+import kotlin.math.*;
+import kotlin.coroutines.experimental.*;
+import kotlin.coroutines.experimental.intrinsics.*;
+import kotlin.coroutines.experimental.migration.*;
+import kotlin.coroutines.experimental.jvm.internal.*;
+
 import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
@@ -129,10 +160,16 @@ void draw(){
 }
 void mouseClicked(){
   int w = width/2;
+  println("mouse clicked");
   if(mouseX >= w && mouseX <= w+(Field.WIDTH*Field.SPACING) && mouseY >= 80 && mouseY <= 80+(Field.HEIGHT*Field.SPACING) 
-  && !field.getMP()){
+  && !field.displayingVelocityGraph()){
     if(mouseButton == LEFT){
       field.addWaypoint(mouseX, mouseY);
+      if(field.getWaypoints().length > 1){
+        field.generateProfile();
+        field.enableMP();
+      }
+      field.printWaypoints();
     }
     if(mouseButton == RIGHT){
       field.removeWaypoint();

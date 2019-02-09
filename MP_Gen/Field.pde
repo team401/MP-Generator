@@ -38,7 +38,7 @@ class Field{
       double t = 0;
       int widthSpacing = 0;      
       DecimalFormat df = new DecimalFormat("#.##");
-
+      
       /*
       switch(graph){
         case 0:
@@ -49,7 +49,7 @@ class Field{
             line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
             String val = df.format((t/17)*i);
             text(val, w+(i*widthSpacing), 880 + 30);
-          }        
+          }
           //find max velocity
           maxVelocity = 0;
           for(int i = 0;i<smoothPathVelocity.length;i++){
@@ -208,7 +208,6 @@ class Field{
       CargoShip cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
       HABPlateform hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
       
-      
       rocket1.display();
       rocket2.display();
       cargoShip.display();
@@ -218,11 +217,11 @@ class Field{
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
         fill(0);
         textSize(24);
-        float mapX = toMapY(mouseX);
-        float mapY = toMapX(mouseY);
+        float mapX = toMapX(mouseY);
+        float mapY = toMapY(mouseX);
         
-        int x = toCoordY(mapX);
-        int y = toCoordX(mapY);
+        int y = toCoordX(mapX);
+        int x = toCoordY(mapY);
         
         if(angle > 359){
           angle = 0;
@@ -231,14 +230,14 @@ class Field{
           angle = 360 - 15;
         }
               
-        text("(" + mapY + "," + mapX + ","+angle + (char)176 + ")", x+45, y-30);
+        text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
         
         strokeWeight(12*scale);
         line(x, y, x, y);
         
         //draws the arrow
         //using screen coordinates
-        arrow(mapX, mapY, angle);
+        arrow(mapY, mapX, angle);
       }
       //can still add to wayPoints
       //TODO fix that
@@ -249,8 +248,8 @@ class Field{
         for(int i = 0;i<smoothPath.length;i++){
           float posX = (float)smoothPath[i][0];
           float posY = (float)smoothPath[i][1];
-          float x = toCoordY(posX);
-          float y = toCoordX(posY);
+          float x = toCoordY(posY);
+          float y = toCoordX(posX);
             
           strokeWeight(2);
           stroke(255, 0, 255);
@@ -259,6 +258,7 @@ class Field{
         endShape();
         //leftPath
         noFill();
+        /*
         beginShape();
         for(int i = 0;i<leftPath.length;i++){
           float posX = (float)leftPath[i][0];
@@ -285,15 +285,15 @@ class Field{
           vertex(x, y);
         }
         endShape();
-    
+        */
       }else{
       noFill();
       beginShape();
       for(int i = 0;i<waypoints.size();i++){
         float posX = waypoints.get(i)[0];
         float posY = waypoints.get(i)[1];
-        int x = toCoordY(posX);
-        int y = toCoordX(posY);
+        int y = toCoordX(posX);
+        int x = toCoordY(posY);
         
         strokeWeight(12);
         stroke(255,0,0);
@@ -309,11 +309,10 @@ class Field{
     }//end velocity
   }
   void addWaypoint(int msX, int msY){
-    //int angle = 0;//make this real later
     int w = width/2;
-    float mapX = toMapY(msX);
-    float mapY = toMapX(msY);
-                    
+    float mapX = toMapX(msY);
+    float mapY = toMapY(msX);
+             
     waypoints.add(new float[]{mapX,mapY,angle});
   }
   void removeWaypoint(){
@@ -344,15 +343,6 @@ class Field{
       }
     }
   }
-  Waypoint[] toWaypointObj(){
-    Waypoint[] points = new Waypoint[waypoints.size()];
-    for(int i = 0;i<waypoints.size();i++){
-      //x, y, angle
-      //meters, hopefully
-      points[i] = new Waypoint((double)waypoints.get(i)[0] * 0.3048, (double)waypoints.get(i)[1] * 0.3048, (double)Pathfinder.d2r(waypoints.get(i)[2]));
-    }
-    return points;
-  }
   void loadWaypoints(String filePath){
     clearWaypoints();
     String[] points = loadStrings(filePath);
@@ -374,6 +364,11 @@ class Field{
         waypoints.get(i)[2] = 180 - waypoints.get(i)[2];
       }
     }
+  }
+  public void generateProfile(){
+    // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
+    //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
+    smoothPath = Generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0);
   }
   
   void enableMP(){
@@ -428,6 +423,9 @@ class Field{
       println("("+path[i][0]+","+path[i][1]+")");
     }
   }
+  boolean displayingVelocityGraph(){
+    return velocity;
+  }
   //angle in degrees
   private void arrow(float x1, float y1, int angle){arrow(x1, y1, angle, "");}
   private void arrow(float x1, float y1, int angle, String text){
@@ -452,7 +450,7 @@ class Field{
     int angY = (int)(toMapX(y2) - Math.sin(Math.PI/2 - radians));
         
   }
-  //THESE ARE BACKWARDS. I DON'T WANT TO SKREW THINGS UP BY CHANGING IT
+  //THESE ARE BACKWARDS. X AND Y ARE IN TERMS OF THE FIELD NOT THE WINDOW
   DecimalFormat df = new DecimalFormat("#.##");
   float toMapY(float x){ 
     //float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
