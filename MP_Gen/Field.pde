@@ -261,34 +261,35 @@ class Field{
         endShape();
         //leftPath
         noFill();
-        /*
+        
         beginShape();
         for(int i = 0;i<leftPath.length;i++){
           float posX = (float)leftPath[i][0];
           float posY = (float)leftPath[i][1];
-          float x = toCoordY(posX);
-          float y = toCoordX(posY);
+          float x = toCoordY(posY);
+          float y = toCoordX(posX);
             
           strokeWeight(2);
-          stroke(255, 0, 255);
+          stroke(255, 0, 0);
           vertex(x, y);
         }
         endShape();
+        
         //rightPath
         noFill();
         beginShape();
         for(int i = 0;i<rightPath.length;i++){
           float posX = (float)rightPath[i][0];
           float posY = (float)rightPath[i][1];
-          float x = toCoordY(posX);
-          float y = toCoordX(posY);
+          float x = toCoordY(posY);
+          float y = toCoordX(posX);
             
           strokeWeight(2);
-          stroke(255, 0, 255);
+          stroke(0, 0, 255);
           vertex(x, y);
         }
         endShape();
-        */
+        
       }else{
       noFill();
       beginShape();
@@ -371,7 +372,10 @@ class Field{
   public void generateProfile(){
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
     //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
-    smoothPath = Generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0);
+    double[][][] paths = Generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0);
+    smoothPath = paths[0];
+    leftPath = paths[1];
+    rightPath = paths[2];
   }
   
   void enableMP(){
