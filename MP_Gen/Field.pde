@@ -5,14 +5,12 @@ class Field{
   private static final int HEIGHT = 32;
   private static final int SPACING = 25;
   private boolean mp = false;
+  private boolean movingWaypoint = false;
+  private int movingWaypointIndex = -1;
   private double[][] smoothPath;
   private double[][] leftPath;
   private double[][] rightPath;
-  
-  private double[][] smoothPathVelocity;
-  private double[][] leftPathVelocity;
-  private double[][] rightPathVelocity;
-  
+    
   private ArrayList<float[]> waypoints;
   private float scale = 1.0;
   
@@ -32,133 +30,7 @@ class Field{
       strokeWeight(0);
       textAlign(CENTER);
       textSize(12);
-      
-      float maxVelocity = 0;
-      int heightSpacing = 880/11;
-      double t = 0;
-      int widthSpacing = 0;      
-      DecimalFormat df = new DecimalFormat("#.##");
-      
-      /*
-      switch(graph){
-        case 0:
-          t = (smoothPathVelocity.length * Double.parseDouble(findValue("timestep"))/1000);
-          df = new DecimalFormat("#.##");
-          widthSpacing = (int)(675/17);
-          for(int i = 0;i<=16;i++){
-            line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
-            String val = df.format((t/17)*i);
-            text(val, w+(i*widthSpacing), 880 + 30);
-          }
-          //find max velocity
-          maxVelocity = 0;
-          for(int i = 0;i<smoothPathVelocity.length;i++){
-            if(smoothPathVelocity[i][1] > maxVelocity){
-              maxVelocity = (float)smoothPathVelocity[i][1];
-            }
-          }
-          //the velocity
-          for(int i = 0;i<=10;i++){//11?
-            line(w, 80+(i*heightSpacing), w+(16*widthSpacing), 80+(i*heightSpacing));
-            text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
-          }
-          
-          noFill();
-            beginShape();
-            for(int i = 0;i<smoothPathVelocity.length;i++){
-              float posX = i;
-              float posY = (float)smoothPathVelocity[i][1];
-              float x = (int)map(posX, 0, smoothPathVelocity.length, w, w+(16*widthSpacing));
-              float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
-                
-              strokeWeight(2);
-              stroke(255, 0, 255);
-              vertex(x, y);
-            }
-            endShape();
-          break;
-          
-          case 1:
-            t = (leftPathVelocity.length * Double.parseDouble(findValue("timestep"))/1000);
-            df = new DecimalFormat("#.##");
-            widthSpacing = (int)(675/17);
-            for(int i = 0;i<=16;i++){
-              line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
-              String val = df.format((t/17)*i);
-              text(val, w+(i*widthSpacing), 880 + 30);
-            } 
-            //find max velocity
-            maxVelocity = 0;
-            for(int i = 0;i<leftPathVelocity.length;i++){
-              if(leftPathVelocity[i][1] > maxVelocity){
-                maxVelocity = (float)leftPathVelocity[i][1];
-              }
-            }
-            //the velocity
-            for(int i = 0;i<=10;i++){//11?
-              line(w, 80+(i*heightSpacing), w+(16*widthSpacing), 80+(i*heightSpacing));
-              text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
-            }
             
-            noFill();
-              beginShape();
-              for(int i = 0;i<leftPathVelocity.length;i++){
-                float posX = i;
-                float posY = (float)leftPathVelocity[i][1];
-                float x = (int)map(posX, 0, leftPathVelocity.length, w, w+(16*widthSpacing));
-                float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
-                  
-                strokeWeight(2);
-                stroke(255, 0, 255);
-                vertex(x, y);
-              }
-              endShape();
-          break;
-          
-          case 2:
-            t = (rightPathVelocity.length * Double.parseDouble(findValue("timestep"))/1000);
-            df = new DecimalFormat("#.##");            
-            widthSpacing = (int)(675/17);
-            for(int i = 0;i<=16;i++){
-              line(w+(i*widthSpacing), 80, w+(i*widthSpacing),880);
-              String val = df.format((t/17)*i);
-              text(val, w+(i*widthSpacing), 880 + 30);
-            } 
-            //find max velocity
-            maxVelocity = 0;
-            for(int i = 0;i<rightPathVelocity.length;i++){
-              if(rightPathVelocity[i][1] > maxVelocity){
-                maxVelocity = (float)rightPathVelocity[i][1];
-              }
-            }
-            //the velocity
-            for(int i = 0;i<=10;i++){//11?
-              line(w, 80+(i*heightSpacing), w+(16*widthSpacing), 80+(i*heightSpacing));
-              text(maxVelocity/9 * (10-i), w-SPACING, 85+(i*heightSpacing));
-            }
-            
-            noFill();
-              beginShape();
-              for(int i = 0;i<rightPathVelocity.length;i++){
-                float posX = i;
-                float posY = (float)rightPathVelocity[i][1];
-                float x = (int)map(posX, 0, rightPathVelocity.length, w, w+(16*widthSpacing));
-                float y = (int)map(posY, 0, maxVelocity, 880, 80 + heightSpacing);
-                  
-                strokeWeight(2);
-                stroke(255, 0, 255);
-                vertex(x, y);
-              }
-              endShape();
-          break;
-          
-          default:
-            graph = 0;
-          break;
-          
-      }
-      */
-      
     }else{
       //vertical lines
       int w = width/2;
@@ -232,15 +104,21 @@ class Field{
         if(angle < 0){
           angle = 360 - 15;
         }
-              
-        text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
         
-        strokeWeight(12*scale);
-        line(x, y, x, y);
+        if(!movingWaypoint){
+          println("Not moving waypoint");
+          text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+          
+          strokeWeight(12*scale);
+          line(x, y, x, y);
+          
+          //draws the arrow
+          //using screen coordinates
+          arrow(mapY, mapX, angle);
+        }else{
+          println("mw");
+        }
         
-        //draws the arrow
-        //using screen coordinates
-        arrow(mapY, mapX, angle);
       }
       //can still add to wayPoints
       //TODO fix that
@@ -290,7 +168,56 @@ class Field{
         }
         endShape();
         
+        if(mouseOverWaypoint()){
+          noFill();
+          for(int i = 0;i<waypoints.size();i++){
+            float posX = waypoints.get(i)[0];
+            float posY = waypoints.get(i)[1];
+            int y = toCoordX(posX);
+            int x = toCoordY(posY);
+            
+            if(movingWaypointIndex == i){
+              strokeWeight(18);
+            }else{
+              strokeWeight(12);
+            }
+            stroke(0,255,0);
+            line(x, y, x, y);
+          }
+          stroke(0);
+          fill(255);
+        }else{
+          noFill();
+          for(int i = 0;i<waypoints.size();i++){
+            float posX = waypoints.get(i)[0];
+            float posY = waypoints.get(i)[1];
+            int y = toCoordX(posX);
+            int x = toCoordY(posY);
+            
+            strokeWeight(12);
+            stroke(0,255,0);
+            line(x, y, x, y);
+          }
+          stroke(0);
+          fill(255);
+        }
+        
+        noFill();
+        for(int i = 0;i<waypoints.size();i++){
+          float posX = waypoints.get(i)[0];
+          float posY = waypoints.get(i)[1];
+          int y = toCoordX(posX);
+          int x = toCoordY(posY);
+          
+          strokeWeight(12);
+          stroke(0,255,0);
+          line(x, y, x, y);
+        }
+        stroke(0);
+        fill(255);
+        
       }else{
+        /*
       noFill();
       beginShape();
       for(int i = 0;i<waypoints.size();i++){
@@ -309,6 +236,7 @@ class Field{
       endShape();
       stroke(0);
       fill(255);
+      */
       }
     }//end velocity
   }
@@ -359,6 +287,39 @@ class Field{
       waypoints.add(new float[]{Float.parseFloat(temp[0]), Float.parseFloat(temp[1]), Float.parseFloat(temp[2])});
     }
   }
+  boolean mouseOverWaypoint(){
+    boolean mouseOver = false;
+    float tolerance = 1f;
+    for(int i = 0;i<waypoints.size();i++){
+      if(toCoordX(waypoints.get(i)[0] + tolerance) < mouseY && toCoordX(waypoints.get(i)[0] - tolerance) > mouseY && toCoordY(waypoints.get(i)[1] + tolerance) < mouseX && toCoordY(waypoints.get(i)[1] - tolerance) > mouseX){
+        mouseOver = true;
+        movingWaypointIndex = i;
+      }
+    }
+    if(!mouseOver){
+      movingWaypointIndex = -1;
+    }
+    return mouseOver;
+  }
+  void moveWaypoint(){
+    boolean mouseOver = false;
+    float tolerance = 1f;
+    for(int i = 0;i<waypoints.size();i++){
+      if(toCoordX(waypoints.get(i)[0] + tolerance) < mouseY && toCoordX(waypoints.get(i)[0] - tolerance) > mouseY && toCoordY(waypoints.get(i)[1] + tolerance) < mouseX && toCoordY(waypoints.get(i)[1] - tolerance) > mouseX){
+        println("Waypoint selected");
+        waypoints.get(i)[0] = toMapX(mouseY);
+        waypoints.get(i)[1] = toMapY(mouseX);
+        mouseOver = true;
+        movingWaypointIndex = i;
+        movingWaypoint = true;
+        generateProfile();
+      }
+    }
+    if(!mouseOver){
+      movingWaypointIndex = -1;
+      movingWaypoint = false;
+    }
+  }
   void mirror(){
     for (int i = 0;i<waypoints.size();i++){
       waypoints.get(i)[0] = 27 - waypoints.get(i)[0];
@@ -372,12 +333,17 @@ class Field{
   public void generateProfile(){
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
     //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
-    double[][][] paths = Generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0);
-    smoothPath = paths[0];
-    leftPath = paths[1];
-    rightPath = paths[2];
+    if(waypoints.size() > 1){
+      double[][][] paths = Generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0);
+      smoothPath = paths[0];
+      leftPath = paths[1];
+      rightPath = paths[2];
+    }else{
+      smoothPath = new double[0][0];
+      leftPath = new double[0][0];
+      rightPath = new double[0][0];
+    }
   }
-  
   void enableMP(){
     mp = true;
   }
@@ -410,20 +376,6 @@ class Field{
   }
   void setReverse(boolean r){
     reverse = r;
-  }
-  void setSmoothPathVelocity(double[][] path){
-    smoothPathVelocity = path;
-  }
-  void setLeftPathVelocity(double[][] path){
-    leftPathVelocity = path;
-  }
-  void setRightPathVelocity(double[][] path){
-    rightPathVelocity = path;
-  }
-  void clearGeneratedPaths(){
-    smoothPathVelocity = null;
-    leftPathVelocity = null;
-    rightPathVelocity = null;
   }
   void printPath(double[][] path){
     for(int i = 0;i<path.length;i++){

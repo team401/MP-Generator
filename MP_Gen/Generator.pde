@@ -36,7 +36,6 @@ static class Generator{
       center[0] = state.getTranslation().x();
       center[1] = state.getTranslation().y();
       double angle = state.getRotation().getRadians() + PI/2;
-      println(angle);
       left[0] = center[0] - halfWheelbase * Math.cos(angle);
       left[1] = center[1] - halfWheelbase * Math.sin(angle);
       right[0] = center[0] + halfWheelbase * Math.cos(angle);
@@ -56,7 +55,6 @@ static class Generator{
     double[][] outputCenter = new double[centerPath.size()][2];
     double[][] outputLeft = new double[leftPath.size()][2];
     double[][] outputRight = new double[rightPath.size()][2];
-    println(outputCenter.length);
     for (int i = 0; i<outputCenter.length;i++){
       outputCenter[i] = centerPath.get(i);
     }

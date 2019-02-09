@@ -165,14 +165,21 @@ void mouseClicked(){
   && !field.displayingVelocityGraph()){
     if(mouseButton == LEFT){
       field.addWaypoint(mouseX, mouseY);
-      if(field.getWaypoints().length > 1){
         field.generateProfile();
         field.enableMP();
-      }
-      field.printWaypoints();
     }
     if(mouseButton == RIGHT){
       field.removeWaypoint();
+      field.generateProfile();
+    }
+  }
+}
+void mouseDragged(){
+  int w = width/2;
+  if(mouseX >= w && mouseX <= w+(Field.WIDTH*Field.SPACING) && mouseY >= 80 && mouseY <= 80+(Field.HEIGHT*Field.SPACING) 
+  && !field.displayingVelocityGraph()){
+    if(mouseButton == LEFT){
+      field.moveWaypoint();
     }
   }
 }
