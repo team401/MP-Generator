@@ -319,6 +319,7 @@ class Field{
   }
   void changeWaypointAngle(){
     changingWaypointAngle = !changingWaypointAngle;
+    angle = (int)waypoints.get(movingWaypointIndex)[2];
   }
   void mirror(){
     for (int i = 0;i<waypoints.size();i++){
