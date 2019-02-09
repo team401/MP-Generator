@@ -212,6 +212,9 @@ class Field{
       rocket2.display();
       cargoShip.display();
       hab.display();
+      
+      textSize(48);
+      text("The Ocean", toCoordY(13.5), toCoordX(28));
            
       //display the coordinates
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
@@ -516,6 +519,15 @@ private class Rocket extends Field{
     }
     endShape();
     noFill();
+    if(!reverse){
+      fill(0);
+      textSize(16);
+      text("Seal", toCoordY(y + 1), toCoordX(x + 4.2));
+    }else{
+      fill(0);
+      textSize(16);
+      text("Seal", toCoordY(y - 1), toCoordX(x + 4.2)); 
+    }
   }
 }
 private class CargoShip extends Field{
@@ -586,5 +598,9 @@ private class HABPlateform extends Field{
     rect(toCoordY(y + 11.375/12), toCoordX(x + 4), toCoordY(y + 11.375/12 + 12 + 6.5/12), toCoordX(x + 7 + 11.25/12));
     
     noFill();
+    
+    fill(0);
+    textSize(16);
+    text("The Iceberg", toCoordY(y + 7.4), toCoordX(x + 6));
   }
 }
