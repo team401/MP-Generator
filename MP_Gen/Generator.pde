@@ -1,13 +1,31 @@
-static class Generator{
-  static FullStateDiffDriveModel driveModel = new FullStateDiffDriveModel(new Geometry(), new Dynamics());// Physics model
-  static DrivetrainPathManager trajectoryGenerator = new DrivetrainPathManager(driveModel, new FeedforwardOnlyPathController(), 2.0, 0.25, Math.toRadians(5.0));
-  static Pose2d negativeHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, -25.625/2));// change to actual wheelbase
-  static Pose2d positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, 25.625/2));// change to actual wheelbase
-  public static double[][][] generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse){
+class Generator{
+  //FullStateDiffDriveModel driveModel = new FullStateDiffDriveModel(new Geometry(), new Dynamics());// Physics model
+  //DrivetrainPathManager trajectoryGenerator = new DrivetrainPathManager(driveModel, new FeedforwardOnlyPathController(), 2.0, 0.25, Math.toRadians(5.0));
+  //Pose2d negativeHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, -25.625/2));// change to actual wheelbase
+  //Pose2d positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, 25.625/2));// change to actual wheelbase
+  
+  Geometry geometryModel;
+  Dynamics dynamicsModel;
+  FullStateDiffDriveModel driveModel;
+  DrivetrainPathManager trajectoryGenerator;
+  Pose2d negativeHalfWheelBase;
+  Pose2d positiveHalfWheelBase;
+  
+  Generator(){
+    println("Generator is made!");
+    geometryModel = new Geometry();
+    dynamicsModel = new Dynamics();
+    driveModel = new FullStateDiffDriveModel(geometryModel, dynamicsModel);// Physics model
+    trajectoryGenerator = new DrivetrainPathManager(driveModel, new FeedforwardOnlyPathController(), 2.0, 0.25, Math.toRadians(5.0));
+    negativeHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, -25.625/2));// change to actual wheelbase
+    positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, 25.625/2));// change to actual wheelbase
+  }
+  
+  double[][][] generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse){
     ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
     
     for (float[] a : waypointsRaw){ // Convert waypoints to inches
-      waypoints.add(new Pose2d(a[0] * 12, a[1] * 12, Rotation2d.fromDegrees(a[2])));
+      waypoints.add(new Pose2d(a[0] * 12.0, a[1] * 12.0, Rotation2d.fromDegrees(a[2])));
     }
     
     try{
@@ -20,7 +38,7 @@ static class Generator{
     maxVoltage
     );
     
-    double halfWheelbase = 25.625/2;
+    double halfWheelbase = geometryModel.getWheelBaseValue()/2;
     
     TrajectoryIterator<TimedState<Pose2dWithCurvature>> iterator = new TrajectoryIterator<TimedState<Pose2dWithCurvature>>(new TimedView<Pose2dWithCurvature>(trajectory));
     ArrayList<double[]> centerPath = new ArrayList<double[]>();
@@ -73,11 +91,63 @@ static class Generator{
     return null;
   }
   
- private static class Geometry implements TankDrivetrainGeometryTemplate{
+ private class Geometry implements TankDrivetrainGeometryTemplate{
+   private double wheelRadius;
+   private double wheelBase;
+   
+   Geometry(){
+     JSONObject settings = loadJSONObject("config.cfg");
+     wheelRadius = settings.getDouble("wheelRadius");
+     wheelBase = settings.getDouble("wheelBase");
+     println(wheelBase);
+   }
+   public double getWheelRadiusValue(){return wheelRadius;}
+   public double getWheelBaseValue(){return wheelBase;}
+   public LinearDistanceMeasure getWheelRadius(){return new LinearDistanceMeasureInches(wheelRadius);}
+   public LinearDistanceMeasure getWheelbase(){return new LinearDistanceMeasureInches(wheelBase);}
+   
+   /*
    public LinearDistanceMeasure getWheelRadius(){return new LinearDistanceMeasureInches(3.062954);}
    public LinearDistanceMeasure getWheelbase(){return new LinearDistanceMeasureInches(25.625);}
+   */
  }
- private static class Dynamics implements DriveDynamicsTemplate{
+ private class Dynamics implements DriveDynamicsTemplate{
+   private double leftKs;
+   private double leftKv;
+   private double leftKa;
+   private double rightKs;
+   private double rightKv;
+   private double rightKa;
+   private double inertialMass;
+   private double momentOfInertia;
+   private double angularDrag;
+   private double trackScrubFactor;
+   
+   Dynamics(){
+     JSONObject settings = loadJSONObject("config.cfg");
+     leftKs = settings.getDouble("leftKs");
+     leftKv = settings.getDouble("leftKv");
+     leftKa = settings.getDouble("leftKa");
+     rightKs = settings.getDouble("rightKs");
+     rightKv = settings.getDouble("rightKv");
+     rightKa = settings.getDouble("rightKa");
+     inertialMass = settings.getDouble("inertialMass");
+     momentOfInertia = settings.getDouble("momentOfInertia");
+     angularDrag = settings.getDouble("angularDrag");
+     trackScrubFactor = settings.getDouble("trackScrubFactor");
+   }
+   
+   public double getLeftKs(){return leftKs;}
+   public double getLeftKv(){return leftKv;}
+   public double getLeftKa(){return leftKa;}
+   public double getRightKs(){return rightKs;}
+   public double getRightKv(){return rightKv;}
+   public double getRightKa(){return rightKa;}
+   public double getInertialMass(){return inertialMass;}
+   public double getMomentOfInertia(){return momentOfInertia;}
+   public double getAngularDrag(){return angularDrag;}
+   public double getTrackScrubFactor(){return trackScrubFactor;}
+   /*
    public double getLeftKs(){return 0.5;}
    public double getLeftKv(){return 0.165;}
    public double getLeftKa(){return 0.0173;}
@@ -88,6 +158,7 @@ static class Generator{
    public double getMomentOfInertia(){return 2.0;}
    public double getAngularDrag(){return 1.0;}
    public double getTrackScrubFactor(){return 1.1288;}
+   */
  }
  
   

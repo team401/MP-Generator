@@ -50,10 +50,13 @@ double timestep, pos, vel, accel, jerk, robotWidth;
 void setup(){
   size(1440, 960);
   field = new Field();
+  field.setUpField();
   frameRate(120);
   w = width/2;
   angle = 0;
   graph = 0;
+  
+  println("Setup ran");
   
   velocity = false;
   
@@ -280,6 +283,7 @@ void fileSelector(File selection){
       //println(waypoints.get(i)[0] + ", " + waypoints.get(i)[1]);
     }
     field = new Field(waypoints);
+    field.setUpField();
     
     
     //String[] lines = loadStrings(selection.getAbsolutePath());
