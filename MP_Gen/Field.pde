@@ -99,12 +99,7 @@ public class Field{
       }
       line(toCoordY(0), toCoordX(27 - 9.0/12), toCoordY(27), toCoordX(27 - 9.0/12)); // Cargo Ship line
       line(toCoordY(0), toCoordX(7 + 11.25/12), toCoordY(27), toCoordX(7 + 11.25/12));// HAB line
-      
-      //Rocket rocket1 = new Rocket(27 - 16 - 5/6.0, 0, false);
-      //Rocket rocket2 = new Rocket(27 - 16 - 5/6.0, WIDTH, true);
-      //CargoShip cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
-      //HABPlateform hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
-      
+            
       rocket1.display();
       rocket2.display();
       cargoShip.display();

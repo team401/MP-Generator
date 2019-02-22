@@ -12,13 +12,12 @@ class Generator{
   Pose2d positiveHalfWheelBase;
   
   Generator(){
-    println("Generator is made!");
     geometryModel = new Geometry();
     dynamicsModel = new Dynamics();
     driveModel = new FullStateDiffDriveModel(geometryModel, dynamicsModel);// Physics model
     trajectoryGenerator = new DrivetrainPathManager(driveModel, new FeedforwardOnlyPathController(), 2.0, 0.25, Math.toRadians(5.0));
-    negativeHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, -25.625/2));// change to actual wheelbase
-    positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, 25.625/2));// change to actual wheelbase
+    negativeHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, -geometryModel.getWheelBaseValue()/2));// change to actual wheelbase
+    positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, geometryModel.getWheelBaseValue()/2));// change to actual wheelbase
   }
   
   double[][][] generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse){
@@ -96,11 +95,15 @@ class Generator{
    private double wheelBase;
    
    Geometry(){
+     updateSettings();
+   }
+   
+   public void updateSettings(){
      JSONObject settings = loadJSONObject("config.cfg");
      wheelRadius = settings.getDouble("wheelRadius");
      wheelBase = settings.getDouble("wheelBase");
-     println(wheelBase);
    }
+   
    public double getWheelRadiusValue(){return wheelRadius;}
    public double getWheelBaseValue(){return wheelBase;}
    public LinearDistanceMeasure getWheelRadius(){return new LinearDistanceMeasureInches(wheelRadius);}
@@ -124,6 +127,10 @@ class Generator{
    private double trackScrubFactor;
    
    Dynamics(){
+     updateSettings();
+   }
+   
+   public void updateSettings(){
      JSONObject settings = loadJSONObject("config.cfg");
      leftKs = settings.getDouble("leftKs");
      leftKv = settings.getDouble("leftKv");
