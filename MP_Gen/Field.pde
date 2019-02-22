@@ -355,13 +355,16 @@ public class Field{
   }
   void mirror(){
     for (int i = 0;i<waypoints.size();i++){
-      waypoints.get(i)[0] = 27 - waypoints.get(i)[0];
+      waypoints.get(i)[1] = 27 - waypoints.get(i)[1];
+      /*
       if(waypoints.get(i)[2] > 180){
         waypoints.get(i)[2] = 360 - (waypoints.get(i)[2] - 180);
       }else{
         waypoints.get(i)[2] = 180 - waypoints.get(i)[2];
       }
+      */
     }
+    generateProfile();
   }
   public void generateProfile(){
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
