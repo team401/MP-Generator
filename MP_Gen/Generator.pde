@@ -3,18 +3,16 @@ static class Generator{
   static DrivetrainPathManager trajectoryGenerator = new DrivetrainPathManager(driveModel, new FeedforwardOnlyPathController(), 2.0, 0.25, Math.toRadians(5.0));
   static Pose2d negativeHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, -25.625/2));// change to actual wheelbase
   static Pose2d positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, 25.625/2));// change to actual wheelbase
-  public static double[][][] generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage){
+  public static double[][][] generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse){
     ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
     
     for (float[] a : waypointsRaw){ // Convert waypoints to inches
       waypoints.add(new Pose2d(a[0] * 12, a[1] * 12, Rotation2d.fromDegrees(a[2])));
     }
     
-    //waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)));
-    //waypoints.add(new Pose2d(1.0, 0.0, Rotation2d.fromDegrees(0.0)));
     try{
     Trajectory<TimedState<Pose2dWithCurvature>> trajectory = trajectoryGenerator.generateTrajectory(
-    false,
+    reverse,
     waypoints,
     new ArrayList<TimingConstraint<Pose2dWithCurvature>>(),
     maxVelocity,

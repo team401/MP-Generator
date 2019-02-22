@@ -1,5 +1,5 @@
 import java.text.*;
-class Field{
+public class Field{
   //units in feet
   private static final int WIDTH = 27;
   private static final int HEIGHT = 32;
@@ -19,6 +19,14 @@ class Field{
   
   Field(){
     waypoints = new ArrayList<float[]>();
+  }
+  Field(ArrayList<float[]> waypoints){
+    this.waypoints = waypoints;
+    printWaypoints();
+    generateProfile();
+    if(waypoints.size() > 1){
+      mp = true;
+    }
   }
   void display(){
     
@@ -123,7 +131,7 @@ class Field{
             //using screen coordinates
             arrow(waypoints.get(movingWaypointIndex)[1], waypoints.get(movingWaypointIndex)[0], angle);
             
-            field.generateProfile();
+            generateProfile();
           }
         }
         
@@ -251,6 +259,13 @@ class Field{
       }
     }//end velocity
   }
+  void reset(){
+    clearWaypoints();
+    disableMP();
+    smoothPath = new double[0][0];
+    leftPath = new double[0][0];
+    rightPath = new double[0][0];
+  }
   void addWaypoint(int msX, int msY){
     int w = width/2;
     float mapX = toMapX(msY);
@@ -269,6 +284,7 @@ class Field{
       removeWaypoint();
     }
   }
+  /*
   double[][] getWaypoints(){
     double[][] p = new double[waypoints.size()][2];
     for(int i = 0;i<waypoints.size();i++){
@@ -276,6 +292,10 @@ class Field{
       p[i][1] = waypoints.get(i)[1];
     }
     return p;
+  }
+  */
+  ArrayList<float[]> getWaypoints(){
+    return waypoints; 
   }
   void printWaypoints(){
     if(waypoints.size()<=0){
@@ -335,7 +355,7 @@ class Field{
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
     //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
     if(waypoints.size() > 1){
-      double[][][] paths = Generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0);
+      double[][][] paths = Generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0, reverse);
       smoothPath = paths[0];
       leftPath = paths[1];
       rightPath = paths[2];
