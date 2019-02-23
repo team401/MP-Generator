@@ -252,6 +252,10 @@ void handleButtonEvents(GButton button, GEvent event){
     loadButton.setEnabled(true);
     field.reset();
     name.setText("");
+    
+    maxVel.setText(String.valueOf(field.getMaxVelocity()));
+    maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
+    maxVolts.setText(String.valueOf(field.getMaxVoltage()));
   }
   if(button == testButton){
     //TEST functions
@@ -322,6 +326,19 @@ void handleButtonEvents(GButton button, GEvent event){
       double maxAcceleration = Double.parseDouble(maxAccel.getText());
       double maxVoltage = Double.parseDouble(maxVolts.getText());
       
+      if(maxVelocity < 0.0){
+        maxVelocity = field.getMaxVelocity();
+        maxVel.setText(String.valueOf(field.getMaxVelocity()));
+      }
+      if(maxAcceleration < 0.0){
+        maxAcceleration = field.getMaxAcceleration();
+        maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
+      }
+      if(maxVoltage < 0.0){
+        maxVoltage = field.getMaxVoltage();
+        maxVolts.setText(String.valueOf(field.getMaxVoltage()));
+      }
+      
       field.setProfileSettings(maxVelocity, maxAcceleration, maxVoltage);
     }catch(Exception e){
       maxVel.setText(String.valueOf(field.getMaxVelocity()));
@@ -346,7 +363,7 @@ void fileSelector(File selection){
     //field.loadWaypoints(selection.getAbsolutePath());
     String[] folders = selection.getAbsolutePath().split("\\\\");
     String n = folders[folders.length-1];
-    println(n);
+    //println(n);
     name.setText(n);
     
     JSONArray values = loadJSONArray(selection.getAbsolutePath());
@@ -361,7 +378,6 @@ void fileSelector(File selection){
     field = new Field(waypoints);
     
     JSONObject waypointSettings = values.getJSONObject(values.size() - 1);
-    println("maxVel : " + waypointSettings.getDouble("maxVelocity"));
     field.setProfileSettings(
     waypointSettings.getDouble("maxVelocity"), 
     waypointSettings.getDouble("maxAcceleration"),
