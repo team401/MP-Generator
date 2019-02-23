@@ -303,6 +303,7 @@ public class Field{
     smoothPath = new double[0][0];
     leftPath = new double[0][0];
     rightPath = new double[0][0];
+    totalElapsedTime = 0.0;
     
     JSONObject values = loadJSONObject("config.cfg");
     maxVelocity = values.getDouble("defaultMaxVelocity");
