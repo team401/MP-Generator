@@ -477,9 +477,9 @@ void exportWaypoints(){
   ArrayList<float[]> waypoints = field.getWaypoints();
   for(int i = 0;i<waypoints.size();i++){
     JSONObject waypoint = new JSONObject();
-    waypoint.setFloat("x", waypoints.get(i)[0]);
-    waypoint.setFloat("y", waypoints.get(i)[1]);
-    waypoint.setFloat("angle", waypoints.get(i)[2]);
+    waypoint.setFloat("x", waypoints.get(i)[0] * 12.0);
+    waypoint.setFloat("y", waypoints.get(i)[1] * 12.0);
+    waypoint.setFloat("angle", waypoints.get(i)[2] * 12.0);
     
     json.setJSONObject(i, waypoint);
   }
