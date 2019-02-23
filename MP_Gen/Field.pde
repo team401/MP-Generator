@@ -10,6 +10,9 @@ public class Field{
   private double[][] smoothPath;
   private double[][] leftPath;
   private double[][] rightPath;
+  private double maxVelocity;
+  private double maxAcceleration;
+  private double maxVoltage;
     
   private ArrayList<float[]> waypoints;
   private float scale = 1.0;
@@ -25,14 +28,19 @@ public class Field{
   private HABPlateform hab;
   
   Field(){
-    println("default constructor used");
     generator = new Generator();
     waypoints = new ArrayList<float[]>();
+    reset();
   }
-  Field(ArrayList<float[]> waypoints){
+  Field(ArrayList<float[]> waypoints){    
     this.waypoints = waypoints;
-    //printWaypoints();
     generator = new Generator();
+    
+    JSONObject values = loadJSONObject("config.cfg");
+    maxVelocity = values.getDouble("defaultMaxVelocity");
+    maxAcceleration = values.getDouble("defaultMaxAcceleration");
+    maxVoltage = values.getDouble("defaultMaxVoltage");
+        
     generateProfile();
     if(waypoints.size() > 1){
       mp = true;
@@ -277,6 +285,11 @@ public class Field{
     smoothPath = new double[0][0];
     leftPath = new double[0][0];
     rightPath = new double[0][0];
+    
+    JSONObject values = loadJSONObject("config.cfg");
+    maxVelocity = values.getDouble("defaultMaxVelocity");
+    maxAcceleration = values.getDouble("defaultMaxAcceleration");
+    maxVoltage = values.getDouble("defaultMaxVoltage");
   }
   void addWaypoint(int msX, int msY){
     int w = width/2;
@@ -366,11 +379,26 @@ public class Field{
     }
     generateProfile();
   }
+  
+  public void setProfileSettings(double maxVelocity, double maxAcceleration, double maxVoltage){
+    this.maxVelocity = maxVelocity;
+    this.maxAcceleration = maxAcceleration;
+    this.maxVoltage = maxVoltage;
+  }
+  public double getMaxVelocity(){
+    return maxVelocity;
+  }
+  public double getMaxAcceleration(){
+    return maxAcceleration;
+  }
+  public double getMaxVoltage(){
+    return maxVoltage;
+  }
   public void generateProfile(){
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
     //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
     if(waypoints.size() > 1){
-      double[][][] paths = generator.generateTraj(this.waypoints, 36.0, 36.0, 9.0, reverse);
+      double[][][] paths = generator.generateTraj(this.waypoints, maxVelocity, maxAcceleration, maxVoltage, reverse);
       smoothPath = paths[0];
       leftPath = paths[1];
       rightPath = paths[2];

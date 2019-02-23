@@ -32,14 +32,14 @@ import kotlin.coroutines.experimental.jvm.internal.*;
 import g4p_controls.*;
 import java.awt.Font;
 import java.awt.Color;
-GButton fileButton, testButton, newButton,
+GButton fileButton, testButton, newButton, settingsButton, saveSettingsButton,
 saveButton, mirrorButton, centerButton, leftButton, rightButton, loadButton;
-GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxJerk, directory;//,wheelRadius;
+GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxVolts, directory;//,wheelRadius;
 GLabel error;
 GSlider reverse;
 Field field;
 Trajectory traj;
-boolean blue, velocity;
+boolean blue, velocity, settingsOpen;
 int w, graph;
 final int X_TEXT = 130;
 int angle;
@@ -55,10 +55,9 @@ void setup(){
   w = width/2;
   angle = 0;
   graph = 0;
-  
-  println("Setup ran");
-  
+    
   velocity = false;
+  settingsOpen = false;
   
   METERS_TO_INCHES = (1/0.3048) * 12;
   
@@ -100,6 +99,15 @@ void setup(){
   testButton = new GButton(this, 300, 800, 100, 100, "TEST");
   testButton.setFont(new Font("Dialog", Font.PLAIN, 24));
   
+  settingsButton = new GButton(this, 130, 120, 200, 50, "Open Settings");
+  settingsButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  saveSettingsButton = new GButton(this, 130, 170, 200, 50, "Save Settings");
+  saveSettingsButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  
+  saveSettingsButton.setEnabled(false);
+  saveSettingsButton.setVisible(false);
+  
   //Use for debugging
   testButton.setEnabled(false);
   testButton.setVisible(false);
@@ -108,6 +116,31 @@ void setup(){
   name = new GTextField(this, X_TEXT, 80, 200, 32);
   name.setFont(new Font("Dialog", Font.PLAIN, 24));
   name.setPromptText("Profile Name");
+  
+  maxVel = new GTextField(this, X_TEXT, 200 + 30, 200, 32);
+  maxVel.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxVel.setPromptText("Max Velocity");
+  
+  maxAccel = new GTextField(this, X_TEXT, 240 + 30, 200, 32);
+  maxAccel.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxAccel.setPromptText("Max Acceleration");
+  
+  maxVolts = new GTextField(this, X_TEXT, 280 + 30, 200, 32);
+  maxVolts.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxVolts.setPromptText("Max Voltage");
+  
+  maxVel.setEnabled(false);
+  maxVel.setVisible(false);
+  maxAccel.setEnabled(false);
+  maxAccel.setVisible(false);
+  maxVolts.setEnabled(false);
+  maxVolts.setVisible(false);
+  
+  JSONObject values = loadJSONObject("config.cfg");
+  maxVel.setText(String.valueOf(values.getDouble("defaultMaxVelocity")));
+  maxAccel.setText(String.valueOf(values.getDouble("defaultMaxAcceleration")));
+  maxVolts.setText(String.valueOf(values.getDouble("defaultMaxVoltage")));
+  
   
   error = new GLabel(this, 75, 800, 400, 100);
   error.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -131,23 +164,7 @@ void draw(){
   fill(0);
   textSize(24);
   
-  if(velocity){
-    switch(graph){
-      case 0:
-        text("Center Path Velocity", width*0.75, 50);
-      break;
-      
-      case 1:
-        text("Left Path Velocity", width*0.75, 50);
-      break;
-      
-      case 2:
-        text("Right Path Velocity", width*0.75, 50);
-      break;
-    }
-  }else{
-    text("Field", width*0.75-25, 50);
-  }
+  text("Field", width*0.75-25, 50);
   
   //text inputs
   textAlign(LEFT, BOTTOM);
@@ -160,6 +177,19 @@ void draw(){
   text("Frd", width/2-230, 600);
   textAlign(LEFT, CENTER);
   text("Rev", width/2-125, 600);
+  
+  if(settingsOpen){
+    textAlign(RIGHT, TOP);
+    text("Max Vel", X_TEXT - 5, 234);
+    text("Max Accel", X_TEXT - 5, 274);
+    text("Max Volts", X_TEXT - 5, 314);
+    
+    textAlign(LEFT, TOP);
+    text("in/s", X_TEXT + 205, 234);
+    text("in/s/s", X_TEXT + 205, 274);
+    text("V", X_TEXT + 205, 314);
+  }
+  
 }
 void mouseClicked(){
   int w = width/2;
@@ -256,6 +286,52 @@ void handleButtonEvents(GButton button, GEvent event){
       selectInput("Choose File to load", "fileSelector");
     }
   }
+  if(button == settingsButton){
+    if(settingsOpen){
+      settingsOpen = false;
+      settingsButton.setText("Open Settings");
+      
+      saveSettingsButton.setEnabled(false);
+      saveSettingsButton.setVisible(false);
+      
+      maxVel.setEnabled(false);
+      maxVel.setVisible(false);
+      maxAccel.setEnabled(false);
+      maxAccel.setVisible(false);
+      maxVolts.setEnabled(false);
+      maxVolts.setVisible(false);
+      
+    }else{
+      settingsOpen = true;
+      settingsButton.setText("Close Settings");
+      
+      saveSettingsButton.setEnabled(true);
+      saveSettingsButton.setVisible(true);
+      
+      maxVel.setEnabled(true);
+      maxVel.setVisible(true);
+      maxAccel.setEnabled(true);
+      maxAccel.setVisible(true);
+      maxVolts.setEnabled(true);
+      maxVolts.setVisible(true);
+    }
+  }
+  if(button == saveSettingsButton){
+    try{
+      double maxVelocity = Double.parseDouble(maxVel.getText());
+      double maxAcceleration = Double.parseDouble(maxAccel.getText());
+      double maxVoltage = Double.parseDouble(maxVolts.getText());
+      
+      field.setProfileSettings(maxVelocity, maxAcceleration, maxVoltage);
+    }catch(Exception e){
+      maxVel.setText(String.valueOf(field.getMaxVelocity()));
+      maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
+      maxVolts.setText(String.valueOf(field.getMaxVoltage()));
+      
+      println("Only use numbers!");
+      //e.printStackTrace();
+    }
+  }
 }
 void pathSelector(File selection){
   if(selection == null){
@@ -276,15 +352,26 @@ void fileSelector(File selection){
     JSONArray values = loadJSONArray(selection.getAbsolutePath());
     
     ArrayList<float[]> waypoints = new ArrayList<float[]>();
-    for(int i = 0;i<values.size();i++){
+    for(int i = 0;i<values.size() - 1;i++){
       JSONObject waypoint = values.getJSONObject(i);
       
       waypoints.add(new float[]{waypoint.getFloat("x"), waypoint.getFloat("y"), waypoint.getFloat("angle")});
       //println(waypoints.get(i)[0] + ", " + waypoints.get(i)[1]);
     }
     field = new Field(waypoints);
+    
+    JSONObject waypointSettings = values.getJSONObject(values.size() - 1);
+    println("maxVel : " + waypointSettings.getDouble("maxVelocity"));
+    field.setProfileSettings(
+    waypointSettings.getDouble("maxVelocity"), 
+    waypointSettings.getDouble("maxAcceleration"),
+    waypointSettings.getDouble("maxVoltage")
+    );
     field.setUpField();
     
+    maxVel.setText(String.valueOf(field.getMaxVelocity()));
+    maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
+    maxVolts.setText(String.valueOf(field.getMaxVoltage()));
     
     //String[] lines = loadStrings(selection.getAbsolutePath());
   }  
@@ -347,8 +434,14 @@ void saveFieldConfig(){
     waypoint.setFloat("x", waypoints.get(i)[0]);
     waypoint.setFloat("y", waypoints.get(i)[1]);
     waypoint.setFloat("angle", waypoints.get(i)[2]);
+    
     json.setJSONObject(i, waypoint);
   }
+  JSONObject waypointSettings = new JSONObject();
+  waypointSettings.setDouble("maxVelocity", field.getMaxVelocity());
+  waypointSettings.setDouble("maxAcceleration", field.getMaxAcceleration());
+  waypointSettings.setDouble("maxVoltage", field.getMaxVoltage());
+  json.setJSONObject(json.size() - 1, waypointSettings);
   
   saveJSONArray(json, "field_layouts/" + name.getText());
   println("export complete");
