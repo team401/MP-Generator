@@ -1,0 +1,28 @@
+[
+  {
+    "x": 13.5,
+    "y": 11,
+    "angle": 0
+  },
+  {
+    "x": 16.5,
+    "y": 9,
+    "angle": 0
+  },
+  {
+    "x": 22.5,
+    "y": 7,
+    "angle": 0
+  },
+  {
+    "x": 26.5,
+    "y": 7.5,
+    "angle": 0
+  },
+  {
+    "maxVoltage": 9,
+    "maxVelocity": 36,
+    "maxAcceleration": 36,
+    "reverse": false
+  }
+]

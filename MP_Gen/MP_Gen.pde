@@ -248,6 +248,9 @@ void handleButtonEvents(GButton button, GEvent event){
   
   if(button == fileButton){
     // TODO add waypoint copyable prompt
+    if(name.getText().length() > 0 && !name.getText().equals(" ")){//there is some text
+      thread("exportWaypoints");
+    }
   }
   if(button == newButton){
     fileButton.setText("Export");
@@ -258,6 +261,7 @@ void handleButtonEvents(GButton button, GEvent event){
 
     field.reset();
     name.setText("");
+    name.setLocalColorScheme(GConstants.BLUE_SCHEME);
     
     maxVel.setText(String.valueOf(field.getMaxVelocity()));
     maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
@@ -456,5 +460,30 @@ void saveFieldConfig(){
   json.setJSONObject(json.size(), waypointSettings);
   
   saveJSONArray(json, "field_layouts/" + name.getText());
+  println("Field saved");
+  error.setText("Field config saved!");
+}
+void exportWaypoints(){
+  JSONArray json = new JSONArray();
+  
+  ArrayList<float[]> waypoints = field.getWaypoints();
+  for(int i = 0;i<waypoints.size();i++){
+    JSONObject waypoint = new JSONObject();
+    waypoint.setFloat("x", waypoints.get(i)[0]);
+    waypoint.setFloat("y", waypoints.get(i)[1]);
+    waypoint.setFloat("angle", waypoints.get(i)[2]);
+    
+    json.setJSONObject(i, waypoint);
+  }
+  
+  JSONObject waypointSettings = new JSONObject();
+  waypointSettings.setBoolean("reverse", field.getReverse());
+  waypointSettings.setDouble("maxVelocity", field.getMaxVelocity());
+  waypointSettings.setDouble("maxAcceleration", field.getMaxAcceleration());
+  waypointSettings.setDouble("maxVoltage", field.getMaxVoltage());
+  json.setJSONObject(json.size(), waypointSettings);
+  
+  saveJSONArray(json, "waypoints/" + name.getText());
   println("export complete");
+  error.setText("Export complete");
 }
