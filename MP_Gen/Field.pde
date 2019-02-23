@@ -380,10 +380,13 @@ public class Field{
     generateProfile();
   }
   
-  public void setProfileSettings(double maxVelocity, double maxAcceleration, double maxVoltage){
+  public void setProfileSettings(double maxVelocity, double maxAcceleration, double maxVoltage, boolean reverse){
     this.maxVelocity = maxVelocity;
     this.maxAcceleration = maxAcceleration;
     this.maxVoltage = maxVoltage;
+    this.reverse = reverse;
+    
+    generateProfile();
   }
   public double getMaxVelocity(){
     return maxVelocity;

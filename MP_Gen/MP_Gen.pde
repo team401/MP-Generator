@@ -224,6 +224,9 @@ void mouseDragged(){
   if(mouseX >= w && mouseX <= w+(Field.WIDTH*Field.SPACING) && mouseY >= 80 && mouseY <= 80+(Field.HEIGHT*Field.SPACING) 
   && !field.displayingVelocityGraph()){
     if(mouseButton == LEFT && field.mouseOverWaypoint()){
+      if(field.getWaypoints().size() > 1){
+          saveButton.setEnabled(true);
+      }
       field.moveWaypoint();
     }
   }
@@ -241,6 +244,7 @@ void mouseWheel(MouseEvent event){
 void handleButtonEvents(GButton button, GEvent event){
   
   error.setText("");
+  saveButton.setEnabled(true);
   
   if(button == fileButton){
     // TODO add waypoint copyable prompt
@@ -250,6 +254,8 @@ void handleButtonEvents(GButton button, GEvent event){
     fileButton.setEnabled(false);
     saveButton.setEnabled(false);
     loadButton.setEnabled(true);
+    reverse.setValue(0);
+
     field.reset();
     name.setText("");
     
@@ -339,7 +345,9 @@ void handleButtonEvents(GButton button, GEvent event){
         maxVolts.setText(String.valueOf(field.getMaxVoltage()));
       }
       
-      field.setProfileSettings(maxVelocity, maxAcceleration, maxVoltage);
+      field.setProfileSettings(maxVelocity, maxAcceleration, maxVoltage, field.getReverse());
+      
+      saveButton.setEnabled(true);
     }catch(Exception e){
       maxVel.setText(String.valueOf(field.getMaxVelocity()));
       maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
@@ -376,18 +384,25 @@ void fileSelector(File selection){
       //println(waypoints.get(i)[0] + ", " + waypoints.get(i)[1]);
     }
     field = new Field(waypoints);
+    field.setUpField();
     
     JSONObject waypointSettings = values.getJSONObject(values.size() - 1);
     field.setProfileSettings(
-    waypointSettings.getDouble("maxVelocity"), 
+    waypointSettings.getDouble("maxVelocity"),
     waypointSettings.getDouble("maxAcceleration"),
-    waypointSettings.getDouble("maxVoltage")
+    waypointSettings.getDouble("maxVoltage"),
+    waypointSettings.getBoolean("reverse")
     );
-    field.setUpField();
+    
     
     maxVel.setText(String.valueOf(field.getMaxVelocity()));
     maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
     maxVolts.setText(String.valueOf(field.getMaxVoltage()));
+    if(field.getReverse()){
+      reverse.setValue(1);
+    }else{
+      reverse.setValue(0);
+    }
     
     //String[] lines = loadStrings(selection.getAbsolutePath());
   }  
@@ -416,27 +431,6 @@ public void handleSliderEvents(GValueControl slider, GEvent event) {
     // 1 is reverse, 0 is forward
   }
 }
-
-//quick and dirty
-void placePaths(){
-  fileButton.setEnabled(false);
-  loadButton.setEnabled(true);
-}
-void pathsGenerated(){
-  newButton.setEnabled(true);
-  fileButton.setEnabled(true);
-  loadButton.setEnabled(false);
-  saveButton.setEnabled(true);
-}
-
-void clearPaths(Field field){
-    fileButton.setEnabled(false);
-    saveButton.setEnabled(false);
-    loadButton.setEnabled(true);
-    field.clearWaypoints();
-    field.disableMP();
-    name.setText("");
-}
 void setReverse(Field field, boolean reverse){
   field.setReverse(reverse);
   field.generateProfile();
@@ -453,11 +447,13 @@ void saveFieldConfig(){
     
     json.setJSONObject(i, waypoint);
   }
+  
   JSONObject waypointSettings = new JSONObject();
+  waypointSettings.setBoolean("reverse", field.getReverse());
   waypointSettings.setDouble("maxVelocity", field.getMaxVelocity());
   waypointSettings.setDouble("maxAcceleration", field.getMaxAcceleration());
   waypointSettings.setDouble("maxVoltage", field.getMaxVoltage());
-  json.setJSONObject(json.size() - 1, waypointSettings);
+  json.setJSONObject(json.size(), waypointSettings);
   
   saveJSONArray(json, "field_layouts/" + name.getText());
   println("export complete");
