@@ -61,8 +61,8 @@ public class Field{
     rocket2 = new Rocket(27 - 11.28125, WIDTH, true); // Rocket is 39.375 wide
     cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
     hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
-    leftLoadingStation = new LoadingStation(WIDTH - (22.75/12));
-    rightLoadingStation = new LoadingStation(22.75/12);
+    leftLoadingStation = new LoadingStation(WIDTH - 22.75/6);
+    rightLoadingStation = new LoadingStation(0);
   }
   void display(){
     
@@ -681,9 +681,10 @@ private class LoadingStation extends Field{
   public void display(){
     fill(0);
     stroke(255);
-    line(toCoordY(y), toCoordX(0), toCoordY(y), toCoordX(1.5));
+    line(toCoordY(y + (22.75/12)), toCoordX(0), toCoordY(y + (22.75/12)), toCoordX(1.5));
     noFill();
     stroke(0);
+    line(toCoordY(y), toCoordX(0), toCoordY(y + 3.7917), toCoordX(0));
   }
   
 }
