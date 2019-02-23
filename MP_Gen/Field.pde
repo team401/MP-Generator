@@ -28,6 +28,8 @@ public class Field{
   private Rocket rocket2;
   private CargoShip cargoShip;
   private HABPlateform hab;
+  private LoadingStation leftLoadingStation;
+  private LoadingStation rightLoadingStation;
   
   Field(){
     generator = new Generator();
@@ -51,10 +53,12 @@ public class Field{
   }
   
   void setUpField(){
-    rocket1 = new Rocket(27 - 16 - 5/6.0, 0, false);
-    rocket2 = new Rocket(27 - 16 - 5/6.0, WIDTH, true);
+    rocket1 = new Rocket(27 - 11.28125, 0, false); // Rocket center is 96 in from the center line
+    rocket2 = new Rocket(27 - 11.28125, WIDTH, true); // Rocket is 39.375 wide
     cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
     hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
+    leftLoadingStation = new LoadingStation(WIDTH - (22.75/12));
+    rightLoadingStation = new LoadingStation(22.75/12);
   }
   void display(){
     
@@ -115,6 +119,8 @@ public class Field{
       rocket2.display();
       cargoShip.display();
       hab.display();
+      leftLoadingStation.display();
+      rightLoadingStation.display();
       
       if(memesEnabled){
         textSize(48);
@@ -530,29 +536,34 @@ private class Rocket extends Field{
     //back and side struts
     if (!reverse){
       vertex(toCoordY(y), toCoordX(x));
-      vertex(toCoordY(y), toCoordX(x + 8 + (5/6.0)));
-      vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0));
-      vertex(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12));
-      vertex(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12));
-      vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
+      vertex(toCoordY(y + 24.8/12), toCoordX(x+ 13.8/12));
+      vertex(toCoordY(y + 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
+      vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
       // angle 61 degrees 
       stroke(255);
-      line(toCoordY(y + 12.4/12), toCoordX(x + 2 + 11.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y + 12.4/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y + 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12), toCoordY(y + 24.8/12 + 1.5), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12));
+      line(toCoordY(y + 12.4/12), toCoordX(x + 11.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y + 12.4/12), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y + 24.8/12), toCoordX(x + 13.8/12 + 10.25/12), toCoordY(y + 24.8/12 + 1.5), toCoordX(x + 13.8/12 + 10.25/12));
       stroke(0);
     }else{
+      /*
       vertex(toCoordY(y), toCoordX(x));
       vertex(toCoordY(y), toCoordX(x + 8 + (5/6.0)));
       vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0));
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12));
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12));
       vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
+      */
+      vertex(toCoordY(y), toCoordX(x));
+      vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12));
+      vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
+      vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
+      
       // Alignment lines
       stroke(255);
-      line(toCoordY(y - 12.4/12), toCoordX(x + 2 + 11.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y - 12.4/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y - 24.8/12), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12), toCoordY(y - 24.8/12 - 1.5), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 10.25/12));
+      line(toCoordY(y - 12.4/12), toCoordX(x + 11.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y - 12.4/12), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
+      line(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12 + 10.25/12), toCoordY(y - 24.8/12 - 1.5), toCoordX(x + 13.8/12 + 10.25/12));
       stroke(0);
     }
     endShape();
@@ -562,17 +573,17 @@ private class Rocket extends Field{
     textSize(16);
     if(!reverse){
       if(memesEnabled){
-        text("Seal", toCoordY(y + 1), toCoordX(x + 4.2));
+        text("Seal", toCoordY(y + 1), toCoordX(x + 1.8));
       }else{
         textSize(12);
-        text("Rocket", toCoordY(y + 1), toCoordX(x + 4.2));
+        text("Rocket", toCoordY(y + 1), toCoordX(x + 1.8));
       }
     }else{
       if(memesEnabled){
-        text("Seal", toCoordY(y - 1), toCoordX(x + 4.2)); 
+        text("Seal", toCoordY(y - 1), toCoordX(x + 1.8)); 
       }else{
         textSize(12);
-        text("Rocket", toCoordY(y - 1), toCoordX(x + 4.2)); 
+        text("Rocket", toCoordY(y - 1), toCoordX(x + 1.8)); 
       }
     }
    
@@ -659,4 +670,18 @@ private class HABPlateform extends Field{
       text("HAB Platform", toCoordY(y + 7.4), toCoordX(x + 6));
     }
   }
+}
+
+private class LoadingStation extends Field{
+  private float y;
+  LoadingStation(float y){
+    this.y = y;
+  }
+  public void display(){
+    fill(0);
+    stroke(255);
+    line(toCoordY(y), toCoordX(0), toCoordY(y), toCoordX(1.5));
+    noFill();
+  }
+  
 }
