@@ -13,6 +13,7 @@ public class Field{
   private double maxVelocity;
   private double maxAcceleration;
   private double maxVoltage;
+  protected boolean memesEnabled;
     
   private ArrayList<float[]> waypoints;
   private float scale = 1.0;
@@ -40,6 +41,7 @@ public class Field{
     maxVelocity = values.getDouble("defaultMaxVelocity");
     maxAcceleration = values.getDouble("defaultMaxAcceleration");
     maxVoltage = values.getDouble("defaultMaxVoltage");
+    memesEnabled = values.getBoolean("enableMemes");
         
     generateProfile();
     if(waypoints.size() > 1){
@@ -113,8 +115,12 @@ public class Field{
       cargoShip.display();
       hab.display();
       
-      textSize(48);
-      text("The Ocean", toCoordY(13.5), toCoordX(28));
+      if(memesEnabled){
+        textSize(48);
+        text("The Ocean", toCoordY(13.5), toCoordX(28));
+      }else{
+        
+      }
            
       //display the coordinates
       if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
@@ -290,6 +296,7 @@ public class Field{
     maxVelocity = values.getDouble("defaultMaxVelocity");
     maxAcceleration = values.getDouble("defaultMaxAcceleration");
     maxVoltage = values.getDouble("defaultMaxVoltage");
+    memesEnabled = values.getBoolean("enableMemes");
   }
   void addWaypoint(int msX, int msY){
     int w = width/2;
@@ -543,15 +550,25 @@ private class Rocket extends Field{
     }
     endShape();
     noFill();
+    
+    fill(0);
+    textSize(16);
     if(!reverse){
-      fill(0);
-      textSize(16);
-      text("Seal", toCoordY(y + 1), toCoordX(x + 4.2));
+      if(memesEnabled){
+        text("Seal", toCoordY(y + 1), toCoordX(x + 4.2));
+      }else{
+        textSize(12);
+        text("Rocket", toCoordY(y + 1), toCoordX(x + 4.2));
+      }
     }else{
-      fill(0);
-      textSize(16);
-      text("Seal", toCoordY(y - 1), toCoordX(x + 4.2)); 
+      if(memesEnabled){
+        text("Seal", toCoordY(y - 1), toCoordX(x + 4.2)); 
+      }else{
+        textSize(12);
+        text("Rocket", toCoordY(y - 1), toCoordX(x + 4.2)); 
+      }
     }
+   
   }
 }
 private class CargoShip extends Field{
@@ -599,7 +616,11 @@ private class CargoShip extends Field{
     
     fill(0);
     textSize(16);
-    text("The Walrus", toCoordY(y + 2), toCoordX(x + 4));
+    if(memesEnabled){
+      text("The Walrus", toCoordY(y + 2), toCoordX(x + 4));
+    }else{
+      text("Cargo Ship", toCoordY(y + 2), toCoordX(x + 4));
+    }
   }
 }
 private class HABPlateform extends Field{
@@ -625,6 +646,10 @@ private class HABPlateform extends Field{
     
     fill(0);
     textSize(16);
-    text("The Iceberg", toCoordY(y + 7.4), toCoordX(x + 6));
+    if(memesEnabled){
+      text("The Iceberg", toCoordY(y + 7.4), toCoordX(x + 6));
+    }else{
+      text("HAB Platform", toCoordY(y + 7.4), toCoordX(x + 6));
+    }
   }
 }
