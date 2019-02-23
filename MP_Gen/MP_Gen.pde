@@ -139,8 +139,7 @@ void setup(){
   JSONObject values = loadJSONObject("config.cfg");
   maxVel.setText(String.valueOf(values.getDouble("defaultMaxVelocity")));
   maxAccel.setText(String.valueOf(values.getDouble("defaultMaxAcceleration")));
-  maxVolts.setText(String.valueOf(values.getDouble("defaultMaxVoltage")));
-  
+  maxVolts.setText(String.valueOf(values.getDouble("defaultMaxVoltage")));  
   
   error = new GLabel(this, 75, 800, 400, 100);
   error.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -177,6 +176,14 @@ void draw(){
   text("Frd", width/2-230, 600);
   textAlign(LEFT, CENTER);
   text("Rev", width/2-125, 600);
+  
+  // Elapsed time
+  textAlign(CENTER, CENTER);
+  text("Total Elapsed Time", width/2-150, 660);
+  DecimalFormat df = new DecimalFormat("##.###");
+  text(String.valueOf(df.format(field.getElapsedTime())) + " seconds", width/2-150, 700);
+  
+
   
   if(settingsOpen){
     textAlign(RIGHT, TOP);

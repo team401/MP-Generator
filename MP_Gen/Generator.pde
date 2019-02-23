@@ -1,3 +1,19 @@
+class Profile{
+  private double[][][] profile;
+  private double totalTime;
+  Profile(double[][][] profile, double totalTime){
+    this.profile = profile;
+    this.totalTime = totalTime;
+  }
+  
+  public double[][][] getProfile(){
+    return profile;
+  }
+  public double getTotalTime(){
+    return totalTime;
+  }
+}
+
 class Generator{
   //FullStateDiffDriveModel driveModel = new FullStateDiffDriveModel(new Geometry(), new Dynamics());// Physics model
   //DrivetrainPathManager trajectoryGenerator = new DrivetrainPathManager(driveModel, new FeedforwardOnlyPathController(), 2.0, 0.25, Math.toRadians(5.0));
@@ -20,7 +36,7 @@ class Generator{
     positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, geometryModel.getWheelBaseValue()/2));// change to actual wheelbase
   }
   
-  double[][][] generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse){
+  Profile generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse){
     ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
     
     for (float[] a : waypointsRaw){ // Convert waypoints to inches
@@ -43,8 +59,10 @@ class Generator{
     ArrayList<double[]> centerPath = new ArrayList<double[]>();
     ArrayList<double[]> leftPath = new ArrayList<double[]>();
     ArrayList<double[]> rightPath = new ArrayList<double[]>();
+    TimedState<Pose2dWithCurvature> timeState = null;
     while(!iterator.isDone()){
-      Pose2dWithCurvature state = iterator.advance(0.01).state().state();
+      timeState = iterator.advance(0.01).state();
+      Pose2dWithCurvature state = timeState.state();
       double[] center = new double[2];
       double[] left = new double[2];
       double[] right = new double[2];
@@ -67,6 +85,9 @@ class Generator{
       leftPath.add(left);
       rightPath.add(right);
     }
+    
+    double totalTimeSeconds = timeState.t();
+    
     double[][] outputCenter = new double[centerPath.size()][2];
     double[][] outputLeft = new double[leftPath.size()][2];
     double[][] outputRight = new double[rightPath.size()][2];
@@ -83,7 +104,7 @@ class Generator{
     output[0] = outputCenter;
     output[1] = outputLeft;
     output[2] = outputRight;
-    return output;
+    return new Profile(output, totalTimeSeconds);
     }catch (Exception e){
       e.printStackTrace();
     }

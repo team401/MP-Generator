@@ -10,6 +10,7 @@ public class Field{
   private double[][] smoothPath;
   private double[][] leftPath;
   private double[][] rightPath;
+  private double totalElapsedTime;
   private double maxVelocity;
   private double maxAcceleration;
   private double maxVoltage;
@@ -408,15 +409,21 @@ public class Field{
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
     //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
     if(waypoints.size() > 1){
-      double[][][] paths = generator.generateTraj(this.waypoints, maxVelocity, maxAcceleration, maxVoltage, reverse);
+      Profile profile = generator.generateTraj(this.waypoints, maxVelocity, maxAcceleration, maxVoltage, reverse);
+      double[][][] paths = profile.getProfile();
       smoothPath = paths[0];
       leftPath = paths[1];
       rightPath = paths[2];
+      totalElapsedTime = profile.getTotalTime();
     }else{
       smoothPath = new double[0][0];
       leftPath = new double[0][0];
       rightPath = new double[0][0];
+      totalElapsedTime = 0.0;
     }
+  }
+  double getElapsedTime(){
+    return totalElapsedTime;
   }
   void enableMP(){
     mp = true;
