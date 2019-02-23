@@ -227,6 +227,7 @@ public class Field{
           for(int i = 0;i<waypoints.size();i++){
             float posX = waypoints.get(i)[0];
             float posY = waypoints.get(i)[1];
+            int waypointAngle = (int)waypoints.get(i)[2];
             int y = toCoordX(posX);
             int x = toCoordY(posY);
             
@@ -240,6 +241,7 @@ public class Field{
             }
             stroke(0,255,0);
             line(x, y, x, y);
+            arrow(posY, posX, waypointAngle);
           }
           stroke(0);
           fill(255);
@@ -248,12 +250,14 @@ public class Field{
           for(int i = 0;i<waypoints.size();i++){
             float posX = waypoints.get(i)[0];
             float posY = waypoints.get(i)[1];
+            int waypointAngle = (int)waypoints.get(i)[2];
             int y = toCoordX(posX);
             int x = toCoordY(posY);
             
             strokeWeight(12);
             stroke(0,255,0);
             line(x, y, x, y);
+            arrow(posY, posX, waypointAngle);
           }
           stroke(0);
           fill(255);
@@ -319,8 +323,11 @@ public class Field{
     waypoints.add(new float[]{mapX,mapY,angle});
   }
   void removeWaypoint(){
-    if(waypoints.size()>=1){
-    waypoints.remove(waypoints.size()-1);
+    removeWaypoint(waypoints.size() - 1);
+  }
+  void removeWaypoint(int index){
+    if(waypoints.size() > 0){
+      waypoints.remove(index);
     }
   }
   void clearWaypoints(){
@@ -429,6 +436,9 @@ public class Field{
       rightPath = new double[0][0];
       totalElapsedTime = 0.0;
     }
+  }
+  int getChangingIndex(){
+    return movingWaypointIndex;
   }
   double getElapsedTime(){
     return totalElapsedTime;

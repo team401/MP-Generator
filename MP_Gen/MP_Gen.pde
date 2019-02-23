@@ -225,6 +225,13 @@ void mouseClicked(){
       if(mouseButton == LEFT){
         field.changeWaypointAngle();
       }
+      if (mouseButton == RIGHT){
+        field.removeWaypoint(field.getChangingIndex());
+        field.generateProfile();
+        if(field.getWaypoints().size() <= 1){
+          saveButton.setEnabled(false);
+        }
+      }
     }
   }
 }
