@@ -18,6 +18,7 @@ public class Field{
     
   private ArrayList<float[]> waypoints;
   private float scale = 1.0;
+  private float fieldResolution;
   
   //private int angle;
   private boolean reverse;
@@ -35,6 +36,8 @@ public class Field{
     generator = new Generator();
     waypoints = new ArrayList<float[]>();
     reset();
+    JSONObject values = loadJSONObject("config.cfg");
+    fieldResolution = values.getFloat("fieldResolution");
   }
   Field(ArrayList<float[]> waypoints){    
     this.waypoints = waypoints;
@@ -45,6 +48,7 @@ public class Field{
     maxAcceleration = values.getDouble("defaultMaxAcceleration");
     maxVoltage = values.getDouble("defaultMaxVoltage");
     memesEnabled = values.getBoolean("enableMemes");
+    fieldResolution = values.getFloat("fieldResolution");
         
     generateProfile();
     if(waypoints.size() > 1){
@@ -147,6 +151,7 @@ public class Field{
         }
         
         if(!mouseOverWaypoint()){
+          changingWaypointAngle = false;
           text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
           
           strokeWeight(12*scale);
@@ -383,13 +388,9 @@ public class Field{
   void mirror(){
     for (int i = 0;i<waypoints.size();i++){
       waypoints.get(i)[1] = 27 - waypoints.get(i)[1];
-      /*
-      if(waypoints.get(i)[2] > 180){
-        waypoints.get(i)[2] = 360 - (waypoints.get(i)[2] - 180);
-      }else{
-        waypoints.get(i)[2] = 180 - waypoints.get(i)[2];
-      }
-      */
+      
+      waypoints.get(i)[2] = 360 - waypoints.get(i)[2];
+      
     }
     generateProfile();
   }
@@ -502,12 +503,12 @@ public class Field{
   float toMapY(float x){ 
     //float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
     float value = Float.parseFloat(df.format(map(x, w+(WIDTH*SPACING), w, 0, WIDTH)));
-    return value - value % 0.5;
+    return value - value % fieldResolution;
   }
   float toMapX(float y){
     float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0)));
     //float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), 0, HEIGHT)));
-    return value - value % 0.5;
+    return value - value % fieldResolution;
   }
   //
   int toCoordY(float x){
@@ -682,6 +683,7 @@ private class LoadingStation extends Field{
     stroke(255);
     line(toCoordY(y), toCoordX(0), toCoordY(y), toCoordX(1.5));
     noFill();
+    stroke(0);
   }
   
 }

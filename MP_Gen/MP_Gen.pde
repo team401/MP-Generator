@@ -40,7 +40,7 @@ GSlider reverse;
 Field field;
 Trajectory traj;
 boolean blue, velocity, settingsOpen;
-int w, graph;
+int w, graph, da;
 final int X_TEXT = 130;
 int angle;
 double METERS_TO_INCHES;
@@ -49,12 +49,14 @@ double timestep, pos, vel, accel, jerk, robotWidth;
 
 void setup(){
   size(1440, 960);
+  JSONObject values = loadJSONObject("config.cfg");
   field = new Field();
   field.setUpField();
   frameRate(120);
   w = width/2;
   angle = 0;
   graph = 0;
+  da = values.getInt("angleResolution");
     
   velocity = false;
   settingsOpen = false;
@@ -136,7 +138,7 @@ void setup(){
   maxVolts.setEnabled(false);
   maxVolts.setVisible(false);
   
-  JSONObject values = loadJSONObject("config.cfg");
+  
   maxVel.setText(String.valueOf(values.getDouble("defaultMaxVelocity")));
   maxAccel.setText(String.valueOf(values.getDouble("defaultMaxAcceleration")));
   maxVolts.setText(String.valueOf(values.getDouble("defaultMaxVoltage")));  
@@ -240,7 +242,6 @@ void mouseDragged(){
 }
 void mouseWheel(MouseEvent event){
   float e = event.getAmount();
-  int da = 15;
   if(e>0){
     angle+=da;
   }
