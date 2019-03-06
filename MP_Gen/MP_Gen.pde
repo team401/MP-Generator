@@ -41,17 +41,41 @@ Field field;
 Trajectory traj;
 boolean blue, velocity, settingsOpen;
 int w, graph, da;
-final int X_TEXT = 130;
+int X_TEXT = 130;
 int angle;
-double METERS_TO_INCHES;
+double METERS_TO_INCHES, scale;
 File massExport;
-double timestep, pos, vel, accel, jerk, robotWidth;
 float widthScale, heightScale;
 String directory;
 
+void settings(){
+  JSONObject values = loadJSONObject("config.cfg");
+  try{
+    String size = values.getString("windowSize");
+    switch(size){
+      case "LARGE":
+        size(1440, 960);
+        scale = 1.0;
+      break;
+      case "MEDIUM":
+        size(1080, 720);
+        scale = 0.75;
+      break;
+      case "SMALL":
+        size(720, 480);
+        scale = 0.5;
+      break;
+    }
+    X_TEXT *= scale;
+  }catch(Exception e){
+    size(1440, 960);
+    scale = 1.0;
+  }
+}
+
 void setup(){
-  size(1440, 960);
-  surface.setResizable(true);
+  //size(1440, 960);
+  //surface.setResizable(true);
   JSONObject values = loadJSONObject("config.cfg");
   field = new Field();
   field.setUpField();
