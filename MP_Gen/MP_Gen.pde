@@ -34,7 +34,7 @@ import java.awt.Font;
 import java.awt.Color;
 GButton fileButton, testButton, newButton, settingsButton, saveSettingsButton,
 saveButton, mirrorButton, centerButton, leftButton, rightButton, loadButton;
-GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxVolts, directory;//,wheelRadius;
+GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxVolts;//,wheelRadius;
 GLabel error;
 GSlider reverse;
 Field field;
@@ -47,6 +47,7 @@ double METERS_TO_INCHES;
 File massExport;
 double timestep, pos, vel, accel, jerk, robotWidth;
 float widthScale, heightScale;
+String directory;
 
 void setup(){
   size(1440, 960);
@@ -61,6 +62,8 @@ void setup(){
   da = values.getInt("angleResolution");
   widthScale = 1.0;
   heightScale = 1.0;
+  
+  directory = values.getString("exportDirectory");
     
   velocity = false;
   settingsOpen = false;
@@ -219,6 +222,7 @@ void mouseClicked(){
         
         if(field.getWaypoints().size() > 1){
           saveButton.setEnabled(true);
+          fileButton.setEnabled(true);
         }
       }
       if(mouseButton == RIGHT){
@@ -237,6 +241,7 @@ void mouseClicked(){
         field.generateProfile();
         if(field.getWaypoints().size() <= 1){
           saveButton.setEnabled(false);
+          fileButton.setEnabled(false);
         }
       }
     }
@@ -384,13 +389,6 @@ void handleButtonEvents(GButton button, GEvent event){
     }
   }
 }
-void pathSelector(File selection){
-  if(selection == null){
-    //no nothing
-  }else{
-    directory.setText(selection.getAbsolutePath());
-  }
-}
 void fileSelector(File selection){
   if(selection == null){
   }else{
@@ -505,7 +503,7 @@ void exportWaypoints(){
   waypointSettings.setDouble("maxVoltage", field.getMaxVoltage());
   json.setJSONObject(json.size(), waypointSettings);
   
-  saveJSONArray(json, "waypoints/" + name.getText());
+  saveJSONArray(json, directory + "waypoints/" + name.getText());
   println("export complete");
   error.setText("Export complete");
 }

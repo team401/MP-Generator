@@ -86,13 +86,13 @@ public class Field{
       //grid
       int xAxis = (WIDTH);
       int yAxis = (HEIGHT);
-      for(int i = 0;i<=xAxis*(1/scale);i++){
-        if(i%(1/scale)==0 && scale != 1.0){
+      for(int i = 0;i<=xAxis;i++){
+        if(i%(1/scale)==0 && (scale) != 1.0){
           strokeWeight(1);
         }else{
           strokeWeight(0);
         }
-        line(toCoordY(i*scale), toCoordX(0), toCoordY(i*scale), toCoordX(HEIGHT));
+        line(toCoordY(i), toCoordX(0), toCoordY(i), toCoordX(HEIGHT));
         if(i <= WIDTH){
           //text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
@@ -257,7 +257,7 @@ public class Field{
       */
       }
       //display the coordinates
-      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
+      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING*widthScale) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING*heightScale)){
         fill(0);
         textSize(24);
         float mapX = toMapX(mouseY);
