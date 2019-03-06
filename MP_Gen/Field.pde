@@ -31,7 +31,7 @@ public class Field{
   private HABPlateform hab;
   private LoadingStation leftLoadingStation;
   private LoadingStation rightLoadingStation;
-  
+    
   Field(){
     generator = new Generator();
     waypoints = new ArrayList<float[]>();
@@ -65,7 +65,6 @@ public class Field{
     rightLoadingStation = new LoadingStation(0);
   }
   void display(){
-    
     if(velocity){
       // width : 675 pxls
       // height : 800 pxls
@@ -133,47 +132,6 @@ public class Field{
         
       }
            
-      //display the coordinates
-      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
-        fill(0);
-        textSize(24);
-        float mapX = toMapX(mouseY);
-        float mapY = toMapY(mouseX);
-        
-        int y = toCoordX(mapX);
-        int x = toCoordY(mapY);
-        
-        if(angle > 359){
-          angle = 0;
-        }
-        if(angle < 0){
-          angle = 360 - 15;
-        }
-        
-        if(!mouseOverWaypoint()){
-          changingWaypointAngle = false;
-          text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
-          
-          strokeWeight(12*scale);
-          line(x, y, x, y);
-          
-          //draws the arrow
-          //using screen coordinates
-          arrow(mapY, mapX, angle);
-        }else{// VERY BAD FORM
-          if(changingWaypointAngle){
-            waypoints.get(movingWaypointIndex)[2] = angle;
-            text(angle + "" +(char)176, x+45, y-30);
-                    
-            //draws the arrow
-            //using screen coordinates
-            arrow(waypoints.get(movingWaypointIndex)[1], waypoints.get(movingWaypointIndex)[0], angle);
-            
-            generateProfile();
-          }
-        }
-        
-      }
       //can still add to wayPoints
       //TODO fix that
       if(mp){     
@@ -275,8 +233,7 @@ public class Field{
           line(x, y, x, y);
         }
         stroke(0);
-        fill(255);
-        
+        fill(255);   
       }else{
         /*
       noFill();
@@ -298,6 +255,49 @@ public class Field{
       stroke(0);
       fill(255);
       */
+      }
+      //display the coordinates
+      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING)){
+        fill(0);
+        textSize(24);
+        float mapX = toMapX(mouseY);
+        float mapY = toMapY(mouseX);
+        
+        int y = toCoordX(mapX);
+        int x = toCoordY(mapY);
+        
+        if(angle > 359){
+          angle = 0;
+        }
+        if(angle < 0){
+          angle = 360 - 15;
+        }
+        
+        if(!mouseOverWaypoint()){
+          changingWaypointAngle = false;
+          text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+          
+          strokeWeight(12*scale);
+          line(x, y, x, y);
+          
+          //draws the arrow
+          //using screen coordinates
+          arrow(mapY, mapX, angle);
+        }else{// VERY BAD FORM
+          if(changingWaypointAngle){
+            waypoints.get(movingWaypointIndex)[2] = angle;
+            text(angle + "" +(char)176, x+45, y-30);
+                    
+            //draws the arrow
+            //using screen coordinates
+            arrow(waypoints.get(movingWaypointIndex)[1], waypoints.get(movingWaypointIndex)[0], angle);
+            
+            generateProfile();
+          }else{
+            text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+          }
+        }
+        
       }
     }//end velocity
   }
@@ -500,7 +500,8 @@ public class Field{
     int y2 = toCoordX(posY);
         
     strokeWeight(2);
-    line(x1, y1, x2, y2);
+    //println(x1 + " " + y1 + " " + x2 + " " + y2);
+    line((int)x1, (int)y1, x2, y2);
     
     text(text, (int)(x2-10*Math.cos(-radians)), (int)(y2-10*Math.sin(-radians)));
     
@@ -513,22 +514,23 @@ public class Field{
   DecimalFormat df = new DecimalFormat("#.##");
   float toMapY(float x){ 
     //float value = Float.parseFloat(df.format(map(x, w, w+(WIDTH*SPACING), 0, WIDTH)));
-    float value = Float.parseFloat(df.format(map(x, w+(WIDTH*SPACING), w, 0, WIDTH)));
+    //println("widthScale: " + widthScale);
+    float value = Float.parseFloat(df.format(map(x, w+(WIDTH*SPACING*widthScale), w, 0, WIDTH)));
     return value - value % fieldResolution;
   }
   float toMapX(float y){
-    float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), HEIGHT, 0)));
+    float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING*heightScale), HEIGHT, 0)));
     //float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), 0, HEIGHT)));
     return value - value % fieldResolution;
   }
   //
   int toCoordY(float x){
     //int value = (int)map(x, 0, WIDTH, w, w+(WIDTH*SPACING));
-    int value = (int)map(x, 0, WIDTH, w+(WIDTH*SPACING), w);
+    int value = (int)map(x, 0, WIDTH, w+(WIDTH*SPACING*widthScale), w);
     return value;
   }
   int toCoordX(float y){
-    return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING), 80);
+    return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING*heightScale), 80);
     //return (int)map(y, 0, HEIGHT, 80, 80+(HEIGHT*SPACING));
   }
 }

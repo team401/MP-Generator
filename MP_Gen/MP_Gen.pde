@@ -46,9 +46,11 @@ int angle;
 double METERS_TO_INCHES;
 File massExport;
 double timestep, pos, vel, accel, jerk, robotWidth;
+float widthScale, heightScale;
 
 void setup(){
   size(1440, 960);
+  surface.setResizable(true);
   JSONObject values = loadJSONObject("config.cfg");
   field = new Field();
   field.setUpField();
@@ -57,6 +59,8 @@ void setup(){
   angle = 0;
   graph = 0;
   da = values.getInt("angleResolution");
+  widthScale = 1.0;
+  heightScale = 1.0;
     
   velocity = false;
   settingsOpen = false;
@@ -159,6 +163,9 @@ void setup(){
   
 }
 void draw(){
+  widthScale = width/1440.0;
+  heightScale = height/960.0;
+  //scale(widthScale, heightScale);
   background(200);
   field.display();
   
@@ -486,7 +493,7 @@ void exportWaypoints(){
     JSONObject waypoint = new JSONObject();
     waypoint.setFloat("x", waypoints.get(i)[0] * 12.0);
     waypoint.setFloat("y", waypoints.get(i)[1] * 12.0);
-    waypoint.setFloat("angle", waypoints.get(i)[2] * 12.0);
+    waypoint.setFloat("angle", waypoints.get(i)[2]);
     
     json.setJSONObject(i, waypoint);
   }
