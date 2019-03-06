@@ -43,9 +43,9 @@ boolean blue, velocity, settingsOpen;
 int w, graph, da;
 int X_TEXT = 130;
 int angle;
-double METERS_TO_INCHES, scale;
+double METERS_TO_INCHES;
 File massExport;
-float widthScale, heightScale;
+float widthScale, heightScale, scale;
 String directory;
 
 void settings(){
@@ -84,8 +84,8 @@ void setup(){
   angle = 0;
   graph = 0;
   da = values.getInt("angleResolution");
-  widthScale = 1.0;
-  heightScale = 1.0;
+  widthScale = width/1440.0;
+  heightScale = height/960.0;
   
   directory = values.getString("exportDirectory");
     
@@ -95,20 +95,20 @@ void setup(){
   METERS_TO_INCHES = (1/0.3048) * 12;
   
   //misc  
-  saveButton = new GButton(this, width/2-270, 440, 100, 100, "Save");
-  saveButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  saveButton = new GButton(this, width/2-(int)(270 * scale), (int)(440 * scale), (int)(100 * scale), (int)(100 * scale), "Save");
+  saveButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
-  mirrorButton = new GButton(this, width/2-150, 440, 100, 100, "Mirror");
-  mirrorButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  mirrorButton = new GButton(this, width/2-(int)(150 * scale), (int)(440 * scale), (int)(100 * scale), (int)(100 * scale), "Mirror");
+  mirrorButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
-  centerButton = new GButton(this, width/2-270, 670, 100, 100, "Center");
-  centerButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  centerButton = new GButton(this, width/2-(int)(270 * scale), (int)(670 * scale), (int)(100 * scale), (int)(100 * scale), "Center");
+  centerButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
-  leftButton = new GButton(this, width/2-270 + 120, 670, 100, 100, "Left");
-  leftButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  leftButton = new GButton(this, width/2-(int)(270 * scale) + (int)(120 * scale), (int)(670 * scale), (int)(100 * scale), (int)(100 * scale), "Left");
+  leftButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
-  rightButton = new GButton(this, width/2-270, 780, 100, 100, "Right");
-  rightButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  rightButton = new GButton(this, width/2-(int)(270 * scale), (int)(780 * scale), (int)(100 * scale), (int)(100 * scale), "Right");
+  rightButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
   centerButton.setEnabled(false);
   centerButton.setVisible(false);
@@ -120,20 +120,20 @@ void setup(){
   saveButton.setEnabled(false);
   blue = false;
   
-  newButton = new GButton(this, width/2-270, 80, 220, 100, "New path");
-  newButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  newButton = new GButton(this, width/2-(int)(270 * scale), (int)(80 * scale), (int)(220 * scale), (int)(100 * scale), "New path");
+  newButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
-  fileButton = new GButton(this, width/2-270, 200, 220, 100, "Export");
-  fileButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  fileButton = new GButton(this, width/2-(int)(270 * scale), (int)(200 * scale), (int)(220 * scale), (int)(100 * scale), "Export");
+  fileButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
-  loadButton = new GButton(this, width/2-270, 320, 220, 100, "Load Path");
-  loadButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  loadButton = new GButton(this, width/2-(int)(270 * scale), (int)(320 * scale), (int)(220 * scale), (int)(100 * scale), "Load Path");
+  loadButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
-  testButton = new GButton(this, 300, 800, 100, 100, "TEST");
-  testButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  testButton = new GButton(this, 300, 800, (int)(100 * scale), (int)(100 * scale), "TEST");
+  testButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
   settingsButton = new GButton(this, 130, 120, 200, 50, "Open Settings");
-  settingsButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  settingsButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
   
   saveSettingsButton = new GButton(this, 130, 170, 200, 50, "Save Settings");
   saveSettingsButton.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -186,12 +186,8 @@ void setup(){
   reverse.setShowTicks(false);
   reverse.setEnabled(true);
   reverse.setValue(0);
-  
-  
 }
 void draw(){
-  widthScale = width/1440.0;
-  heightScale = height/960.0;
   //scale(widthScale, heightScale);
   background(200);
   field.display();

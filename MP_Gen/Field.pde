@@ -17,7 +17,6 @@ public class Field{
   protected boolean memesEnabled;
     
   private ArrayList<float[]> waypoints;
-  private float scale = 1.0;
   private float fieldResolution;
   
   //private int angle;
@@ -87,22 +86,12 @@ public class Field{
       int xAxis = (WIDTH);
       int yAxis = (HEIGHT);
       for(int i = 0;i<=xAxis;i++){
-        if(i%(1/scale)==0 && (scale) != 1.0){
-          strokeWeight(1);
-        }else{
-          strokeWeight(0);
-        }
         line(toCoordY(i), toCoordX(0), toCoordY(i), toCoordX(HEIGHT));
         if(i <= WIDTH){
           //text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
       }
       for(int i = 0;i<=yAxis*(1/scale);i++){
-        if(i%(1/scale)==0 && scale != 1.0){
-          strokeWeight(1);
-        }else{
-          strokeWeight(0);
-        }
         line(toCoordY(0), toCoordX(i*scale), toCoordY(WIDTH), toCoordX(i*scale));
         if(i <= HEIGHT){
           //text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
