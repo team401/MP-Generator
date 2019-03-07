@@ -71,14 +71,14 @@ public class Field{
       stroke(0);
       strokeWeight(0);
       textAlign(CENTER);
-      textSize(12);
+      textSize(12*scale);
             
     }else{
       //vertical lines
       int w = width/2;
       
       textAlign(CENTER);
-      textSize(12);
+      textSize(12*scale);
       strokeWeight(0);
       stroke(0);
       
@@ -133,7 +133,7 @@ public class Field{
           float x = toCoordY(posY);
           float y = toCoordX(posX);
             
-          strokeWeight(2);
+          strokeWeight(2*scale);
           stroke(255, 0, 255);
           vertex(x, y);
         }
@@ -148,7 +148,7 @@ public class Field{
           float x = toCoordY(posY);
           float y = toCoordX(posX);
             
-          strokeWeight(2);
+          strokeWeight(2*scale);
           stroke(255, 0, 0);
           vertex(x, y);
         }
@@ -163,7 +163,7 @@ public class Field{
           float x = toCoordY(posY);
           float y = toCoordX(posX);
             
-          strokeWeight(2);
+          strokeWeight(2*scale);
           stroke(0, 0, 255);
           vertex(x, y);
         }
@@ -179,12 +179,12 @@ public class Field{
             int x = toCoordY(posY);
             
             if(movingWaypointIndex == i){
-              strokeWeight(20);
+              strokeWeight(20*scale);
               stroke(0);
               line(x, y, x, y);
-              strokeWeight(16);
+              strokeWeight(16*scale);
             }else{
-              strokeWeight(12);
+              strokeWeight(12*scale);
             }
             stroke(0,255,0);
             line(x, y, x, y);
@@ -201,7 +201,7 @@ public class Field{
             int y = toCoordX(posX);
             int x = toCoordY(posY);
             
-            strokeWeight(12);
+            strokeWeight(12*scale);
             stroke(0,255,0);
             line(x, y, x, y);
             arrow(posY, posX, waypointAngle);
@@ -217,7 +217,7 @@ public class Field{
           int y = toCoordX(posX);
           int x = toCoordY(posY);
           
-          strokeWeight(12);
+          strokeWeight(12*scale);
           stroke(0,255,0);
           line(x, y, x, y);
         }
@@ -246,9 +246,9 @@ public class Field{
       */
       }
       //display the coordinates
-      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING*widthScale) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING*heightScale)){
+      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING*widthScale) && mouseY >= 80*heightScale && mouseY <= (80*heightScale)+(HEIGHT*SPACING*heightScale)){
         fill(0);
-        textSize(24);
+        textSize(24*scale);
         float mapX = toMapX(mouseY);
         float mapY = toMapY(mouseX);
         
@@ -488,7 +488,7 @@ public class Field{
     int x2 = toCoordY(posX);
     int y2 = toCoordX(posY);
         
-    strokeWeight(2);
+    strokeWeight(2*scale);
     //println(x1 + " " + y1 + " " + x2 + " " + y2);
     line((int)x1, (int)y1, x2, y2);
     
@@ -508,7 +508,7 @@ public class Field{
     return value - value % fieldResolution;
   }
   float toMapX(float y){
-    float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING*heightScale), HEIGHT, 0)));
+    float value = Float.parseFloat(df.format(map(y, 80*heightScale, (80*heightScale)+(HEIGHT*SPACING*heightScale), HEIGHT, 0)));
     //float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), 0, HEIGHT)));
     return value - value % fieldResolution;
   }
@@ -519,7 +519,7 @@ public class Field{
     return value;
   }
   int toCoordX(float y){
-    return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING*heightScale), 80);
+    return (int)map(y, 0, HEIGHT, (80*heightScale)+(HEIGHT*SPACING*heightScale), 80*heightScale);
     //return (int)map(y, 0, HEIGHT, 80, 80+(HEIGHT*SPACING));
   }
 }
@@ -573,19 +573,19 @@ private class Rocket extends Field{
     noFill();
     
     fill(0);
-    textSize(16);
+    textSize(16*scale);
     if(!reverse){
       if(memesEnabled){
         text("Seal", toCoordY(y + 1), toCoordX(x + 1.8));
       }else{
-        textSize(12);
+        textSize(12*scale);
         text("Rocket", toCoordY(y + 1), toCoordX(x + 1.8));
       }
     }else{
       if(memesEnabled){
         text("Seal", toCoordY(y - 1), toCoordX(x + 1.8)); 
       }else{
-        textSize(12);
+        textSize(12*scale);
         text("Rocket", toCoordY(y - 1), toCoordX(x + 1.8)); 
       }
     }
@@ -636,7 +636,7 @@ private class CargoShip extends Field{
     noFill();
     
     fill(0);
-    textSize(16);
+    textSize(16*scale);
     if(memesEnabled){
       text("The Walrus", toCoordY(y + 2), toCoordX(x + 4));
     }else{
@@ -666,7 +666,7 @@ private class HABPlateform extends Field{
     noFill();
     
     fill(0);
-    textSize(16);
+    textSize(16*scale);
     if(memesEnabled){
       text("The Iceberg", toCoordY(y + 7.4), toCoordX(x + 6));
     }else{

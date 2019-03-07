@@ -95,20 +95,20 @@ void setup(){
   METERS_TO_INCHES = (1/0.3048) * 12;
   
   //misc  
-  saveButton = new GButton(this, width/2-(int)(270 * scale), (int)(440 * scale), (int)(100 * scale), (int)(100 * scale), "Save");
-  saveButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  saveButton = new GButton(this, width/2-scaledValue(270), scaledValue(440), scaledValue(100), scaledValue(100), "Save");
+  saveButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  mirrorButton = new GButton(this, width/2-(int)(150 * scale), (int)(440 * scale), (int)(100 * scale), (int)(100 * scale), "Mirror");
-  mirrorButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  mirrorButton = new GButton(this, width/2-scaledValue(150), scaledValue(440), scaledValue(100), scaledValue(100), "Mirror");
+  mirrorButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  centerButton = new GButton(this, width/2-(int)(270 * scale), (int)(670 * scale), (int)(100 * scale), (int)(100 * scale), "Center");
-  centerButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  centerButton = new GButton(this, width/2-scaledValue(270), scaledValue(670), scaledValue(100), scaledValue(100), "Center");
+  centerButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  leftButton = new GButton(this, width/2-(int)(270 * scale) + (int)(120 * scale), (int)(670 * scale), (int)(100 * scale), (int)(100 * scale), "Left");
-  leftButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  leftButton = new GButton(this, width/2-scaledValue(270) + scaledValue(120), scaledValue(670), scaledValue(100), scaledValue(100), "Left");
+  leftButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  rightButton = new GButton(this, width/2-(int)(270 * scale), (int)(780 * scale), (int)(100 * scale), (int)(100 * scale), "Right");
-  rightButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  rightButton = new GButton(this, width/2-scaledValue(270), scaledValue(780), scaledValue(100), scaledValue(100), "Right");
+  rightButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
   centerButton.setEnabled(false);
   centerButton.setVisible(false);
@@ -120,23 +120,23 @@ void setup(){
   saveButton.setEnabled(false);
   blue = false;
   
-  newButton = new GButton(this, width/2-(int)(270 * scale), (int)(80 * scale), (int)(220 * scale), (int)(100 * scale), "New path");
-  newButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  newButton = new GButton(this, width/2-scaledValue(270), scaledValue(80), scaledValue(220), scaledValue(100), "New path");
+  newButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  fileButton = new GButton(this, width/2-(int)(270 * scale), (int)(200 * scale), (int)(220 * scale), (int)(100 * scale), "Export");
-  fileButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  fileButton = new GButton(this, width/2-scaledValue(270), scaledValue(200), scaledValue(220), scaledValue(100), "Export");
+  fileButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  loadButton = new GButton(this, width/2-(int)(270 * scale), (int)(320 * scale), (int)(220 * scale), (int)(100 * scale), "Load Path");
-  loadButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  loadButton = new GButton(this, width/2-scaledValue(270), scaledValue(320), scaledValue(220), scaledValue(100), "Load Path");
+  loadButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  testButton = new GButton(this, 300, 800, (int)(100 * scale), (int)(100 * scale), "TEST");
-  testButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  testButton = new GButton(this, 300, 800, scaledValue(100), scaledValue(100), "TEST");
+  testButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  settingsButton = new GButton(this, 130, 120, 200, 50, "Open Settings");
-  settingsButton.setFont(new Font("Dialog", Font.PLAIN, (int)(24 * scale)));
+  settingsButton = new GButton(this, scaledValue(130), scaledValue(120), scaledValue(200), scaledValue(50), "Open Settings");
+  settingsButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  saveSettingsButton = new GButton(this, 130, 170, 200, 50, "Save Settings");
-  saveSettingsButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+  saveSettingsButton = new GButton(this, scaledValue(130), scaledValue(170), scaledValue(200), scaledValue(50), "Save Settings");
+  saveSettingsButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
   saveSettingsButton.setEnabled(false);
   saveSettingsButton.setVisible(false);
@@ -146,20 +146,20 @@ void setup(){
   testButton.setVisible(false);
   
   //text
-  name = new GTextField(this, X_TEXT, 80, 200, 32);
-  name.setFont(new Font("Dialog", Font.PLAIN, 24));
+  name = new GTextField(this, X_TEXT, scaledValue(80), scaledValue(200), scaledValue(32));
+  name.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   name.setPromptText("Profile Name");
   
-  maxVel = new GTextField(this, X_TEXT, 200 + 30, 200, 32);
-  maxVel.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxVel = new GTextField(this, X_TEXT, scaledValue(200 + 30), scaledValue(200), scaledValue(32));
+  maxVel.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   maxVel.setPromptText("Max Velocity");
   
-  maxAccel = new GTextField(this, X_TEXT, 240 + 30, 200, 32);
-  maxAccel.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxAccel = new GTextField(this, X_TEXT, scaledValue(240 + 30), scaledValue(200), scaledValue(32));
+  maxAccel.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   maxAccel.setPromptText("Max Acceleration");
   
-  maxVolts = new GTextField(this, X_TEXT, 280 + 30, 200, 32);
-  maxVolts.setFont(new Font("Dialog", Font.PLAIN, 24));
+  maxVolts = new GTextField(this, X_TEXT, scaledValue(280 + 30), scaledValue(200), scaledValue(32));
+  maxVolts.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   maxVolts.setPromptText("Max Voltage");
   
   maxVel.setEnabled(false);
@@ -174,18 +174,21 @@ void setup(){
   maxAccel.setText(String.valueOf(values.getDouble("defaultMaxAcceleration")));
   maxVolts.setText(String.valueOf(values.getDouble("defaultMaxVoltage")));  
   
-  error = new GLabel(this, 75, 800, 400, 100);
+  error = new GLabel(this, scaledValue(75), scaledValue(800), scaledValue(400), scaledValue(100));
   error.setFont(new Font("Dialog", Font.PLAIN, 24));
   error.setLocalColorScheme(GConstants.RED_SCHEME);
   error.resizeToFit(false, false);
   
   //sliders
-  reverse = new GSlider(this, width/2-185, 580, 50, 50, 25);
+  reverse = new GSlider(this, width/2-scaledValue(185), scaledValue(580), scaledValue(50), scaledValue(50), scaledValue(25));
   reverse.setNbrTicks(2);
   reverse.setStickToTicks(true);
   reverse.setShowTicks(false);
   reverse.setEnabled(true);
   reverse.setValue(0);
+}
+int scaledValue(int value){
+  return (int)(value * scale);
 }
 void draw(){
   //scale(widthScale, heightScale);
@@ -193,40 +196,40 @@ void draw(){
   field.display();
   
   fill(0);
-  textSize(24);
+  textSize(scaledValue(24));
   
-  text("Field", width*0.75-25, 50);
+  text("Field", width*0.75-25, scaledValue(50));
   
   //text inputs
   textAlign(LEFT, BOTTOM);
-  text("Input Variables", X_TEXT, 70);
+  text("Input Variables", X_TEXT, scaledValue(70));
   
   //display settings
   textAlign(CENTER, CENTER);
-  text("Direction", width/2-150, 560);
+  text("Direction", width/2-scaledValue(150), scaledValue(560));
   textAlign(LEFT, CENTER);
-  text("Frd", width/2-230, 600);
+  text("Frd", width/2-scaledValue(230), scaledValue(600));
   textAlign(LEFT, CENTER);
-  text("Rev", width/2-125, 600);
+  text("Rev", width/2-scaledValue(125), scaledValue(600));
   
   // Elapsed time
   textAlign(CENTER, CENTER);
-  text("Total Elapsed Time", width/2-150, 660);
+  text("Total Elapsed Time", width/2-scaledValue(150), scaledValue(660));
   DecimalFormat df = new DecimalFormat("##.###");
-  text(String.valueOf(df.format(field.getElapsedTime())) + " seconds", width/2-150, 700);
+  text(String.valueOf(df.format(field.getElapsedTime())) + " seconds", width/2-scaledValue(150), scaledValue(700));
   
 
   
   if(settingsOpen){
     textAlign(RIGHT, TOP);
-    text("Max Vel", X_TEXT - 5, 234);
-    text("Max Accel", X_TEXT - 5, 274);
-    text("Max Volts", X_TEXT - 5, 314);
+    text("Max Vel", X_TEXT - scaledValue(5), scaledValue(234));
+    text("Max Accel", X_TEXT - scaledValue(5), scaledValue(274));
+    text("Max Volts", X_TEXT - scaledValue(5), scaledValue(314));
     
     textAlign(LEFT, TOP);
-    text("in/s", X_TEXT + 205, 234);
-    text("in/s/s", X_TEXT + 205, 274);
-    text("V", X_TEXT + 205, 314);
+    text("in/s", X_TEXT + scaledValue(205), scaledValue(234));
+    text("in/s/s", X_TEXT + scaledValue(205), scaledValue(274));
+    text("V", X_TEXT + scaledValue(205), scaledValue(314));
   }
   
 }
