@@ -91,8 +91,8 @@ public class Field{
           //text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
       }
-      for(int i = 0;i<=yAxis*(1/scale);i++){
-        line(toCoordY(0), toCoordX(i*scale), toCoordY(WIDTH), toCoordX(i*scale));
+      for(int i = 0;i<=yAxis;i++){
+        line(toCoordY(0), toCoordX(i), toCoordY(WIDTH), toCoordX(i));
         if(i <= HEIGHT){
           //text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
         }
@@ -508,7 +508,7 @@ public class Field{
     return value - value % fieldResolution;
   }
   float toMapX(float y){
-    float value = Float.parseFloat(df.format(map(y, 80*heightScale, (80*heightScale)+(HEIGHT*SPACING*heightScale), HEIGHT, 0)));
+    float value = Float.parseFloat(df.format(map(y, 80.0*heightScale, (80.0*heightScale)+(HEIGHT*SPACING*heightScale), HEIGHT, 0)));
     //float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), 0, HEIGHT)));
     return value - value % fieldResolution;
   }
@@ -519,7 +519,7 @@ public class Field{
     return value;
   }
   int toCoordX(float y){
-    return (int)map(y, 0, HEIGHT, (80*heightScale)+(HEIGHT*SPACING*heightScale), 80*heightScale);
+    return (int)map(y, 0, HEIGHT, (80.0*heightScale)+(HEIGHT*SPACING*heightScale), 80.0*heightScale);
     //return (int)map(y, 0, HEIGHT, 80, 80+(HEIGHT*SPACING));
   }
 }
