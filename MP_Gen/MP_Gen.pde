@@ -34,14 +34,14 @@ import java.awt.Font;
 import java.awt.Color;
 GButton fileButton, testButton, newButton, settingsButton, saveSettingsButton,
 saveButton, mirrorButton, centerButton, leftButton, rightButton, loadButton;
-GTextField name, timeStep, wheelBase, maxVel, maxAccel, maxVolts;//,wheelRadius;
+GTextField name, maxVel, maxAccel, maxVolts, maxCentripAccel;//,wheelRadius;
 GLabel error;
 GSlider reverse;
 Field field;
 Trajectory traj;
 boolean blue, velocity, settingsOpen;
 int w, graph, da;
-int X_TEXT = 130;
+int X_TEXT = 150;
 int angle;
 double METERS_TO_INCHES;
 File massExport;
@@ -132,10 +132,10 @@ void setup(){
   testButton = new GButton(this, 300, 800, scaledValue(100), scaledValue(100), "TEST");
   testButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  settingsButton = new GButton(this, scaledValue(130), scaledValue(120), scaledValue(200), scaledValue(50), "Open Settings");
+  settingsButton = new GButton(this, X_TEXT, scaledValue(120), scaledValue(200), scaledValue(50), "Open Settings");
   settingsButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
-  saveSettingsButton = new GButton(this, scaledValue(130), scaledValue(170), scaledValue(200), scaledValue(50), "Save Settings");
+  saveSettingsButton = new GButton(this, X_TEXT, scaledValue(170), scaledValue(200), scaledValue(50), "Save Settings");
   saveSettingsButton.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   
   saveSettingsButton.setEnabled(false);
@@ -162,17 +162,24 @@ void setup(){
   maxVolts.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
   maxVolts.setPromptText("Max Voltage");
   
+  maxCentripAccel = new GTextField(this, X_TEXT, scaledValue(320 + 30), scaledValue(200), scaledValue(32));
+  maxCentripAccel.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
+  maxCentripAccel.setPromptText("Max Centripital Accel");
+  
   maxVel.setEnabled(false);
   maxVel.setVisible(false);
   maxAccel.setEnabled(false);
   maxAccel.setVisible(false);
   maxVolts.setEnabled(false);
   maxVolts.setVisible(false);
+  maxCentripAccel.setEnabled(false);
+  maxCentripAccel.setVisible(false);
   
   
   maxVel.setText(String.valueOf(values.getDouble("defaultMaxVelocity")));
   maxAccel.setText(String.valueOf(values.getDouble("defaultMaxAcceleration")));
   maxVolts.setText(String.valueOf(values.getDouble("defaultMaxVoltage")));  
+  maxCentripAccel.setText(String.valueOf(values.getDouble("defaultMaxCentripetalAcceleration")));  
   
   error = new GLabel(this, scaledValue(75), scaledValue(800), scaledValue(400), scaledValue(100));
   error.setFont(new Font("Dialog", Font.PLAIN, 24));
@@ -225,11 +232,13 @@ void draw(){
     text("Max Vel", X_TEXT - scaledValue(5), scaledValue(234));
     text("Max Accel", X_TEXT - scaledValue(5), scaledValue(274));
     text("Max Volts", X_TEXT - scaledValue(5), scaledValue(314));
+    text("Max C Accel", X_TEXT - scaledValue(5), scaledValue(354));
     
     textAlign(LEFT, TOP);
     text("in/s", X_TEXT + scaledValue(205), scaledValue(234));
     text("in/s/s", X_TEXT + scaledValue(205), scaledValue(274));
     text("V", X_TEXT + scaledValue(205), scaledValue(314));
+    text("in/s/s", X_TEXT + scaledValue(205), scaledValue(354));
   }
   
 }
@@ -364,6 +373,8 @@ void handleButtonEvents(GButton button, GEvent event){
       maxAccel.setVisible(false);
       maxVolts.setEnabled(false);
       maxVolts.setVisible(false);
+      maxCentripAccel.setEnabled(false);
+      maxCentripAccel.setVisible(false);
       
     }else{
       settingsOpen = true;
@@ -378,6 +389,8 @@ void handleButtonEvents(GButton button, GEvent event){
       maxAccel.setVisible(true);
       maxVolts.setEnabled(true);
       maxVolts.setVisible(true);
+      maxCentripAccel.setEnabled(true);
+      maxCentripAccel.setVisible(true);
     }
   }
   if(button == saveSettingsButton){
@@ -385,6 +398,7 @@ void handleButtonEvents(GButton button, GEvent event){
       double maxVelocity = Double.parseDouble(maxVel.getText());
       double maxAcceleration = Double.parseDouble(maxAccel.getText());
       double maxVoltage = Double.parseDouble(maxVolts.getText());
+      double maxCAccel = Double.parseDouble(maxCentripAccel.getText());
       
       if(maxVelocity < 0.0){
         maxVelocity = field.getMaxVelocity();
@@ -398,14 +412,19 @@ void handleButtonEvents(GButton button, GEvent event){
         maxVoltage = field.getMaxVoltage();
         maxVolts.setText(String.valueOf(field.getMaxVoltage()));
       }
+      if(maxCAccel < 0.0){
+        maxCAccel = field.getMaxCentripAccel();
+        maxCentripAccel.setText(String.valueOf(field.getMaxCentripAccel()));
+      }
       
-      field.setProfileSettings(maxVelocity, maxAcceleration, maxVoltage, field.getReverse());
+      field.setProfileSettings(maxVelocity, maxAcceleration, maxVoltage, maxCAccel, field.getReverse());
       
       saveButton.setEnabled(true);
     }catch(Exception e){
       maxVel.setText(String.valueOf(field.getMaxVelocity()));
       maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
       maxVolts.setText(String.valueOf(field.getMaxVoltage()));
+      maxCentripAccel.setText(String.valueOf(field.getMaxCentripAccel()));
       
       println("Only use numbers!");
       //e.printStackTrace();
@@ -438,6 +457,7 @@ void fileSelector(File selection){
     waypointSettings.getDouble("maxVelocity"),
     waypointSettings.getDouble("maxAcceleration"),
     waypointSettings.getDouble("maxVoltage"),
+    waypointSettings.getDouble("maxCentripetalAcceleration"),
     waypointSettings.getBoolean("reverse")
     );
     
@@ -445,6 +465,7 @@ void fileSelector(File selection){
     maxVel.setText(String.valueOf(field.getMaxVelocity()));
     maxAccel.setText(String.valueOf(field.getMaxAcceleration()));
     maxVolts.setText(String.valueOf(field.getMaxVoltage()));
+    maxCentripAccel.setText(String.valueOf(field.getMaxCentripAccel()));
     if(field.getReverse()){
       reverse.setValue(1);
     }else{
@@ -500,6 +521,7 @@ void saveFieldConfig(){
   waypointSettings.setDouble("maxVelocity", field.getMaxVelocity());
   waypointSettings.setDouble("maxAcceleration", field.getMaxAcceleration());
   waypointSettings.setDouble("maxVoltage", field.getMaxVoltage());
+  waypointSettings.setDouble("maxCentripetalAcceleration", field.getMaxCentripAccel());
   json.setJSONObject(json.size(), waypointSettings);
   
   saveJSONArray(json, "field_layouts/" + name.getText());
@@ -524,6 +546,7 @@ void exportWaypoints(){
   waypointSettings.setDouble("maxVelocity", field.getMaxVelocity());
   waypointSettings.setDouble("maxAcceleration", field.getMaxAcceleration());
   waypointSettings.setDouble("maxVoltage", field.getMaxVoltage());
+  waypointSettings.setDouble("maxCentripetalAcceleration", field.getMaxCentripAccel());
   json.setJSONObject(json.size(), waypointSettings);
   
   saveJSONArray(json, directory + "waypoints/" + name.getText());

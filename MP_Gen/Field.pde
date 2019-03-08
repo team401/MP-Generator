@@ -14,6 +14,7 @@ public class Field{
   private double maxVelocity;
   private double maxAcceleration;
   private double maxVoltage;
+  private double maxCentripAccel;
   protected boolean memesEnabled;
     
   private ArrayList<float[]> waypoints;
@@ -46,6 +47,7 @@ public class Field{
     maxVelocity = values.getDouble("defaultMaxVelocity");
     maxAcceleration = values.getDouble("defaultMaxAcceleration");
     maxVoltage = values.getDouble("defaultMaxVoltage");
+    maxCentripAccel = values.getDouble("defaultMaxCentripetalAcceleration");
     memesEnabled = values.getBoolean("enableMemes");
     fieldResolution = values.getFloat("fieldResolution");
         
@@ -392,10 +394,11 @@ public class Field{
     generateProfile();
   }
   
-  public void setProfileSettings(double maxVelocity, double maxAcceleration, double maxVoltage, boolean reverse){
+  public void setProfileSettings(double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripAccel, boolean reverse){
     this.maxVelocity = maxVelocity;
     this.maxAcceleration = maxAcceleration;
     this.maxVoltage = maxVoltage;
+    this.maxCentripAccel = maxCentripAccel;
     this.reverse = reverse;
     
     generateProfile();
@@ -408,6 +411,9 @@ public class Field{
   }
   public double getMaxVoltage(){
     return maxVoltage;
+  }
+  public double getMaxCentripAccel(){
+    return maxCentripAccel;
   }
   public void generateProfile(){
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
