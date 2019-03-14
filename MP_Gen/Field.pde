@@ -16,6 +16,7 @@ public class Field{
   private double maxVoltage;
   private double maxCentripAccel;
   protected boolean memesEnabled;
+  private boolean centripetalAccelConstraintEnabled;
     
   private ArrayList<float[]> waypoints;
   private float fieldResolution;
@@ -38,6 +39,7 @@ public class Field{
     reset();
     JSONObject values = loadJSONObject("config.cfg");
     fieldResolution = values.getFloat("fieldResolution");
+    centripetalAccelConstraintEnabled = false;
   }
   Field(ArrayList<float[]> waypoints){    
     this.waypoints = waypoints;
@@ -50,6 +52,8 @@ public class Field{
     maxCentripAccel = values.getDouble("defaultMaxCentripetalAcceleration");
     memesEnabled = values.getBoolean("enableMemes");
     fieldResolution = values.getFloat("fieldResolution");
+    
+    centripetalAccelConstraintEnabled = false;
         
     generateProfile();
     if(waypoints.size() > 1){
@@ -415,11 +419,23 @@ public class Field{
   public double getMaxCentripAccel(){
     return maxCentripAccel;
   }
+  void setCentripAccelConstraint(boolean enableConstraint){
+    centripetalAccelConstraintEnabled = enableConstraint;
+    generateProfile();
+  }
   public void generateProfile(){
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
     //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
     if(waypoints.size() > 1){
-      Profile profile = generator.generateTraj(this.waypoints, maxVelocity, maxAcceleration, maxVoltage, reverse);
+      Profile profile = generator.generateTraj(
+      this.waypoints, 
+      maxVelocity, 
+      maxAcceleration, 
+      maxVoltage, 
+      reverse, 
+      maxCentripAccel, 
+      centripetalAccelConstraintEnabled
+      );
       double[][][] paths = profile.getProfile();
       smoothPath = paths[0];
       leftPath = paths[1];
@@ -471,6 +487,7 @@ public class Field{
   void setReverse(boolean r){
     reverse = r;
   }
+  
   void printPath(double[][] path){
     for(int i = 0;i<path.length;i++){
       println("("+path[i][0]+","+path[i][1]+")");

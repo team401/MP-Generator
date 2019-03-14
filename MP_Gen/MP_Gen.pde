@@ -37,6 +37,7 @@ saveButton, mirrorButton, centerButton, leftButton, rightButton, loadButton;
 GTextField name, maxVel, maxAccel, maxVolts, maxCentripAccel;//,wheelRadius;
 GLabel error;
 GSlider reverse;
+GCheckbox checkCentripAccel;
 Field field;
 Trajectory traj;
 boolean blue, velocity, settingsOpen;
@@ -193,6 +194,14 @@ void setup(){
   reverse.setShowTicks(false);
   reverse.setEnabled(true);
   reverse.setValue(0);
+  
+  //Checkboxes
+  checkCentripAccel = new GCheckbox(this, X_TEXT, scaledValue(360 + 30), scaledValue(400), scaledValue(64));
+  checkCentripAccel.setText("Enable Centripetal Accel");
+  checkCentripAccel.setFont(new Font("Dialog", Font.PLAIN, scaledValue(24)));
+  
+  checkCentripAccel.setEnabled(false);
+  checkCentripAccel.setVisible(false);
 }
 int scaledValue(int value){
   return (int)(value * scale);
@@ -375,6 +384,8 @@ void handleButtonEvents(GButton button, GEvent event){
       maxVolts.setVisible(false);
       maxCentripAccel.setEnabled(false);
       maxCentripAccel.setVisible(false);
+      checkCentripAccel.setEnabled(false);
+      checkCentripAccel.setVisible(false);
       
     }else{
       settingsOpen = true;
@@ -391,6 +402,8 @@ void handleButtonEvents(GButton button, GEvent event){
       maxVolts.setVisible(true);
       maxCentripAccel.setEnabled(true);
       maxCentripAccel.setVisible(true);
+      checkCentripAccel.setEnabled(true);
+      checkCentripAccel.setVisible(true);
     }
   }
   if(button == saveSettingsButton){
@@ -429,6 +442,11 @@ void handleButtonEvents(GButton button, GEvent event){
       println("Only use numbers!");
       //e.printStackTrace();
     }
+  }
+}
+public void handleToggleControlEvents(GToggleControl checkbox, GEvent event) { 
+  if (checkbox == checkCentripAccel){
+    field.setCentripAccelConstraint(checkbox.isSelected());
   }
 }
 void fileSelector(File selection){

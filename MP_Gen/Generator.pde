@@ -36,7 +36,7 @@ class Generator{
     positiveHalfWheelBase = Pose2d.fromTranslation(new Translation2d(0.0, geometryModel.getWheelBaseValue()/2));// change to actual wheelbase
   }
   
-  Profile generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse){
+  Profile generateTraj(ArrayList<float[]> waypointsRaw, double maxVelocity, double maxAccel, double maxVoltage, boolean reverse, double centripetalAccel, boolean enableCentripAccel){
     ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
     
     for (float[] a : waypointsRaw){ // Convert waypoints to inches
@@ -44,10 +44,14 @@ class Generator{
     }
     
     try{
+    ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList();
+    if(enableCentripAccel){      
+      constraints.add(new CentripetalAccelerationConstraint(centripetalAccel));
+    }
     Trajectory<TimedState<Pose2dWithCurvature>> trajectory = trajectoryGenerator.generateTrajectory(
     reverse,
     waypoints,
-    new ArrayList<TimingConstraint<Pose2dWithCurvature>>(),
+    constraints,
     maxVelocity,
     maxAccel,
     maxVoltage
