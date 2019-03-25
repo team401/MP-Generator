@@ -14,11 +14,13 @@ public class Field{
   private double maxVelocity;
   private double maxAcceleration;
   private double maxVoltage;
+  private double maxCentripAccel;
   protected boolean memesEnabled;
+  private boolean centripetalAccelConstraintEnabled;
     
   private ArrayList<float[]> waypoints;
-  private float scale = 1.0;
   private float fieldResolution;
+  private float fieldUnitsMultiplier;
   
   //private int angle;
   private boolean reverse;
@@ -38,6 +40,15 @@ public class Field{
     reset();
     JSONObject values = loadJSONObject("config.cfg");
     fieldResolution = values.getFloat("fieldResolution");
+    
+    String unit = values.getString("fieldDisplayUnits");
+    if (unit.equals("INCHES")) {
+      fieldUnitsMultiplier = 12.0;
+    }else {
+      fieldUnitsMultiplier = 1.0;
+    }
+    
+    centripetalAccelConstraintEnabled = false;
   }
   Field(ArrayList<float[]> waypoints){    
     this.waypoints = waypoints;
@@ -47,8 +58,18 @@ public class Field{
     maxVelocity = values.getDouble("defaultMaxVelocity");
     maxAcceleration = values.getDouble("defaultMaxAcceleration");
     maxVoltage = values.getDouble("defaultMaxVoltage");
+    maxCentripAccel = values.getDouble("defaultMaxCentripetalAcceleration");
     memesEnabled = values.getBoolean("enableMemes");
     fieldResolution = values.getFloat("fieldResolution");
+    
+    String unit = values.getString("fieldDisplayUnits");
+    if (unit.equals("INCHES")) {
+      fieldUnitsMultiplier = 12.0;
+    }else {
+      fieldUnitsMultiplier = 1.0;
+    }
+    
+    centripetalAccelConstraintEnabled = false;
         
     generateProfile();
     if(waypoints.size() > 1){
@@ -57,8 +78,8 @@ public class Field{
   }
   
   void setUpField(){
-    rocket1 = new Rocket(27 - 11.28125, 0, false); // Rocket center is 96 in from the center line
-    rocket2 = new Rocket(27 - 11.28125, WIDTH, true); // Rocket is 39.375 wide
+    rocket1 = new Rocket(27 - 11.28125, 0 + 0.25, false); // Rocket center is 96 in from the center line
+    rocket2 = new Rocket(27 - 11.28125, WIDTH - 0.25, true); // Rocket is 39.375 wide
     cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
     hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
     leftLoadingStation = new LoadingStation(WIDTH - 22.75/6);
@@ -72,14 +93,14 @@ public class Field{
       stroke(0);
       strokeWeight(0);
       textAlign(CENTER);
-      textSize(12);
+      textSize(12*scale);
             
     }else{
       //vertical lines
       int w = width/2;
       
       textAlign(CENTER);
-      textSize(12);
+      textSize(12*scale);
       strokeWeight(0);
       stroke(0);
       
@@ -87,23 +108,13 @@ public class Field{
       int xAxis = (WIDTH);
       int yAxis = (HEIGHT);
       for(int i = 0;i<=xAxis;i++){
-        if(i%(1/scale)==0 && (scale) != 1.0){
-          strokeWeight(1);
-        }else{
-          strokeWeight(0);
-        }
         line(toCoordY(i), toCoordX(0), toCoordY(i), toCoordX(HEIGHT));
         if(i <= WIDTH){
           //text(xAxis - i, w+(i*SPACING), 80+SPACING+(HEIGHT*SPACING));
         }
       }
-      for(int i = 0;i<=yAxis*(1/scale);i++){
-        if(i%(1/scale)==0 && scale != 1.0){
-          strokeWeight(1);
-        }else{
-          strokeWeight(0);
-        }
-        line(toCoordY(0), toCoordX(i*scale), toCoordY(WIDTH), toCoordX(i*scale));
+      for(int i = 0;i<=yAxis;i++){
+        line(toCoordY(0), toCoordX(i), toCoordY(WIDTH), toCoordX(i));
         if(i <= HEIGHT){
           //text(HEIGHT - i, w-SPACING, 85+(i*SPACING));
         }
@@ -144,7 +155,7 @@ public class Field{
           float x = toCoordY(posY);
           float y = toCoordX(posX);
             
-          strokeWeight(2);
+          strokeWeight(2*scale);
           stroke(255, 0, 255);
           vertex(x, y);
         }
@@ -159,7 +170,7 @@ public class Field{
           float x = toCoordY(posY);
           float y = toCoordX(posX);
             
-          strokeWeight(2);
+          strokeWeight(2*scale);
           stroke(255, 0, 0);
           vertex(x, y);
         }
@@ -174,7 +185,7 @@ public class Field{
           float x = toCoordY(posY);
           float y = toCoordX(posX);
             
-          strokeWeight(2);
+          strokeWeight(2*scale);
           stroke(0, 0, 255);
           vertex(x, y);
         }
@@ -190,12 +201,12 @@ public class Field{
             int x = toCoordY(posY);
             
             if(movingWaypointIndex == i){
-              strokeWeight(20);
+              strokeWeight(20*scale);
               stroke(0);
               line(x, y, x, y);
-              strokeWeight(16);
+              strokeWeight(16*scale);
             }else{
-              strokeWeight(12);
+              strokeWeight(12*scale);
             }
             stroke(0,255,0);
             line(x, y, x, y);
@@ -212,7 +223,7 @@ public class Field{
             int y = toCoordX(posX);
             int x = toCoordY(posY);
             
-            strokeWeight(12);
+            strokeWeight(12*scale);
             stroke(0,255,0);
             line(x, y, x, y);
             arrow(posY, posX, waypointAngle);
@@ -228,7 +239,7 @@ public class Field{
           int y = toCoordX(posX);
           int x = toCoordY(posY);
           
-          strokeWeight(12);
+          strokeWeight(12*scale);
           stroke(0,255,0);
           line(x, y, x, y);
         }
@@ -257,9 +268,9 @@ public class Field{
       */
       }
       //display the coordinates
-      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING*widthScale) && mouseY >= 80 && mouseY <= 80+(HEIGHT*SPACING*heightScale)){
+      if(mouseX >= w && mouseX <= w+(WIDTH*SPACING*widthScale) && mouseY >= 80*heightScale && mouseY <= (80*heightScale)+(HEIGHT*SPACING*heightScale)){
         fill(0);
-        textSize(24);
+        textSize(24*scale);
         float mapX = toMapX(mouseY);
         float mapY = toMapY(mouseX);
         
@@ -275,7 +286,7 @@ public class Field{
         
         if(!mouseOverWaypoint()){
           changingWaypointAngle = false;
-          text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+          text("(" + mapX * fieldUnitsMultiplier + "," + mapY * fieldUnitsMultiplier + ","+angle + (char)176 + ")", x+45, y-30);
           
           strokeWeight(12*scale);
           line(x, y, x, y);
@@ -403,10 +414,11 @@ public class Field{
     generateProfile();
   }
   
-  public void setProfileSettings(double maxVelocity, double maxAcceleration, double maxVoltage, boolean reverse){
+  public void setProfileSettings(double maxVelocity, double maxAcceleration, double maxVoltage, double maxCentripAccel, boolean reverse){
     this.maxVelocity = maxVelocity;
     this.maxAcceleration = maxAcceleration;
     this.maxVoltage = maxVoltage;
+    this.maxCentripAccel = maxCentripAccel;
     this.reverse = reverse;
     
     generateProfile();
@@ -420,11 +432,26 @@ public class Field{
   public double getMaxVoltage(){
     return maxVoltage;
   }
+  public double getMaxCentripAccel(){
+    return maxCentripAccel;
+  }
+  void setCentripAccelConstraint(boolean enableConstraint){
+    centripetalAccelConstraintEnabled = enableConstraint;
+    generateProfile();
+  }
   public void generateProfile(){
     // call generateTrajectory(boolean reversed, List<Pose2d> waypoints, List<TimingConstraint<Pose2dWithCurvature>> constraints,
     //double start_vel, double end_vel, double max_vel, double max_accel, double max_voltage)
     if(waypoints.size() > 1){
-      Profile profile = generator.generateTraj(this.waypoints, maxVelocity, maxAcceleration, maxVoltage, reverse);
+      Profile profile = generator.generateTraj(
+      this.waypoints, 
+      maxVelocity, 
+      maxAcceleration, 
+      maxVoltage, 
+      reverse, 
+      maxCentripAccel, 
+      centripetalAccelConstraintEnabled
+      );
       double[][][] paths = profile.getProfile();
       smoothPath = paths[0];
       leftPath = paths[1];
@@ -476,6 +503,7 @@ public class Field{
   void setReverse(boolean r){
     reverse = r;
   }
+  
   void printPath(double[][] path){
     for(int i = 0;i<path.length;i++){
       println("("+path[i][0]+","+path[i][1]+")");
@@ -499,7 +527,7 @@ public class Field{
     int x2 = toCoordY(posX);
     int y2 = toCoordX(posY);
         
-    strokeWeight(2);
+    strokeWeight(2*scale);
     //println(x1 + " " + y1 + " " + x2 + " " + y2);
     line((int)x1, (int)y1, x2, y2);
     
@@ -519,7 +547,7 @@ public class Field{
     return value - value % fieldResolution;
   }
   float toMapX(float y){
-    float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING*heightScale), HEIGHT, 0)));
+    float value = Float.parseFloat(df.format(map(y, 80.0*heightScale, (80.0*heightScale)+(HEIGHT*SPACING*heightScale), HEIGHT, 0)));
     //float value = Float.parseFloat(df.format(map(y, 80, 80+(HEIGHT*SPACING), 0, HEIGHT)));
     return value - value % fieldResolution;
   }
@@ -530,7 +558,7 @@ public class Field{
     return value;
   }
   int toCoordX(float y){
-    return (int)map(y, 0, HEIGHT, 80+(HEIGHT*SPACING*heightScale), 80);
+    return (int)map(y, 0, HEIGHT, (80.0*heightScale)+(HEIGHT*SPACING*heightScale), 80.0*heightScale);
     //return (int)map(y, 0, HEIGHT, 80, 80+(HEIGHT*SPACING));
   }
 }
@@ -553,6 +581,7 @@ private class Rocket extends Field{
       vertex(toCoordY(y + 24.8/12), toCoordX(x+ 13.8/12));
       vertex(toCoordY(y + 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
       vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
+      vertex(toCoordY(y), toCoordX(x));
       // angle 61 degrees 
       stroke(255);
       line(toCoordY(y + 12.4/12), toCoordX(x + 11.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
@@ -572,6 +601,7 @@ private class Rocket extends Field{
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12));
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
       vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
+      vertex(toCoordY(y), toCoordX(x));
       
       // Alignment lines
       stroke(255);
@@ -584,19 +614,19 @@ private class Rocket extends Field{
     noFill();
     
     fill(0);
-    textSize(16);
+    textSize(16*scale);
     if(!reverse){
       if(memesEnabled){
         text("Seal", toCoordY(y + 1), toCoordX(x + 1.8));
       }else{
-        textSize(12);
+        textSize(12*scale);
         text("Rocket", toCoordY(y + 1), toCoordX(x + 1.8));
       }
     }else{
       if(memesEnabled){
         text("Seal", toCoordY(y - 1), toCoordX(x + 1.8)); 
       }else{
-        textSize(12);
+        textSize(12*scale);
         text("Rocket", toCoordY(y - 1), toCoordX(x + 1.8)); 
       }
     }
@@ -647,7 +677,7 @@ private class CargoShip extends Field{
     noFill();
     
     fill(0);
-    textSize(16);
+    textSize(16*scale);
     if(memesEnabled){
       text("The Walrus", toCoordY(y + 2), toCoordX(x + 4));
     }else{
@@ -677,7 +707,7 @@ private class HABPlateform extends Field{
     noFill();
     
     fill(0);
-    textSize(16);
+    textSize(16*scale);
     if(memesEnabled){
       text("The Iceberg", toCoordY(y + 7.4), toCoordX(x + 6));
     }else{
