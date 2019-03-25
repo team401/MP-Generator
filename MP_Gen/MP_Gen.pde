@@ -471,6 +471,7 @@ void fileSelector(File selection){
     field.setUpField();
     
     JSONObject waypointSettings = values.getJSONObject(values.size() - 1);
+    
     field.setProfileSettings(
     waypointSettings.getDouble("maxVelocity"),
     waypointSettings.getDouble("maxAcceleration"),
@@ -542,7 +543,7 @@ void saveFieldConfig(){
   waypointSettings.setDouble("maxCentripetalAcceleration", field.getMaxCentripAccel());
   json.setJSONObject(json.size(), waypointSettings);
   
-  saveJSONArray(json, "field_layouts/" + name.getText());
+  saveJSONArray(json, "field_layouts/" + name.getText() + ".json");
   println("Field saved");
   error.setText("Field config saved!");
 }
@@ -567,7 +568,7 @@ void exportWaypoints(){
   waypointSettings.setDouble("maxCentripetalAcceleration", field.getMaxCentripAccel());
   json.setJSONObject(json.size(), waypointSettings);
   
-  saveJSONArray(json, directory + "waypoints/" + name.getText());
+  saveJSONArray(json, directory + "waypoints/" + name.getText() + ".json");
   println("export complete");
   error.setText("Export complete");
 }

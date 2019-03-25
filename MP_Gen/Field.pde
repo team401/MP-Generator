@@ -20,6 +20,7 @@ public class Field{
     
   private ArrayList<float[]> waypoints;
   private float fieldResolution;
+  private float fieldUnitsMultiplier;
   
   //private int angle;
   private boolean reverse;
@@ -39,6 +40,14 @@ public class Field{
     reset();
     JSONObject values = loadJSONObject("config.cfg");
     fieldResolution = values.getFloat("fieldResolution");
+    
+    String unit = values.getString("fieldDisplayUnits");
+    if (unit.equals("INCHES")) {
+      fieldUnitsMultiplier = 12.0;
+    }else {
+      fieldUnitsMultiplier = 1.0;
+    }
+    
     centripetalAccelConstraintEnabled = false;
   }
   Field(ArrayList<float[]> waypoints){    
@@ -53,6 +62,13 @@ public class Field{
     memesEnabled = values.getBoolean("enableMemes");
     fieldResolution = values.getFloat("fieldResolution");
     
+    String unit = values.getString("fieldDisplayUnits");
+    if (unit.equals("INCHES")) {
+      fieldUnitsMultiplier = 12.0;
+    }else {
+      fieldUnitsMultiplier = 1.0;
+    }
+    
     centripetalAccelConstraintEnabled = false;
         
     generateProfile();
@@ -62,8 +78,8 @@ public class Field{
   }
   
   void setUpField(){
-    rocket1 = new Rocket(27 - 11.28125, 0, false); // Rocket center is 96 in from the center line
-    rocket2 = new Rocket(27 - 11.28125, WIDTH, true); // Rocket is 39.375 wide
+    rocket1 = new Rocket(27 - 11.28125, 0 + 0.25, false); // Rocket center is 96 in from the center line
+    rocket2 = new Rocket(27 - 11.28125, WIDTH - 0.25, true); // Rocket is 39.375 wide
     cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
     hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
     leftLoadingStation = new LoadingStation(WIDTH - 22.75/6);
@@ -270,7 +286,7 @@ public class Field{
         
         if(!mouseOverWaypoint()){
           changingWaypointAngle = false;
-          text("(" + mapX + "," + mapY + ","+angle + (char)176 + ")", x+45, y-30);
+          text("(" + mapX * fieldUnitsMultiplier + "," + mapY * fieldUnitsMultiplier + ","+angle + (char)176 + ")", x+45, y-30);
           
           strokeWeight(12*scale);
           line(x, y, x, y);
@@ -565,6 +581,7 @@ private class Rocket extends Field{
       vertex(toCoordY(y + 24.8/12), toCoordX(x+ 13.8/12));
       vertex(toCoordY(y + 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
       vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
+      vertex(toCoordY(y), toCoordX(x));
       // angle 61 degrees 
       stroke(255);
       line(toCoordY(y + 12.4/12), toCoordX(x + 11.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
@@ -584,6 +601,7 @@ private class Rocket extends Field{
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12));
       vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
       vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
+      vertex(toCoordY(y), toCoordX(x));
       
       // Alignment lines
       stroke(255);
