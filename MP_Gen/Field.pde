@@ -78,14 +78,15 @@ public class Field{
   }
   
   void setUpField(){
-    rocket1 = new Rocket(27 - 11.28125, 0 + 0.25, false); // Rocket center is 96 in from the center line
-    rocket2 = new Rocket(27 - 11.28125, WIDTH - 0.25, true); // Rocket is 39.375 wide
-    cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24);
+    
+    rocket1 = new Rocket(215.0/12, 0 + 7.875/12, false); // Rocket center is 96 in from the center line
+    rocket2 = new Rocket(215.0/12, WIDTH - 7.875/12, true); // Rocket is 39.375 wide
+    cargoShip = new CargoShip(27 - 104.75/12, WIDTH/2.0 - 45.0/24); // Cargo ship 
     hab = new HABPlateform(0, WIDTH/2.0 - 173.25/24.0);
     leftLoadingStation = new LoadingStation(WIDTH - 22.75/6);
     rightLoadingStation = new LoadingStation(0);
   }
-  void display(){
+  void display(){    
     if(velocity){
       // width : 675 pxls
       // height : 800 pxls
@@ -577,16 +578,18 @@ private class Rocket extends Field{
     beginShape();
     //back and side struts
     if (!reverse){
+      
       vertex(toCoordY(y), toCoordX(x));
-      vertex(toCoordY(y + 24.8/12), toCoordX(x+ 13.8/12));
-      vertex(toCoordY(y + 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
-      vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
-      vertex(toCoordY(y), toCoordX(x));
+      vertex(toCoordY(y + 19.6/12), toCoordX(x+ 10.44/12)); //39.375 long front face is 18.5
+      vertex(toCoordY(y + 19.6/12), toCoordX(x + 10.44/12 + 18.5/12)); // 19.567
+      vertex(toCoordY(y), toCoordX(x + 10.44/12 + 18.5/12 + 10.44/12)); // 21 in diagonal
+      vertex(toCoordY(y), toCoordX(x));// 7.875 inches from the wall
+      
       // angle 61 degrees 
       stroke(255);
-      line(toCoordY(y + 12.4/12), toCoordX(x + 11.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y + 12.4/12), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y + 12.4/12 + 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y + 24.8/12), toCoordX(x + 13.8/12 + 10.25/12), toCoordY(y + 24.8/12 + 1.5), toCoordX(x + 13.8/12 + 10.25/12));
+      line(toCoordY(y + 19.6/24), toCoordX(x + 10.44/24), toCoordY(y + 19.6/24 + 1.5 * (float)Math.cos(61*PI/180)), toCoordX(x + 10.44/24 - 1.5 * (float)Math.sin(61*PI/180)));
+      line(toCoordY(y + 19.6/24), toCoordX(x + 34.155/12), toCoordY(y + 19.6/24 + 1.5 * (float)Math.cos(61*PI/180)), toCoordX(x + 34.155/12 + 1.5 * (float)Math.sin(61*PI/180)));
+      line(toCoordY(y + 19.567/12), toCoordX(x + 39.375/24), toCoordY(y + 19.567/12 + 1.5), toCoordX(x + 39.375/24));
       stroke(0);
     }else{
       /*
@@ -598,21 +601,22 @@ private class Rocket extends Field{
       vertex(toCoordY(y), toCoordX(x + 2 + 5/12.0 + 13.8/12 + 20.5/12 + 13.8/12));
       */
       vertex(toCoordY(y), toCoordX(x));
-      vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12));
-      vertex(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12 + 20.5/12));
-      vertex(toCoordY(y), toCoordX(x + 13.8/12 + 20.5/12 + 13.8/12));
+      vertex(toCoordY(y - 19.6/12), toCoordX(x + 10.44/12));
+      vertex(toCoordY(y - 19.6/12), toCoordX(x + 10.44/12 + 18.5/12));
+      vertex(toCoordY(y), toCoordX(x + 10.44/12 + 18.5/12 + 10.44/12));
       vertex(toCoordY(y), toCoordX(x));
       
       // Alignment lines
       stroke(255);
-      line(toCoordY(y - 12.4/12), toCoordX(x + 11.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 6.9/12 - 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y - 12.4/12), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12), toCoordY(y - 12.4/12 - 1.5 * (float)Math.sin(29*PI/180)), toCoordX(x + 13.8/12 + 20.5/12 + 6.9/12 + 1.5 * (float)Math.cos(29*PI/180)));
-      line(toCoordY(y - 24.8/12), toCoordX(x + 13.8/12 + 10.25/12), toCoordY(y - 24.8/12 - 1.5), toCoordX(x + 13.8/12 + 10.25/12));
+      line(toCoordY(y - 19.6/24), toCoordX(x + 10.44/24), toCoordY(y - 19.6/24 - 1.5 * (float)Math.cos(61*PI/180)), toCoordX(x + 10.44/24 - 1.5 * (float)Math.sin(61*PI/180)));
+      line(toCoordY(y - 19.6/24), toCoordX(x + 34.155/12), toCoordY(y - 19.6/24 - 1.5 * (float)Math.cos(61*PI/180)), toCoordX(x + 34.155/12 + 1.5 * (float)Math.sin(61*PI/180)));
+      line(toCoordY(y - 19.567/12), toCoordX(x + 39.375/24), toCoordY(y - 19.567/12 - 1.5), toCoordX(x + 39.375/24));
       stroke(0);
     }
     endShape();
     noFill();
     
+    /*
     fill(0);
     textSize(16*scale);
     if(!reverse){
@@ -630,7 +634,7 @@ private class Rocket extends Field{
         text("Rocket", toCoordY(y - 1), toCoordX(x + 1.8)); 
       }
     }
-   
+    */
   }
 }
 private class CargoShip extends Field{
@@ -646,29 +650,29 @@ private class CargoShip extends Field{
     beginShape();
     vertex(toCoordY(y), toCoordX(x));
     vertex(toCoordY(y + 3 + 9/12.0), toCoordX(x));
-    vertex(toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12));
-    vertex(toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + 75.13/12));
-    vertex(toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + 75.13/12));
-    vertex(toCoordY(y - 10.75/12), toCoordX(x + 20.62/12));
+    vertex(toCoordY(y + 3 + 9/12.0 + 10.75/24), toCoordX(x + 20.62/12));
+    vertex(toCoordY(y + 3 + 9/12.0 + 10.75/24), toCoordX(x + 20.62/12 + 75.13/12));
+    vertex(toCoordY(y - 10.75/24), toCoordX(x + 20.62/12 + 75.13/12));
+    vertex(toCoordY(y - 10.75/24), toCoordX(x + 20.62/12));
     vertex(toCoordY(y), toCoordX(x));
     endShape();
     
     
     // Hatch lines
     stroke(255);
-    line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0), 
-    toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0));
-    line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0), 
-    toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0));
-    line(toCoordY(y + 3 + 9/12.0 + 10.75/12 + 1.5), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0), 
-    toCoordY(y + 3 + 9/12.0 + 10.75/12), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0));
+    line(toCoordY(y + 3 + 9/12.0 + 10.75/24 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0), 
+    toCoordY(y + 3 + 9/12.0 + 10.75/24), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0));
+    line(toCoordY(y + 3 + 9/12.0 + 10.75/24 + 1.5), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0), 
+    toCoordY(y + 3 + 9/12.0 + 10.75/24), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0));
+    line(toCoordY(y + 3 + 9/12.0 + 10.75/24 + 1.5), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0), 
+    toCoordY(y + 3 + 9/12.0 + 10.75/24), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0));
     
-    line(toCoordY(y - 10.75/12 - 1.5), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0), 
-    toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0));
-    line(toCoordY(y - 10.75/12 - 1.5), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0), 
-    toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0));
-    line(toCoordY(y - 10.75/12 - 1.5), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0), 
-    toCoordY(y - 10.75/12), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0));
+    line(toCoordY(y - 10.75/24 - 1.5), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0), 
+    toCoordY(y - 10.75/24), toCoordX(x + 20.62/12 + (78.55 - (45 + 66.5)/2.0)/12.0));
+    line(toCoordY(y - 10.75/24 - 1.5), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0), 
+    toCoordY(y - 10.75/24), toCoordX(x + 20.62/12 + (78.55 - (23 + 44.5)/2.0)/12.0));
+    line(toCoordY(y - 10.75/24 - 1.5), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0), 
+    toCoordY(y - 10.75/24), toCoordX(x + 20.62/12 + (78.55 - 23.5/2.0)/12.0));
     
     line(toCoordY(y + 21.5/24.0), toCoordX(x), toCoordY(y + 21.5/24.0), toCoordX(x - 1.5));
     line(toCoordY(y + (23 + 44)/24.0), toCoordX(x), toCoordY(y + (23 + 44)/24.0), toCoordX(x - 1.5));
